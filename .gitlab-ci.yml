@@ -48,7 +48,8 @@ basice2e:
   script:
     - echo $PWD
     - find .
-    - which bash
+    - which bash || true
+    - which sh || true
     - ./basice2e/run.sh
   artifacts:
     paths:
