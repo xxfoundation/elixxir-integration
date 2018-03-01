@@ -35,7 +35,9 @@ before_script:
   - echo $CI_PROJECT_DIR
   - mkdir -p bin
   - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
+  - chmod +x bin/server
   - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
+  - chmod +x bin/client
   - echo $PWD
   - find bin/ -type f -exec file {} \;
 
