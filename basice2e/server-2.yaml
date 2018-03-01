@@ -1,0 +1,9 @@
+logPath: "results/server-2.log"
+verbose: "false"
+batchSize: 12
+servers:
+    - 50000
+    - 50001
+    - 50002
+    - 50003
+    - 50004
