@@ -37,7 +37,7 @@ before_script:
   - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
   - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
   - echo $PWD
-  - find bin/ -type f
+  - find bin/ -type f -exec file {} \;
 
 stages:
   - basice2e # Basic end to end testing
@@ -46,6 +46,8 @@ basice2e:
   stage: basice2e
   image: $DOCKER_IMAGE
   script:
+    - echo $PWD
+    - find .
     - ./basice2e/run.sh
   artifacts:
     paths:
