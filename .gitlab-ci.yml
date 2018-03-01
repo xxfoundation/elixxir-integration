@@ -47,9 +47,9 @@ basice2e:
   image: $DOCKER_IMAGE
   script:
     - echo $PWD
-    - pushd basice2e
+    - cd basice2e
     - ./run.sh
-    - popd
+    - cd ..
   artifacts:
     paths:
      - basice2e/results
