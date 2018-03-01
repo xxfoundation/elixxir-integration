@@ -46,7 +46,7 @@ basice2e:
   stage: basice2e
   image: $DOCKER_IMAGE
   script:
-    - cd basice2e && make
+    - ./basice2e/run.sh
   artifacts:
     paths:
      - basice2e/results
