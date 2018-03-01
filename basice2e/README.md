@@ -13,3 +13,6 @@ structure is as follows:
 
 For now, we do nothing on assertion of crypto, we just assume
 api-level compliance with sending and receiving messages.
+
+This test does not produce any results, but it does produce logs for each
+server and client.
