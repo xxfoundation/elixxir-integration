@@ -34,8 +34,8 @@ before_script:
   - echo $CI_BUILD_REF
   - echo $CI_PROJECT_DIR
   - mkdir -p bin
-  - curl -f -L -H "PRIVATE-TOKEN: $PATKEY" -o bin/server $SERVER_URL
-  - curl -f -L -H "PRIVATE-TOKEN: $PATKEY" -o bin/client $CLIENT_URL
+  - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
+  - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
   - echo $PWD
   - find bin/ -type f
 
