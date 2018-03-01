@@ -1,0 +1,52 @@
+################################################################################
+## Copyright © 2018 Privategrity Corporation                                   #
+##                                                                             #
+## All rights reserved.                                                        #
+################################################################################
+
+# This drives all the integration tests. When you create a new test, add it as a
+# new stage to this file. The stage should have a very clear report and may need
+# to run a couple commands to publish.
+
+cache:
+  untracked: true
+  key: "$CI_BUILD_REF_NAME"
+#  paths:
+#    - vendor/
+
+variables:
+  REPO_DIR: gitlab.com/privategrity
+  REPO_NAME: server
+  DOCKER_IMAGE: carback1/golang-glide:1.9-d638096cef01
+  PRIVATEGRITY_REPOS: https://gitlab.com/privategrity/
+  DL_URL_FRAG: -/jobs/artifacts/master/raw/release/
+  SERVER_URL: $PRIVATEGRITY_REPOS/server/$DL_URL_FRAG/server.linux64?job=build
+  CLIENT_URL: $PRIVATEGRITY_REPOS/client/$DL_URL_FRAG/client.linux64?job=build
+
+before_script:
+  ##
+  ## Go Setup
+  ##
+  - echo $CI_BUILD_REF
+  - echo $CI_PROJECT_DIR
+#  - go version || echo "Go executable not found."
+#  - mkdir -p $GOPATH/src/$REPO_DIR
+#  - ln -s $CI_PROJECT_DIR $GOPATH/src/$REPO_DIR/$REPO_NAME
+#  - cd $GOPATH/src/$REPO_DIR/$REPO_NAME
+  - mkdir -p bin
+  - curl -f -L -H "PRIVATE-TOKEN: $PATKEY" -o bin/server $SERVER_URL
+  - curl -f -L -H "PRIVATE-TOKEN: $PATKEY" -o bin/client $CLIENT_URL
+  - echo $PWD
+  - find bin/ -type f
+
+stages:
+  - basice2e # Basic end to end testing
+
+basice2e:
+  stage: basice2e
+  image: $DOCKER_IMAGE
+  script:
+    - cd basice2e && make
+  artifacts:
+    paths:
+     - basice2e/results
