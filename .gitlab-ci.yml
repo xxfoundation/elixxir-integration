@@ -47,10 +47,9 @@ basice2e:
   image: $DOCKER_IMAGE
   script:
     - echo $PWD
-    - find .
-    - which bash || true
-    - which sh || true
-    - ./basice2e/run.sh
+    - pushd basice2e
+    - ./run.sh
+    - popd
   artifacts:
     paths:
      - basice2e/results
