@@ -55,4 +55,4 @@ basice2e:
   artifacts:
     when: always
     paths:
-     - results/
+     - basice2e/results/
