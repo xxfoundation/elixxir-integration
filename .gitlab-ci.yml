@@ -53,5 +53,6 @@ basice2e:
     - ./run.sh
     - cd ..
   artifacts:
+    when: always
     paths:
      - results/
