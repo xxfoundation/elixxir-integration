@@ -54,4 +54,4 @@ basice2e:
     - cd ..
   artifacts:
     paths:
-     - basice2e/results
+     - basice2e/results/
