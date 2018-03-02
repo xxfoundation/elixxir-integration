@@ -1,6 +1,6 @@
 logPath: "results/server-3.log"
 verbose: "false"
-batchSize: 12
+batchSize: 1
 servers:
     - 50000
     - 50001

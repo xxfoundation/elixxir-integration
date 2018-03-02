@@ -2,8 +2,8 @@ logPath: "results/server-5.log"
 verbose: "false"
 batchSize: 1
 servers:
-    # - 50000
-    # - 50001
-    # - 50002
-    # - 50003
+    - 50000
+    - 50001
+    - 50002
+    - 50003
     - 50004
