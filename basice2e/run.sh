@@ -52,8 +52,8 @@ for cid in 1; do
     done
 done
 
-echo "WAITING FOR CLIENTS TO EXIT..."
-for i in $(seq 0 $CTR); do
+echo "WAITING FOR $CTR CLIENTS TO EXIT..."
+for i in $(seq 0 $(($CTR - 1))); do
     eval echo "Waiting on \${CLIENTS${i}} ..."
     eval wait \${CLIENTS${i}}
     echo "DONE!"
