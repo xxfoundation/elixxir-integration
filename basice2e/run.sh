@@ -6,6 +6,7 @@ set -e
 
 mkdir -p results
 
+echo "STARTING SERVERS..."
 # ../bin/server -v -i 0 --config server-1.yaml > results/server-1.console 2>&1 &
 # SERVER1=$!
 # ../bin/server -v -i 1 --config server-2.yaml > results/server-2.console 2>&1 &
@@ -16,13 +17,7 @@ mkdir -p results
 # SERVER4=$!
 ../bin/server -v -i 0 --config server-5.yaml > results/server-5.console 2>&1 &
 SERVER5=$!
-
-echo "STARTED SERVERS with PIDs:"
-echo $SERVER1
-echo $SERVER2
-echo $SERVER3
-echo $SERVER4
-echo $SERVER5
+echo "../bin/server -v -i 0 --config server-5.yaml -- $SERVER5"
 
 finish() {
     echo "STOPPING SERVERS..."
@@ -49,9 +44,9 @@ CTR=0
 #     for nid in 1 2 3 4; do
 for cid in 1; do
     for nid in 1; do
-        echo "../bin/client -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
         ../bin/client -s $LASTNODE -i $cid -d $nid -m "Hello, $nid" > results/client$cid$nid.out 2>&1 &
         RETVAL=$!
+        echo "../bin/client -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" -- $RETVAL"
         eval CLIENTS${CTR}=$RETVAL
         CTR=$(($CTR + 1))
     done
