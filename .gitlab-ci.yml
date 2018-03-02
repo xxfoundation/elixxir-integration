@@ -48,11 +48,10 @@ basice2e:
   stage: basice2e
   image: $DOCKER_IMAGE
   script:
-    - mkdir -p basice2e/results
     - echo $PWD
     - cd basice2e
     - ./run.sh
     - cd ..
   artifacts:
     paths:
-     - basice2e/results/
+     - results/
