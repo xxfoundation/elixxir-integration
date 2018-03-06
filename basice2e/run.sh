@@ -4,38 +4,28 @@
 
 set -e
 
-mkdir -p results
+SERVERLOGS=results/servers
+CLIENTOUT=results/clients
+
+mkdir -p $SERVERLOGS
+mkdir -p $CLIENTOUT
 
 echo "STARTING SERVERS..."
 
-../bin/server -v -i 0 --config server-1.yaml > results/server-1.console 2>&1 &
-SERVER1=$!
-echo "../bin/server -v -i 0 --config server-1.yaml -- $SERVER1"
-
-../bin/server -v -i 1 --config server-2.yaml > results/server-2.console 2>&1 &
-SERVER2=$!
-echo "../bin/server -v -i 1 --config server-2.yaml -- $SERVER2"
-
-../bin/server -v -i 2 --config server-3.yaml > results/server-3.console 2>&1 &
-SERVER3=$!
-echo "../bin/server -v -i 2 --config server-3.yaml -- $SERVER3"
-
-../bin/server -v -i 3 --config server-4.yaml > results/server-4.console 2>&1 &
-SERVER4=$!
-echo "../bin/server -v -i 3 --config server-4.yaml -- $SERVER4"
-
-../bin/server -v -i 4 --config server-5.yaml > results/server-5.console 2>&1 &
-SERVER5=$!
-echo "../bin/server -v -i 4 --config server-5.yaml -- $SERVER5"
+for SERVERID in $(seq 1 5)
+do
+    IDX=$(($SERVERID - 1))
+    SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
+    eval $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
+    echo "$SERVERCMD -- $!"
+done
 
 finish() {
     echo "STOPPING SERVERS..."
-    # jobs -p
-    kill $SERVER1 || true
-    kill $SERVER2 || true
-    kill $SERVER3 || true
-    kill $SERVER4 || true
-    kill $SERVER5 || true
+    for job in $(jobs -p)
+    do
+        kill $job || true
+    done
     tail results/*
 }
 
@@ -70,3 +60,5 @@ for i in $(seq 0 $(($CTR - 1))); do
     eval echo "Waiting on \${CLIENTS${i}} ..."
     eval wait \${CLIENTS${i}}
 done
+
+diff -ruN 
