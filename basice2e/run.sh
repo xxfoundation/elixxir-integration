@@ -30,6 +30,7 @@ finish() {
 }
 
 trap finish EXIT
+trap finish INT
 
 sleep 10 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
