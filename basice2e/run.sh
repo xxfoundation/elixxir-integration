@@ -49,10 +49,14 @@ LASTNODE="localhost:50004"
 
 echo "STARTING CLIENTS..."
 CTR=0
-# for cid in 1 2 3 4; do
-#     for nid in 1 2 3 4; do
-for cid in 1; do
+
+for cid in 1 2 3 4; do
+    # TODO: Change the recipients to send multiple messages. We can't
+    #       run multiple clients with the same user id so we need
+    #       updates to make that work.
+    #     for nid in 1 2 3 4; do
     for nid in 1; do
+        nid=$((($cid % 4) + 1))
         ../bin/client --numnodes 5 -s $LASTNODE -i $cid -d $nid -m "Hello, $nid" > results/client$cid$nid.out 2>&1 &
         RETVAL=$!
         echo "../bin/client -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" -- $RETVAL"
