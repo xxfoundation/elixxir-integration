@@ -59,7 +59,7 @@ for cid in 1 2 3 4; do
         nid=$((($cid % 4) + 1))
         ../bin/client --numnodes 5 -s $LASTNODE -i $cid -d $nid -m "Hello, $nid" > results/client$cid$nid.out 2>&1 &
         RETVAL=$!
-        echo "../bin/client -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" -- $RETVAL"
+        echo "../bin/client --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" -- $RETVAL"
         eval CLIENTS${CTR}=$RETVAL
         CTR=$(($CTR + 1))
     done
