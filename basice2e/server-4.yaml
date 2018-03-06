@@ -2,8 +2,8 @@ logPath: "results/server-4.log"
 verbose: "false"
 batchSize: 4
 servers:
-    - 50000
-    - 50001
-    - 50002
-    - 50003
-    - 50004
+    - localhost:50000
+    - localhost:50001
+    - localhost:50002
+    - localhost:50003
+    - localhost:50004
