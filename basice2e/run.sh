@@ -35,6 +35,7 @@ finish() {
     done
     tail $SERVERLOGS/*
     tail $CLIENTOUT/*
+    diff -ruN clients.goldoutput $CLIENTOUT
 }
 
 trap finish EXIT
