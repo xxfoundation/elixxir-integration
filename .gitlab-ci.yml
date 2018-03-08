@@ -43,6 +43,7 @@ before_script:
 
 stages:
   - basice2e # Basic end to end testing
+  - benchmark
 
 basice2e:
   stage: basice2e
@@ -56,3 +57,10 @@ basice2e:
     when: always
     paths:
      - basice2e/results/
+
+benchmark:
+  stage: benchmark
+  image: $DOCKER_IMAGE
+  script:
+    - ./bin/server benchmark -b 1024 -n 1 -i 30
+    - ./bin/server benchmark -b 1024 -n 5 -i 30
