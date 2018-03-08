@@ -62,5 +62,6 @@ benchmark:
   stage: benchmark
   image: $DOCKER_IMAGE
   script:
-    - ./bin/server benchmark -b 1024 -n 1 -i 30
-    - ./bin/server benchmark -b 1024 -n 5 -i 30
+    # These take about 2 minutes each right now, so 16 total
+    - ./bin/server benchmark -b 1024 -n 1 -i 4
+    - ./bin/server benchmark -b 1024 -n 5 -i 1
