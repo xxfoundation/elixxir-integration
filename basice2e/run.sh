@@ -5,6 +5,7 @@
 set -e
 
 rm -fr results || true
+rm blob* || true
 
 SERVERLOGS=results/servers
 CLIENTOUT=results/clients
@@ -59,7 +60,7 @@ do
     for nid in 1
     do
         nid=$((($cid % 4) + 1))
-        CLIENTCMD="../bin/client --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
         eval $CLIENTCMD > $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
@@ -74,6 +75,32 @@ do
     eval echo "Waiting on \${CLIENTS${i}} ..."
     eval wait \${CLIENTS${i}}
 done
+
+for cid in $(seq 1 4)
+do
+    # TODO: Change the recipients to send multiple messages. We can't
+    #       run multiple clients with the same user id so we need
+    #       updates to make that work.
+    #     for nid in 1 2 3 4; do
+    for nid in 1
+    do
+        nid=$((($cid % 4) + 1))
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
+        eval $CLIENTCMD > $CLIENTOUT/client$cid$nid.out 2>&1 &
+        RETVAL=$!
+        eval CLIENTS${CTR}=$RETVAL
+        echo "$CLIENTCMD -- $RETVAL"
+        CTR=$(($CTR + 1))
+    done
+done
+
+echo "WAITING FOR $CTR CLIENTS (2nd msg set) TO EXIT..."
+for i in $(seq 0 $(($CTR - 1)))
+do
+    eval echo "Waiting on \${CLIENTS${i}} ..."
+    eval wait \${CLIENTS${i}}
+done
+
 
 diff -ruN clients.goldoutput $CLIENTOUT
 
