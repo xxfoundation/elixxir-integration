@@ -57,6 +57,7 @@ basice2e:
     when: always
     paths:
      - basice2e/results/
+     - bin/
 
 benchmark:
   stage: benchmark
