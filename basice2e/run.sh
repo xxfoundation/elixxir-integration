@@ -42,7 +42,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 10 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 LASTNODE="localhost:50004"
@@ -61,7 +61,7 @@ do
     do
         nid=$((($cid % 4) + 1))
         CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
-        eval $CLIENTCMD > $CLIENTOUT/client$cid$nid.out 2>&1 &
+        eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
         echo "$CLIENTCMD -- $RETVAL"
@@ -86,7 +86,7 @@ do
     do
         nid=$((($cid % 4) + 1))
         CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
-        eval $CLIENTCMD > $CLIENTOUT/client$cid$nid.out 2>&1 &
+        eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
         echo "$CLIENTCMD -- $RETVAL"
