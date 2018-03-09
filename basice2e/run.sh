@@ -76,6 +76,7 @@ do
     eval wait \${CLIENTS${i}}
 done
 
+CTR=0
 for cid in $(seq 1 4)
 do
     # TODO: Change the recipients to send multiple messages. We can't
