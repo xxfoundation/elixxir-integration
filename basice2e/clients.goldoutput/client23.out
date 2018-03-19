@@ -1,4 +1,4 @@
-Sending Message to 3, Ben: Hello, 3
-Message from 1, David Received: Hello, 2
-Sending Message to 3, Ben: Hello, 3
-Message from 1, David Received: Hello, 2
+Sending Message to 3: Hello, 3
+Message from 1 Received: Hello, 2
+Sending Message to 3: Hello, 3
+Message from 1 Received: Hello, 2
