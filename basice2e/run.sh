@@ -46,10 +46,7 @@ sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 LASTNODE="localhost:50004"
-NICK1="David"
-NICK2="Jim"
-NICK3="Ben"
-NICK4="Rick"
+
 
 echo "STARTING CLIENTS..."
 CTR=0
@@ -63,8 +60,7 @@ do
     for nid in 1
     do
         nid=$((($cid % 4) + 1))
-        NICK=NICK${cid}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick ${!NICK}"
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
@@ -90,8 +86,7 @@ do
     for nid in 1
     do
         nid=$((($cid % 4) + 1))
-        NICK=NICK${cid}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick ${!NICK}"
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\""
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
