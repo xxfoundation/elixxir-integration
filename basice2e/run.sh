@@ -46,7 +46,10 @@ sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 LASTNODE="localhost:50004"
-
+NICK1="David"
+NICK2="Jim"
+NICK3="Ben"
+NICK4="Rick"
 
 echo "STARTING CLIENTS..."
 CTR=0
