@@ -1,6 +1,15 @@
 logPath: "results/server-4.log"
 verbose: "false"
 batchSize: 4
+dbUsername: "cmix"
+dbPassword: ""
+dbName: "cmix_server"
+dbAddresses:
+    - ""
+    - ""
+    - ""
+    - ""
+    - ""
 servers:
     - localhost:50000
     - localhost:50001
