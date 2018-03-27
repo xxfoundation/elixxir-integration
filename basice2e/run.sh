@@ -63,7 +63,8 @@ do
     for nid in 1
     do
         nid=$((($cid % 4) + 1))
-        eval NICK=$NICK${cid}
+        eval export NICK=$NICK${cid}
+        eval echo ${NICK${cid}}
         CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
@@ -90,7 +91,7 @@ do
     for nid in 1
     do
         nid=$((($cid % 4) + 1))
-        eval NICK=$NICK${cid}
+        eval NICK=$(echo $NICK${cid})
         CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
