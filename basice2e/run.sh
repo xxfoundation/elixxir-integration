@@ -64,7 +64,7 @@ do
     do
         nid=$((($cid % 4) + 1))
         eval NICK=NICK${cid}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick ${!NICK}"
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
@@ -91,7 +91,7 @@ do
     do
         nid=$((($cid % 4) + 1))
         eval NICK=NICK${cid}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick ${!NICK}"
+        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
         eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
         RETVAL=$!
         eval CLIENTS${CTR}=$RETVAL
