@@ -88,7 +88,7 @@ runclients
 
 
 diff -ruN clients.goldoutput $CLIENTOUT
-cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt
+cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
 
 echo "SUCCESS!"
