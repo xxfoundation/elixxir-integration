@@ -109,5 +109,7 @@ done
 
 
 diff -ruN clients.goldoutput $CLIENTOUT
+cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt
+diff -ruN results/server-errors.txt noerrors.txt
 
 echo "SUCCESS!"
