@@ -45,69 +45,51 @@ trap finish INT
 sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
-LASTNODE="localhost:50004"
-NICK1="David"
-NICK2="Jim"
-NICK3="Ben"
-NICK4="Rick"
+export LASTNODE="localhost:50004"
+export NICK1="David"
+export NICK2="Jim"
+export NICK3="Ben"
+export NICK4="Rick"
 
-echo "STARTING CLIENTS..."
-CTR=0
-
-for cid in $(seq 1 4)
-do
-    # TODO: Change the recipients to send multiple messages. We can't
-    #       run multiple clients with the same user id so we need
-    #       updates to make that work.
-    #     for nid in 1 2 3 4; do
-    for nid in 1
+runclients() {
+    echo "Starting clients..."
+    CTR=0
+    for cid in $(seq 1 4)
     do
-        nid=$((($cid % 4) + 1))
-        eval NICK=\${NICK${cid}}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
-        eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
-        RETVAL=$!
-        eval CLIENTS${CTR}=$RETVAL
-        echo "$CLIENTCMD -- $RETVAL"
-        CTR=$(($CTR + 1))
+        # TODO: Change the recipients to send multiple messages. We can't
+        #       run multiple clients with the same user id so we need
+        #       updates to make that work.
+        #     for nid in 1 2 3 4; do
+        for nid in 1
+        do
+            nid=$((($cid % 4) + 1))
+            eval NICK=\${NICK${cid}}
+            CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
+            eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
+            RETVAL=$!
+            eval CLIENTS${CTR}=$RETVAL
+            echo "$CLIENTCMD -- $RETVAL"
+            CTR=$(($CTR + 1))
+        done
     done
-done
 
-echo "WAITING FOR $CTR CLIENTS TO EXIT..."
-for i in $(seq 0 $(($CTR - 1)))
-do
-    eval echo "Waiting on \${CLIENTS${i}} ..."
-    eval wait \${CLIENTS${i}}
-done
-
-CTR=0
-for cid in $(seq 1 4)
-do
-    # TODO: Change the recipients to send multiple messages. We can't
-    #       run multiple clients with the same user id so we need
-    #       updates to make that work.
-    #     for nid in 1 2 3 4; do
-    for nid in 1
+    echo "WAITING FOR $CTR CLIENTS TO EXIT..."
+    for i in $(seq 0 $(($CTR - 1)))
     do
-        nid=$((($cid % 4) + 1))
-        eval NICK=\${NICK${cid}}
-        CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
-        eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
-        RETVAL=$!
-        eval CLIENTS${CTR}=$RETVAL
-        echo "$CLIENTCMD -- $RETVAL"
-        CTR=$(($CTR + 1))
+        eval echo "Waiting on \${CLIENTS${i}} ..."
+        eval wait \${CLIENTS${i}}
     done
-done
+}
 
-echo "WAITING FOR $CTR CLIENTS (2nd msg set) TO EXIT..."
-for i in $(seq 0 $(($CTR - 1)))
-do
-    eval echo "Waiting on \${CLIENTS${i}} ..."
-    eval wait \${CLIENTS${i}}
-done
+echo "RUNNING CLIENTS..."
+runclients
+echo "RUNNING CLIENTS (2nd time)..."
+runclients
 
 
 diff -ruN clients.goldoutput $CLIENTOUT
+cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
+cat $SERVERLOGS/*.log | grep "FATAL" >> results/server-errors.txt || true
+diff -ruN results/server-errors.txt noerrors.txt
 
 echo "SUCCESS!"
