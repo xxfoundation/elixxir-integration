@@ -1,4 +1,4 @@
-logPath: "results/server-2.log"
+logPath: "results/servers/server-2.log"
 verbose: "false"
 batchSize: 4
 dbUsername: "cmix"
