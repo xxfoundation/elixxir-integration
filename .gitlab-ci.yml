@@ -33,17 +33,27 @@ before_script:
   ##  - cd $GOPATH/src/$REPO_DIR/$REPO_NAME
   - echo $CI_BUILD_REF
   - echo $CI_PROJECT_DIR
-  - mkdir -p bin
-  - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
-  - chmod +x bin/server
-  - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
-  - chmod +x bin/client
-  - echo $PWD
-  - find bin/ -type f -exec file {} \;
 
 stages:
+  - installbinaries
   - basice2e # Basic end to end testing
   - benchmark
+
+installbinaries:
+  stage: installbinaries
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p bin
+    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
+    - chmod +x bin/server
+    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
+    - chmod +x bin/client
+    - echo $PWD
+    - find bin/ -type f -exec file {} \;
+  artifacts:
+    when: always
+    paths:
+     - bin/
 
 basice2e:
   stage: basice2e
@@ -66,3 +76,7 @@ benchmark:
     # These take about 2 minutes each right now, so 16 total
     - ./bin/server benchmark -b 1024 -n 1 -i 4
     - ./bin/server benchmark -b 1024 -n 5 -i 1
+  artifacts:
+    when: always
+    paths:
+      - bin/
