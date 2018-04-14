@@ -19,6 +19,9 @@ for SERVERID in $(seq 1 5)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
+    if [ $SERVERID -eq 4 ]; then
+        sleep 15 # This will force a CDE timeout
+    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     RETVAL=$!
     echo "$SERVERCMD -- $RETVAL"
@@ -64,7 +67,7 @@ runclients() {
         do
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
-            CLIENTCMD="../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
+            CLIENTCMD="timeout 10s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             RETVAL=$!
             eval CLIENTS${CTR}=$RETVAL
