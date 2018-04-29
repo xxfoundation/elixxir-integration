@@ -17,7 +17,7 @@ mkdir -p $CLIENTOUT
 
 echo "STARTING SERVERS..."
 
-for SERVERID in $(seq 1 5)
+for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
@@ -47,7 +47,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 60 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 export LASTNODE="localhost:50004"
@@ -95,14 +95,15 @@ runclients() {
 }
 
 # Start a channelbot server
-../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
-              --noBlockingTransmission -f blobchannel \
-              2>&1 > $CHANNELOUT &
+# ../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
+#               -f blobchannel \
+#               2>&1 > $CHANNELOUT &
 
 # Start a dummy client
-../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-              --dummyfrequency 0.05 --noBlockingTransmission \
-              -f blobdummy 2>&1 > $DUMMYOUT &
+# ../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
+#               --dummyfrequency 0.05 \
+#               -f blobdummy 2>&1 > $DUMMYOUT &
+# echo $! >> results/serverpids
 
 echo "RUNNING CLIENTS..."
 runclients
