@@ -25,8 +25,8 @@ do
         sleep 15 # This will force a CDE timeout
     fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
-    RETVAL=$!
-    echo "$SERVERCMD -- $RETVAL"
+    PIDVAL=$!
+    echo "$SERVERCMD -- $PIDVAL"
 done
 
 jobs -p > results/serverpids
@@ -47,7 +47,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 45 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 export LASTNODE="localhost:50004"
@@ -59,29 +59,24 @@ export NICK4="Rick"
 runclients() {
     echo "Starting clients..."
     CTR=0
+
     for cid in $(seq 1 4)
     do
         # TODO: Change the recipients to send multiple messages. We can't
         #       run multiple clients with the same user id so we need
         #       updates to make that work.
         #     for nid in 1 2 3 4; do
+
         for nid in 1
         do
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
-            # Send a channel message
-            # CLIENTCMD="timeout 10s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d 35 -m \"Channel, $nid\" --nick $NICK"
-            # eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
-            # RETVAL=$!
-            # eval CLIENTSCH${CTR}=$RETVAL
-            # echo "$CLIENTCMD -- $RETVAL"
-
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK --noratchet"
+            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
-            RETVAL=$!
-            eval CLIENTS${CTR}=$RETVAL
-            echo "$CLIENTCMD -- $RETVAL"
+            PIDVAL=$!
+            eval CLIENTS${CTR}=$PIDVAL
+            echo "$CLIENTCMD -- $PIDVAL"
             CTR=$(($CTR + 1))
         done
     done
@@ -95,16 +90,25 @@ runclients() {
 }
 
 # Start a channelbot server
-../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
-              -f blobchannel --noratchet \
-              2>&1 > $CHANNELOUT &
-echo $! >> results/serverpids
+CHANNELCMD="../bin/client channelbot -v -i 31 --nick \"#general\" --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
+eval $CHANNELCMD >> $CHANNELOUT 2>&1 &
+PIDVAL=$!
+echo "$CHANNELCMD -- $PIDVAL"
+echo $PIDVAL >> results/serverpids
 
 # Start a dummy client
-../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-              --dummyfrequency 0.5 --noratchet \
-              -f blobdummy 2>&1 > $DUMMYOUT &
-echo $! >> results/serverpids
+DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --nick \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
+eval $DUMMYCMD >> $DUMMYOUT 2>&1 &
+PIDVAL=$!
+echo "$DUMMYCMD -- $PIDVAL"
+echo $PIDVAL >> results/serverpids
+
+# Send a channel message that all clients will receive
+CLIENTCMD="timeout 60s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --nick Spencer --noratchet"
+eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 
 echo "RUNNING CLIENTS..."
 runclients
@@ -115,7 +119,9 @@ runclients
 for F in $(find results/clients -type f)
 do
     cat $F | grep -v "[Rr]atcheting" > $F.tmp
-    mv $F.tmp $F
+    # Sort the messages, as we don't care if they arrive out of order
+    sort $F.tmp > $F
+    rm $F.tmp
 done
 
 
