@@ -91,12 +91,12 @@ runclients() {
 
 # Start a channelbot server
 ../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
-              --noratchet --noBlockingTransmission -f blobchannel \
+              --noBlockingTransmission -f blobchannel \
               2>&1 > $CHANNELOUT &
 
 # Start a dummy client
 ../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-              --dummyfrequency 1 --noratchet --noBlockingTransmission \
+              --dummyfrequency 1 --noBlockingTransmission \
               -f blobdummy 2>&1 > $DUMMYOUT &
 
 echo "RUNNING CLIENTS..."
