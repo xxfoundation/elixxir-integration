@@ -20,7 +20,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml --noratchet"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -47,7 +47,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 60 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 export LASTNODE="localhost:50004"
@@ -77,7 +77,7 @@ runclients() {
             # echo "$CLIENTCMD -- $RETVAL"
 
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
+            CLIENTCMD="timeout 60s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             RETVAL=$!
             eval CLIENTS${CTR}=$RETVAL
@@ -95,13 +95,14 @@ runclients() {
 }
 
 # Start a channelbot server
-# ../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
-#               -f blobchannel \
-#               2>&1 > $CHANNELOUT &
+../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
+              -f blobchannel --noratchet \
+              2>&1 > $CHANNELOUT &
+echo $! >> results/serverpids
 
 # Start a dummy client
 ../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-              --dummyfrequency 0.5 \
+              --dummyfrequency 0.5 --noratchet \
               -f blobdummy 2>&1 > $DUMMYOUT &
 echo $! >> results/serverpids
 
