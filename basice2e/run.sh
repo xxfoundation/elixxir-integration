@@ -110,6 +110,8 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
+sleep 10 # Spend some time waiting for the channel bot to send messages
+
 echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
