@@ -93,15 +93,15 @@ runclients() {
 CHANNELCMD="../bin/client channelbot -v -i 31 --nick \"#general\" --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
 eval $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
-echo "$CHANNELCMD -- $PIDVAL"
 echo $PIDVAL >> results/serverpids
+echo "$CHANNELCMD -- $PIDVAL"
 
 # Start a dummy client
 DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --nick \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
 eval $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
-echo "$DUMMYCMD -- $PIDVAL"
 echo $PIDVAL >> results/serverpids
+echo "$DUMMYCMD -- $PIDVAL"
 
 # Send a channel message that all clients will receive
 CLIENTCMD="timeout 60s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --nick Spencer --noratchet"
@@ -121,9 +121,7 @@ runclients
 for F in $(find results/clients -type f)
 do
     cat $F | grep -v "[Rr]atcheting" > $F.tmp
-    # Sort the messages, as we don't care if they arrive out of order
-    sort $F.tmp > $F
-    rm $F.tmp
+    mv $F.tmp $F
 done
 
 
