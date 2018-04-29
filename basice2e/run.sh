@@ -77,7 +77,7 @@ runclients() {
             # echo "$CLIENTCMD -- $RETVAL"
 
             # Send a regular message
-            CLIENTCMD="timeout 15s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
+            CLIENTCMD="timeout 30s ../bin/client -f blob$cid$nid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             RETVAL=$!
             eval CLIENTS${CTR}=$RETVAL
@@ -101,7 +101,7 @@ runclients() {
 
 # Start a dummy client
 ../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-              --dummyfrequency 0.2 --noBlockingTransmission \
+              --dummyfrequency 0.1 --noBlockingTransmission \
               -f blobdummy 2>&1 > $DUMMYOUT &
 
 echo "RUNNING CLIENTS..."
