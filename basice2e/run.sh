@@ -9,6 +9,8 @@ rm blob* || true
 
 SERVERLOGS=results/servers
 CLIENTOUT=results/clients
+CHANNELOUT=results/channelbot.console
+DUMMYOUT=results/dummy.console
 
 mkdir -p $SERVERLOGS
 mkdir -p $CLIENTOUT
@@ -84,6 +86,16 @@ runclients() {
     done
 }
 
+# Start a channelbot server
+../bin/client channelbot -v -i 31 --nick "#general" --numnodes 5 -s $LASTNODE \
+              --noratchet --noBlockingTransmission \
+              2>&1 > $CHANNELOUT &
+
+# Start a dummy client
+../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
+              --dummyfrequency 1 --noratchet --noBlockingTransmission \
+              2>&1 > $DUMMYOUT &
+
 echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
@@ -94,5 +106,12 @@ diff -ruN clients.goldoutput $CLIENTOUT
 cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
 cat $SERVERLOGS/*.log | grep "FATAL" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
+cat $CHANNELOUT | grep "ERROR" > results/channel-errors.txt || true
+cat $CHANNELOUT | grep "FATAL" >> results/channel-errors.txt || true
+diff -ruN results/channel-errors.txt noerrors.txt
+cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
+cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
+diff -ruN results/dummy-errors.txt noerrors.txt
+
 
 echo "SUCCESS!"
