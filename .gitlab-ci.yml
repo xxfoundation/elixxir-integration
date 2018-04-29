@@ -80,3 +80,5 @@ benchmark:
     when: always
     paths:
       - bin/
+  only:
+    - benchmark
