@@ -100,10 +100,10 @@ runclients() {
 #               2>&1 > $CHANNELOUT &
 
 # Start a dummy client
-# ../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
-#               --dummyfrequency 0.05 \
-#               -f blobdummy 2>&1 > $DUMMYOUT &
-# echo $! >> results/serverpids
+../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m "dummy" --nick "dummy" \
+              --dummyfrequency 0.5 \
+              -f blobdummy 2>&1 > $DUMMYOUT &
+echo $! >> results/serverpids
 
 echo "RUNNING CLIENTS..."
 runclients
