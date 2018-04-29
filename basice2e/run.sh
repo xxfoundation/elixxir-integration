@@ -111,6 +111,13 @@ runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
 
+# HACK HACK HACK: Remove the ratchet warning from client output
+for F in $(find results/clients -type f)
+do
+    cat $F | grep -v "[Rr]atcheting" > $F.tmp
+    mv $F.tmp $F
+done
+
 
 diff -ruN clients.goldoutput $CLIENTOUT
 cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
