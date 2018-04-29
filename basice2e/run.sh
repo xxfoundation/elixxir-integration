@@ -90,7 +90,7 @@ runclients() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/client channelbot -v -i 31 --nick \"#general\" --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
+CHANNELCMD="../bin/client channelbot -v -i 31 --nick \"#General\" --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
 eval $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
