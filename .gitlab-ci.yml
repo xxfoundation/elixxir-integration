@@ -22,6 +22,7 @@ variables:
   DL_URL_FRAG: -/jobs/artifacts/master/raw/release/
   SERVER_URL: $PRIVATEGRITY_REPOS/server/$DL_URL_FRAG/server.linux64?job=build
   CLIENT_URL: $PRIVATEGRITY_REPOS/client/$DL_URL_FRAG/client.linux64?job=build
+  CHANNELBOT_URL: $PRIVATEGRITY_REPOS/channelbot/$DL_URL_FRAG/channelbot.linux64?job=build
 
 before_script:
   ##
