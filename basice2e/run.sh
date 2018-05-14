@@ -11,6 +11,7 @@ SERVERLOGS=results/servers
 CLIENTOUT=results/clients
 CHANNELOUT=results/channelbot.console
 DUMMYOUT=results/dummy.console
+UDBOUT=results/udb.console
 
 mkdir -p $SERVERLOGS
 mkdir -p $CLIENTOUT
@@ -95,6 +96,13 @@ eval $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$CHANNELCMD -- $PIDVAL"
+
+# Start a user discovery bot server
+UDBCMD="../bin/udb --config udb.yaml"
+eval $UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
 DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --nick \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
