@@ -23,6 +23,7 @@ variables:
   SERVER_URL: $PRIVATEGRITY_REPOS/server/$DL_URL_FRAG/server.linux64?job=build
   CLIENT_URL: $PRIVATEGRITY_REPOS/client/$DL_URL_FRAG/client.linux64?job=build
   CHANNELBOT_URL: $PRIVATEGRITY_REPOS/channelbot/$DL_URL_FRAG/channelbot.linux64?job=build
+  UDB_URL: $PRIVATEGRITY_REPOS/user-discovery-bot/$DL_URL_FRAG/udb.linux64?job=build
 
 before_script:
   ##
@@ -51,6 +52,8 @@ installbinaries:
     - chmod +x bin/client
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/channelbot $CHANNELBOT_URL"
     - chmod +x bin/channelbot
+    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/udb $UDB_URL"
+    - chmod +x bin/udb
     - echo $PWD
     - find bin/ -type f -exec file {} \;
   artifacts:
