@@ -1,0 +1,4 @@
+# UDB Config for E2E Integration test
+logPath: "logfile.log"
+numNodes: 5
+serverAddr: "localhost:50004"
