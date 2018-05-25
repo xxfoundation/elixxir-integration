@@ -12,6 +12,7 @@ CLIENTOUT=results/clients
 CHANNELOUT=results/channelbot.console
 DUMMYOUT=results/dummy.console
 UDBOUT=results/udb.console
+GATEWAYOUT=results/gateway.console
 
 mkdir -p $SERVERLOGS
 mkdir -p $CLIENTOUT
@@ -68,7 +69,7 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 $GATEWAY -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -106,6 +107,13 @@ PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
+# Start a gateway
+GATEWAYCMD="../bin/gateway --config gateway.yaml"
+$GATEWAYCMD >> $GATEWAYOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$GATEWAYCMD -- $PIDVAL"
+
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
@@ -129,6 +137,9 @@ echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
+echo "RUNNING CLIENTS THROUGH GATEWAY..."
+GATEWAY="-g localhost:8443"
+runclients
 
 # HACK HACK HACK: Remove the ratchet warning from client output
 for F in $(find results/clients -type f)
@@ -148,6 +159,10 @@ diff -ruN results/channel-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
+cat $GATEWAYOUT | grep "ERROR" > results/gateway-errors.txt || true
+cat $GATEWAYOUT | grep "FATAL" >> results/gateway-errors.txt || true
+diff -ruN results/gateway-errors.txt noerrors.txt
+
 
 
 echo "SUCCESS!"
