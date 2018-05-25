@@ -4,10 +4,6 @@
 ## All rights reserved.                                                        #
 ################################################################################
 
-##
-# Sample Gateway Configuration
-##
-
 # Output log file
 log: "results/gateway.log"
 
