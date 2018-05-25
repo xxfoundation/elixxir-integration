@@ -69,7 +69,41 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 $GATEWAY -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
+            PIDVAL=$!
+            eval CLIENTS${CTR}=$PIDVAL
+            echo "$CLIENTCMD -- $PIDVAL"
+            CTR=$(($CTR + 1))
+        done
+    done
+
+    echo "WAITING FOR $CTR CLIENTS TO EXIT..."
+    for i in $(seq 0 $(($CTR - 1)))
+    do
+        eval echo "Waiting on \${CLIENTS${i}} ..."
+        eval wait \${CLIENTS${i}}
+    done
+}
+
+GATEWAY=localhost:8443
+runclientsgw() {
+    echo "Starting clients through gateway..."
+    CTR=0
+
+    for cid in $(seq 1 4)
+    do
+        # TODO: Change the recipients to send multiple messages. We can't
+        #       run multiple clients with the same user id so we need
+        #       updates to make that work.
+        #     for nid in 1 2 3 4; do
+
+        for nid in 1
+        do
+            nid=$((($cid % 4) + 1))
+            eval NICK=\${NICK${cid}}
+            # Send a regular message
+            CLIENTCMD="timeout 60s ../bin/client -f blobgw$cid --numnodes 5 -g $GATEWAY -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -137,9 +171,10 @@ echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
+
+# Same function, different blob names
 echo "RUNNING CLIENTS THROUGH GATEWAY..."
-GATEWAY="-g localhost:8443"
-runclients
+runclientsgw
 
 # HACK HACK HACK: Remove the ratchet warning from client output
 for F in $(find results/clients -type f)
