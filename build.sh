@@ -21,3 +21,11 @@ go generate cmd/version.go
 go build
 popd
 mv $GOPATH/src/gitlab.com/privategrity/channelbot/channelbot bin
+
+UDBPATH=gitlab.com/privategrity/user-discovery-bot
+pushd $GOPATH/src/$UDBPATH
+go generate cmd/version.go
+popd
+go build -o udb $UDBPATH
+mv ./udb bin
+

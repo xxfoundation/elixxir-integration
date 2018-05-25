@@ -52,11 +52,6 @@ sleep 45 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 export LASTNODE="localhost:50004"
-export NICK1="David"
-export NICK2="Jim"
-export NICK3="Ben"
-export NICK4="Rick"
-
 runclients() {
     echo "Starting clients..."
     CTR=0
@@ -73,7 +68,7 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --nick $NICK --noratchet"
+            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -91,7 +86,7 @@ runclients() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 --nick #General --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
+CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
 $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -105,7 +100,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --nick \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -114,7 +109,7 @@ echo "$DUMMYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 60s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --nick Jake --noratchet"
+    CLIENTCMD="timeout 60s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
     eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -122,7 +117,7 @@ do
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 60s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --nick Spencer --noratchet"
+CLIENTCMD="timeout 60s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
 eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
