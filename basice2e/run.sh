@@ -68,7 +68,7 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 120s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            CLIENTCMD="timeout 240s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -109,7 +109,7 @@ echo "$DUMMYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 120s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
+    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
     eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -117,7 +117,7 @@ do
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 120s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
+CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
 eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
