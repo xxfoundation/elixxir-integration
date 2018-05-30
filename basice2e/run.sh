@@ -69,7 +69,7 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            CLIENTCMD="timeout 240s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -121,7 +121,7 @@ runclientsgw() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -s $LASTNODE  -f blobchannel --noratchet"
+CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -s $LASTNODE  -f blobchannel"
 $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -135,7 +135,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --dummyfrequency 3 --noratchet -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -151,7 +151,7 @@ echo "$GATEWAYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 60s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
+    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
     eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -159,7 +159,7 @@ do
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 60s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
+CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
 eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
