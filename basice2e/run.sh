@@ -86,7 +86,7 @@ runclients() {
     done
 }
 
-GATEWAY=localhost:8443
+export GATEWAY=localhost:8443
 runclientsgw() {
     echo "Starting clients through gateway..."
     CTR=0
@@ -174,6 +174,8 @@ runclients
 
 # Same function, different blob names
 echo "RUNNING CLIENTS THROUGH GATEWAY..."
+runclientsgw
+echo "RUNNING CLIENTS THROUGH GATEWAY (2nd time)..."
 runclientsgw
 
 # HACK HACK HACK: Remove the ratchet warning from client output
