@@ -4,6 +4,8 @@
 # and assumes that you've cloned the Go repos to your GOPATH and updated them
 # with Glide.
 
+mkdir -p bin
+
 pushd $GOPATH/src/gitlab.com/privategrity/client
 go generate cmd/version.go
 go build
@@ -29,3 +31,8 @@ popd
 go build -o udb $UDBPATH
 mv ./udb bin
 
+pushd $GOPATH/src/gitlab.com/privategrity/gateway
+go generate cmd/version.go
+go build
+popd
+mv $GOPATH/src/gitlab.com/privategrity/gateway/gateway bin
