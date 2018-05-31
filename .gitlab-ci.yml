@@ -58,7 +58,11 @@ installbinaries:
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/gateway $GATEWAY_URL"
     - chmod +x bin/gateway
     - echo $PWD
-    - find bin/ -type f -exec file {} \;
+    - bin/server --version
+    - bin/client --version
+    - bin/channelbot --version
+    - bin/udb --version
+    - bin/gateway --version
   artifacts:
     when: always
     paths:
