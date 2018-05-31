@@ -16,3 +16,4 @@ servers:
     - localhost:50002
     - localhost:50003
     - localhost:50004
+gatewayAddress: "localhost:8443"

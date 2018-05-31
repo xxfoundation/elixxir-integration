@@ -88,10 +88,9 @@ runclients() {
 
 export GATEWAY=localhost:8443
 runclientsgw() {
-    echo "Starting clients through gateway..."
     CTR=0
 
-    for cid in $(seq 1 4)
+    for cid in $(seq 21 24)
     do
         # TODO: Change the recipients to send multiple messages. We can't
         #       run multiple clients with the same user id so we need
@@ -100,7 +99,7 @@ runclientsgw() {
 
         for nid in 1
         do
-            nid=$((($cid % 4) + 1))
+            nid=$((($cid % 4) + 21))
             eval NICK=\${NICK${cid}}
             # Send a regular message
             CLIENTCMD="timeout 60s ../bin/client -f blobgw$cid --numnodes 5 -g $GATEWAY -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
@@ -172,10 +171,8 @@ runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
 
-# Same function, different blob names
+# Same function, different blob names and client IDs
 echo "RUNNING CLIENTS THROUGH GATEWAY..."
-runclientsgw
-echo "RUNNING CLIENTS THROUGH GATEWAY (2nd time)..."
 runclientsgw
 
 # HACK HACK HACK: Remove the ratchet warning from client output
