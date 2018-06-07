@@ -1,4 +1,5 @@
 # UDB Config for E2E Integration test
 logPath: "logfile.log"
 numNodes: 5
-gatewayAddress: "localhost:8443"
+gateways:
+    - "localhost:8443"
