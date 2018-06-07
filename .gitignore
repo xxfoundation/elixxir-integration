@@ -3,3 +3,5 @@
 bin/*
 *.log
 *results*
+*/.udb-cMix-session
+blob*
