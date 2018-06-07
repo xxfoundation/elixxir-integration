@@ -1,3 +1,5 @@
 # Ignore Jetbrains IDE folder
 .idea/*
 bin/*
+*.log
+*results*
