@@ -1,0 +1,7 @@
+# Ignore Jetbrains IDE folder
+.idea/*
+bin/*
+*.log
+*results*
+*/.udb-cMix-session
+blob*

@@ -52,7 +52,7 @@ trap finish INT
 sleep 45 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
-export LASTNODE="localhost:50004"
+export GATEWAY=localhost:8443
 runclients() {
     echo "Starting clients..."
     CTR=0
@@ -69,40 +69,7 @@ runclients() {
             nid=$((($cid % 4) + 1))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 240s ../bin/client -f blob$cid --numnodes 5 -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
-            eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
-            PIDVAL=$!
-            eval CLIENTS${CTR}=$PIDVAL
-            echo "$CLIENTCMD -- $PIDVAL"
-            CTR=$(($CTR + 1))
-        done
-    done
-
-    echo "WAITING FOR $CTR CLIENTS TO EXIT..."
-    for i in $(seq 0 $(($CTR - 1)))
-    do
-        eval echo "Waiting on \${CLIENTS${i}} ..."
-        eval wait \${CLIENTS${i}}
-    done
-}
-
-export GATEWAY=localhost:8443
-runclientsgw() {
-    CTR=0
-
-    for cid in $(seq 21 24)
-    do
-        # TODO: Change the recipients to send multiple messages. We can't
-        #       run multiple clients with the same user id so we need
-        #       updates to make that work.
-        #     for nid in 1 2 3 4; do
-
-        for nid in 1
-        do
-            nid=$((($cid % 4) + 21))
-            eval NICK=\${NICK${cid}}
-            # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client -f blobgw$cid --numnodes 5 -g $GATEWAY -s $LASTNODE -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
+            CLIENTCMD="timeout 240s ../bin/client -f blob$cid --numnodes 5 -g $GATEWAY -i $cid -d $nid -m \"Hello, $nid\" --noratchet"
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -120,7 +87,7 @@ runclientsgw() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -s $LASTNODE  -f blobchannel"
+CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -g $GATEWAY -f blobchannel"
 $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -134,7 +101,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -s $LASTNODE --numnodes 5 -m \"dummy\" --dummyfrequency 3 --noratchet -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 3 --noratchet -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -150,7 +117,7 @@ echo "$GATEWAYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -s $LASTNODE -i 6 -d 13 -m \"$LINE\" --noratchet"
+    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -g $GATEWAY -i 6 -d 13 -m \"$LINE\" --noratchet"
     eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -158,7 +125,7 @@ do
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -s $LASTNODE -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
+CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -g $GATEWAY -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
 eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -170,10 +137,6 @@ echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
-
-# Same function, different blob names and client IDs
-echo "RUNNING CLIENTS THROUGH GATEWAY..."
-runclientsgw
 
 # HACK HACK HACK: Remove the ratchet warning from client output
 for F in $(find results/clients -type f)
