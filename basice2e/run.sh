@@ -101,7 +101,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 3 --noratchet -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 0.5 --noratchet -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -123,13 +123,6 @@ do
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 done
-
-# Send a channel message that all clients will receive
-CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -g $GATEWAY -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
-eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 
 sleep 10 # Spend some time waiting for the channel bot to send messages
 
