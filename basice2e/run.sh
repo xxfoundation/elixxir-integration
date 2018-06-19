@@ -124,6 +124,13 @@ do
     wait $PIDVAL
 done
 
+# Send a channel message that all clients will receive
+CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -g $GATEWAY -i 5 -d 31 -m \"Channel, Hello\" --noratchet"
+eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
 sleep 10 # Spend some time waiting for the channel bot to send messages
 
 echo "RUNNING CLIENTS..."
