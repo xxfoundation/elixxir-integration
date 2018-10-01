@@ -5,3 +5,6 @@ bin/*
 *results*
 */.udb-cMix-session
 blob*
+# Vim swap files
+*.swp
+*.swo
