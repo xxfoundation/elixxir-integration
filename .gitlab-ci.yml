@@ -15,10 +15,10 @@ cache:
 #    - vendor/
 
 variables:
-  REPO_DIR: gitlab.com/privategrity
+  REPO_DIR: gitlab.com/elixxir
   REPO_NAME: server
   DOCKER_IMAGE: carback1/golang-glide:1.9-d638096cef01
-  PRIVATEGRITY_REPOS: https://gitlab.com/privategrity/
+  PRIVATEGRITY_REPOS: https://gitlab.com/elixxir
   DL_URL_FRAG: -/jobs/artifacts/master/raw/release/
   SERVER_URL: $PRIVATEGRITY_REPOS/server/$DL_URL_FRAG/server.linux64?job=build
   CLIENT_URL: $PRIVATEGRITY_REPOS/client/$DL_URL_FRAG/client.linux64?job=build
