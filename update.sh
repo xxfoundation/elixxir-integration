@@ -8,43 +8,43 @@ rm -fr ~/.glide
 
 update() {
     git clean -ffdx
-#    git checkout master
+    git checkout master
     git pull
     glide cc
     glide up
 }
 
-pushd $GOPATH/src/gitlab.com/privategrity/client
+pushd $GOPATH/src/gitlab.com/elixxir/client
 update
 popd
 
-pushd $GOPATH/src/gitlab.com/privategrity/server
+pushd $GOPATH/src/gitlab.com/elixxir/server
 update
 popd
 
-pushd $GOPATH/src/gitlab.com/privategrity/channelbot
+pushd $GOPATH/src/gitlab.com/elixxir/channelbot
 update
 popd
 
-pushd $GOPATH/src/gitlab.com/privategrity/user-discovery-bot
+pushd $GOPATH/src/gitlab.com/elixxir/user-discovery-bot
 update
 popd
 
-pushd $GOPATH/src/gitlab.com/privategrity/gateway
+pushd $GOPATH/src/gitlab.com/elixxir/gateway
 update
 popd
 
-#pushd $GOPATH/src/gitlab.com/privategrity/comms
-#update
-#popd
+pushd $GOPATH/src/gitlab.com/elixxir/comms
+update
+popd
 
-#pushd $GOPATH/src/gitlab.com/privategrity/crypto
-#update
-#popd
+pushd $GOPATH/src/gitlab.com/elixxir/crypto
+update
+popd
 
-#pushd $GOPATH/src/gitlab.com/privategrity/client-consoleUI
-#update
-#popd
+pushd $GOPATH/src/gitlab.com/elixxir/client-consoleUI
+update
+popd
 
 pushd ..
 go test ./...
