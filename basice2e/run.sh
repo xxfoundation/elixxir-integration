@@ -94,7 +94,7 @@ echo $PIDVAL >> results/serverpids
 echo "$CHANNELCMD -- $PIDVAL"
 
 # Start a user discovery bot server
-UDBCMD="../bin/udb --config udb.yaml"
+UDBCMD="../bin/udb -v --config udb.yaml"
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -108,21 +108,21 @@ echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
 # Start a gateway
-GATEWAYCMD="../bin/gateway --config gateway.yaml"
+GATEWAYCMD="../bin/gateway -v --config gateway.yaml"
 $GATEWAYCMD >> $GATEWAYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$GATEWAYCMD -- $PIDVAL"
 
 # Send a registration command
-#cat registration-commands.txt | while read LINE
-#do
-#    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -g $GATEWAY -i 6 -d 13 -m \"$LINE\""
-#    eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
-#    PIDVAL=$!
-#    echo "$CLIENTCMD -- $PIDVAL"
-#    wait $PIDVAL
-#done
+cat registration-commands.txt | while read LINE
+do
+    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -g $GATEWAY -i 6 -d 13 -m \"$LINE\""
+    eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+done
 
 # Send a channel message that all clients will receive
 CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -g $GATEWAY -i 5 -d 31 -m \"Channel, Hello\""
