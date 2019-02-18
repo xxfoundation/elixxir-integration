@@ -36,7 +36,6 @@ before_script:
   ##  - cd $GOPATH/src/$REPO_DIR/$REPO_NAME
   - echo $CI_BUILD_REF
   - echo $CI_PROJECT_DIR
-  - echo $SERVER_URL
 
 stages:
   - installbinaries
