@@ -26,9 +26,9 @@ GatewayAddress: "localhost:8443"
 # deleted from the user's message queue
 MessageTimeout: 1800
 
-keyPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.key"
-certPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt"
-serverCertPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/cmix.rip.crt"
+keyPath: "../keys/gateway.cmix.rip.key"
+certPath: "../keys/gateway.cmix.rip.crt"
+serverCertPath: "../keys/cmix.rip.crt"
 
 ### Anything below this line is to be deprecated ###
 

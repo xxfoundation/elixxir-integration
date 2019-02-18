@@ -3,4 +3,4 @@ logPath: "logfile.log"
 numNodes: 5
 gateways:
     - "localhost:8443"
-certPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt"
+certPath: "../keys/gateway.cmix.rip.crt"

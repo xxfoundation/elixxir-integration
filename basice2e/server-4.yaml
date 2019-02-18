@@ -18,6 +18,6 @@ servers:
     - localhost:50004
 gateways:
     - "localhost:8443"
-keyPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/cmix.rip.key"
-certPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/cmix.rip.crt"
-gatewayCertPath: "/home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt"
+keyPath: "../keys/cmix.rip.key"
+certPath: "../keys/cmix.rip.crt"
+gatewayCertPath: "../keys/gateway.cmix.rip.crt"

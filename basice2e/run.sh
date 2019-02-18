@@ -101,7 +101,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 2 --certpath /home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 2 --certpath ../keys/gateway.cmix.rip.crt -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -117,7 +117,7 @@ echo "$GATEWAYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 90s ../bin/client -f blob9 --numnodes 5 -g $GATEWAY -i 9 -d 3 --certpath /home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt -m \"$LINE\""
+    CLIENTCMD="timeout 90s ../bin/client -f blob9 --numnodes 5 -g $GATEWAY -i 9 -d 3 --certpath ../keys/gateway.cmix.rip.crt -m \"$LINE\""
     eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -125,7 +125,7 @@ do
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 60s ../bin/client -f blob8 --numnodes 5 --certpath /home/spencer/go/src/gitlab.com/elixxir/integration/keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
+CLIENTCMD="timeout 60s ../bin/client -f blob8 --numnodes 5 --certpath ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
 eval $CLIENTCMD >> $CLIENTOUT/client8.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
