@@ -19,7 +19,7 @@ variables:
   REPO_NAME: server
   DOCKER_IMAGE: carback1/golang-glide:1.9-d638096cef01
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
-  DL_URL_FRAG: jobs/artifacts/master/raw
+  DL_URL_FRAG: jobs/artifacts/master/raw/release
   SERVER_URL: ${REPOS_API}server/$DL_URL_FRAG/server.linux64?job=build
   CLIENT_URL: ${REPOS_API}client/$DL_URL_FRAG/client.linux64?job=build
   CHANNELBOT_URL: ${REPOS_API}channelbot/$DL_URL_FRAG/channelbot.linux64?job=build
