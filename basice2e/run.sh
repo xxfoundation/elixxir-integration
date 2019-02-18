@@ -57,7 +57,7 @@ runclients() {
     echo "Starting clients..."
     CTR=0
 
-    for cid in $(seq 1 4)
+    for cid in $(seq 4 7)
     do
         # TODO: Change the recipients to send multiple messages. We can't
         #       run multiple clients with the same user id so we need
@@ -66,10 +66,10 @@ runclients() {
 
         for nid in 1
         do
-            nid=$((($cid % 4) + 1))
+            nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 240s ../bin/client -f blob$cid --numnodes 5 -g $GATEWAY -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 80s ../bin/client -f blob$cid --numnodes 5 -g $GATEWAY -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -87,7 +87,7 @@ runclients() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 -g $GATEWAY -f blobchannel"
+CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 --certpath ..//keys/gateway.cmix.rip.crt -g $GATEWAY -f blobchannel"
 $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -101,7 +101,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 2 -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 2 --certpath ../keys/gateway.cmix.rip.crt -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -117,16 +117,16 @@ echo "$GATEWAYCMD -- $PIDVAL"
 # Send a registration command
 cat registration-commands.txt | while read LINE
 do
-    CLIENTCMD="timeout 240s ../bin/client -f blob6 --numnodes 5 -g $GATEWAY -i 6 -d 13 -m \"$LINE\""
-    eval $CLIENTCMD >> $CLIENTOUT/client6.out 2>&1 &
+    CLIENTCMD="timeout 90s ../bin/client -f blob9 --numnodes 5 -g $GATEWAY -i 9 -d 3 --certpath ../keys/gateway.cmix.rip.crt -m \"$LINE\""
+    eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 done
 
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 240s ../bin/client -f blob5 --numnodes 5 -g $GATEWAY -i 5 -d 31 -m \"Channel, Hello\""
-eval $CLIENTCMD >> $CLIENTOUT/client5.out 2>&1 &
+CLIENTCMD="timeout 60s ../bin/client -f blob8 --numnodes 5 --certpath ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
+eval $CLIENTCMD >> $CLIENTOUT/client8.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL

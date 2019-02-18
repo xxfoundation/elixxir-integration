@@ -3,3 +3,4 @@ logPath: "logfile.log"
 numNodes: 5
 gateways:
     - "localhost:8443"
+certPath: "../keys/gateway.cmix.rip.crt"

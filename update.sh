@@ -7,6 +7,7 @@ git pull
 rm -fr ~/.glide
 
 update() {
+    git stash
     git clean -ffdx
     git checkout master
     git pull
