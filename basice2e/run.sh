@@ -23,9 +23,9 @@ for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
-#    if [ $SERVERID -eq 4 ]; then
-#        sleep 15 # This will force a CDE timeout
-#    fi
+    if [ $SERVERID -eq 4 ]; then
+        sleep 15 # This will force a CDE timeout
+    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
