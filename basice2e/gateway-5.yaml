@@ -1,0 +1,38 @@
+################################################################################
+## Copyright © 2018 Privategrity Corporation                                   #
+##                                                                             #
+## All rights reserved.                                                        #
+################################################################################
+
+# Output log file
+log: "results/gateways/gateway-5.log"
+
+verbose: "true"
+
+# The cMix nodes in the network
+cMixNodes:
+ - "localhost:50000"
+ - "localhost:50001"
+ - "localhost:50002"
+ - "localhost:50003"
+ - "localhost:50004"
+# The index to which this Gateway is attached in the cMixNodes list
+GatewayNodeIndex: 4
+
+# The listening address of this gateway
+GatewayAddress: "localhost:8444"
+
+# The number of seconds a message should remain in the globals before being
+# deleted from the user's message queue
+MessageTimeout: 1800
+
+keyPath: "../keys/gateway.cmix.rip.key"
+certPath: "../keys/gateway.cmix.rip.crt"
+serverCertPath: "../keys/cmix.rip.crt"
+
+### Anything below this line is to be deprecated ###
+
+# Number of nodes in the cMix Network
+
+# Batch size of the cMix Network (to be deprecated)
+batchSize: 4

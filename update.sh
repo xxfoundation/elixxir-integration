@@ -47,6 +47,14 @@ pushd $GOPATH/src/gitlab.com/elixxir/client-consoleUI
 update
 popd
 
+pushd $GOPATH/src/gitlab.com/elixxir/primitives
+update
+popd
+
+pushd $GOPATH/src/gitlab.com/elixxir/registration
+update
+popd
+
 pushd ..
 go test ./...
 popd
