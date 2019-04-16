@@ -161,7 +161,8 @@ diff -ruN results/channel-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
-cat $GATEWAYLOGS/*.log | grep "ERROR" > results/gateway-errors.txt || true
+IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
+cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v $IGNOREMSG > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
