@@ -1,9 +1,9 @@
 logPath: "results/servers/server-1.log"
 verbose: "false"
 batchSize: 4
-dbUsername: "cmix"
+dbUsername: "bernardo"
 dbPassword: ""
-dbName: "cmix_server"
+dbName: "node1"
 dbAddresses:
     - ""
     - ""
@@ -17,7 +17,8 @@ servers:
     - localhost:50003
     - localhost:50004
 gateways:
-    - "localhost:8443"
+    - "localhost:8440"
 keyPath: "../keys/cmix.rip.key"
 certPath: "../keys/cmix.rip.crt"
 gatewayCertPath: "../keys/gateway.cmix.rip.crt"
+skipReg: "true"

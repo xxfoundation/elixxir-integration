@@ -8,13 +8,14 @@ rm -fr results || true
 rm blob* || true
 
 SERVERLOGS=results/servers
+GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
 CHANNELOUT=results/channelbot.console
 DUMMYOUT=results/dummy.console
 UDBOUT=results/udb.console
-GATEWAYOUT=results/gateway.console
 
 mkdir -p $SERVERLOGS
+mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 
 echo "STARTING SERVERS..."
@@ -52,7 +53,7 @@ trap finish INT
 sleep 45 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
-export GATEWAY=localhost:8443
+export GATEWAY="localhost:8444,localhost:8443,localhost:8442,localhost:8441,localhost:8440"
 runclients() {
     echo "Starting clients..."
     CTR=0
@@ -69,7 +70,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 80s ../bin/client -f blob$cid --numnodes 5 -g $GATEWAY -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 80s ../bin/client -f blob$cid -g $GATEWAY -c ../keys/gateway.cmix.rip.crt -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -87,7 +88,7 @@ runclients() {
 }
 
 # Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 --numnodes 5 --certpath ..//keys/gateway.cmix.rip.crt -g $GATEWAY -f blobchannel"
+CHANNELCMD="../bin/channelbot -v -i 31 -c ..//keys/gateway.cmix.rip.crt -g $GATEWAY -f blobchannel"
 $CHANNELCMD >> $CHANNELOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -101,31 +102,43 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY --numnodes 5 -m \"dummy\" --dummyfrequency 2 --certpath ../keys/gateway.cmix.rip.crt -f blobdummy"
+DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY -m \"dummy\" --dummyfrequency 2 -c ../keys/gateway.cmix.rip.crt -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
-# Start a gateway
-GATEWAYCMD="../bin/gateway -v --config gateway.yaml"
-$GATEWAYCMD >> $GATEWAYOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$GATEWAYCMD -- $PIDVAL"
-
-# Send a registration command
-cat registration-commands.txt | while read LINE
+# Start gateways
+for GWID in $(seq 5 -1 1)
 do
-    CLIENTCMD="timeout 90s ../bin/client -f blob9 --numnodes 5 -g $GATEWAY -i 9 -d 3 --certpath ../keys/gateway.cmix.rip.crt -m \"$LINE\""
-    eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+    GATEWAYCMD="../bin/gateway -v --config gateway-$GWID.yaml"
+    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    wait $PIDVAL
+    echo $PIDVAL >> results/serverpids
+    echo "$GATEWAYCMD -- $PIDVAL"
 done
 
+# Register two users and then do UDB search on each other
+CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E "jake@elixxir.io" -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt"
+eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 90s ../bin/client -f blob18 -g $GATEWAY -E "bernardo@elixxir.io" -i 18 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL jake@elixxir.io\""
+eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL bernardo@elixxir.io\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
 # Send a channel message that all clients will receive
-CLIENTCMD="timeout 60s ../bin/client -f blob8 --numnodes 5 --certpath ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
+CLIENTCMD="timeout 60s ../bin/client -f blob8 -c ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
 eval $CLIENTCMD >> $CLIENTOUT/client8.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -148,8 +161,9 @@ diff -ruN results/channel-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
-cat $GATEWAYOUT | grep "ERROR" > results/gateway-errors.txt || true
-cat $GATEWAYOUT | grep "FATAL" >> results/gateway-errors.txt || true
+IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
+cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v $IGNOREMSG > results/gateway-errors.txt || true
+cat $GATEWAYLOGS/*.log | grep "FATAL" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
 
