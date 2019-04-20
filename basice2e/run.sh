@@ -119,19 +119,32 @@ do
 done
 
 # Register two users and then do UDB search on each other
-CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E "jake@elixxir.io" -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt"
+CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E "spencer@elixxir.io" -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt"
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 90s ../bin/client -f blob18 -g $GATEWAY -E "bernardo@elixxir.io" -i 18 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL jake@elixxir.io\""
+CLIENTCMD="timeout 90s ../bin/client -f blob18 -g $GATEWAY -E "bernardo@elixxir.io" -i 18 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL spencer@elixxir.io\""
 eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL bernardo@elixxir.io\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# Send E2E encrypted message between users that discovered each other
+CLIENTCMD="timeout 60s ../bin/client -f blob18 -g $GATEWAY -i 18 -d 9 -c ../keys/gateway.cmix.rip.crt -m \"Hello, 9, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 60s ../bin/client -f blob9 -g $GATEWAY -i 9 -c ../keys/gateway.cmix.rip.crt"
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
