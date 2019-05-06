@@ -119,36 +119,36 @@ do
 done
 
 # Register two users and then do UDB search on each other
-CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E "spencer@elixxir.io" -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt"
+CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E spencer@elixxir.io -i 9 -c ../keys/gateway.cmix.rip.crt"
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 90s ../bin/client -f blob18 -g $GATEWAY -E "bernardo@elixxir.io" -i 18 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL spencer@elixxir.io\""
+CLIENTCMD="timeout 90s ../bin/client -f blob18 -g $GATEWAY -E bernardo@elixxir.io -i 18 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL spencer@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL bernardo@elixxir.io\""
+CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -i 9 -d 3 -c ../keys/gateway.cmix.rip.crt -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-# Send E2E encrypted message between users that discovered each other
-CLIENTCMD="timeout 60s ../bin/client -f blob18 -g $GATEWAY -i 18 -d 9 -c ../keys/gateway.cmix.rip.crt -m \"Hello, 9, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
+# Send multiple E2E encrypted messages between users that discovered each other
+CLIENTCMD="timeout 65s ../bin/client -v -i 18 -d 9 -f blob18 -g $GATEWAY -c ../keys/gateway.cmix.rip.crt -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client -f blob9 -g $GATEWAY -i 9 -c ../keys/gateway.cmix.rip.crt"
-eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+sleep 2
+
+CLIENTCMD="timeout 63s ../bin/client -v -i 9 -d 18 -f blob9 -g $GATEWAY -c ../keys/gateway.cmix.rip.crt -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 
 # Send a channel message that all clients will receive
 CLIENTCMD="timeout 60s ../bin/client -f blob8 -c ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
@@ -163,6 +163,18 @@ echo "RUNNING CLIENTS..."
 runclients
 echo "RUNNING CLIENTS (2nd time)..."
 runclients
+
+# Confirm all messages and rekeys by counting with grep
+grep -ac "Sending Message to 9, Spencer" $CLIENTOUT/client18_rekey.out >> $CLIENTOUT/client18.out
+grep -ac "Message from 9, Spencer Received" $CLIENTOUT/client18_rekey.out >> $CLIENTOUT/client18.out
+grep -ac "Generated new send keys" $CLIENTOUT/client18_rekey.out  >> $CLIENTOUT/client18.out
+grep -ac "Generated new receiving keys" $CLIENTOUT/client18_rekey.out  >> $CLIENTOUT/client18.out
+
+grep -ac "Sending Message to 18, Bernardo" $CLIENTOUT/client9_rekey.out >> $CLIENTOUT/client9.out
+grep -ac "Message from 18, Bernardo Received" $CLIENTOUT/client9_rekey.out >> $CLIENTOUT/client9.out
+grep -ac "Generated new send keys" $CLIENTOUT/client9_rekey.out  >> $CLIENTOUT/client9.out
+grep -ac "Generated new receiving keys" $CLIENTOUT/client9_rekey.out  >> $CLIENTOUT/client9.out
+rm $CLIENTOUT/client18_rekey.out $CLIENTOUT/client9_rekey.out
 
 diff -ruN clients.goldoutput $CLIENTOUT
 cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
