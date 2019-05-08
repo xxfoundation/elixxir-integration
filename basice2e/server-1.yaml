@@ -18,6 +18,10 @@ servers:
     - localhost:50004
 gateways:
     - "localhost:8440"
+    - "localhost:8441"
+    - "localhost:8442"
+    - "localhost:8443"
+    - "localhost:8444"
 keyPath: "../keys/cmix.rip.key"
 certPath: "../keys/cmix.rip.crt"
 gatewayCertPath: "../keys/gateway.cmix.rip.crt"
