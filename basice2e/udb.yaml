@@ -6,5 +6,4 @@ gateways:
     - "localhost:8442"
     - "localhost:8441"
     - "localhost:8440"
-gwCertPath: "../keys/gateway.cmix.rip.crt"
-regCertPath: "../keys/gateway.cmix.rip.crt"
+certPath: "../keys/gateway.cmix.rip.crt"
