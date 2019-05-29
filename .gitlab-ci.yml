@@ -47,6 +47,7 @@ installbinaries:
   stage: installbinaries
   image: $DOCKER_IMAGE
   script:
+    - mkdir -p ~/.elixxir
     - mkdir -p bin
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
     - chmod +x bin/server
