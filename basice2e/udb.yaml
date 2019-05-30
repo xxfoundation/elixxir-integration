@@ -1,5 +1,6 @@
 # UDB Config for E2E Integration test
 logPath: "logfile.log"
+sessionfile: "./results/udb.session"
 gateways:
     - "localhost:8444"
     - "localhost:8443"

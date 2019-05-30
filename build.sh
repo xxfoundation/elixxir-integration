@@ -7,7 +7,6 @@
 mkdir -p bin
 pushd bin
 go build gitlab.com/elixxir/client
-go build gitlab.com/elixxir/channelbot
 go build -o udb gitlab.com/elixxir/user-discovery-bot
 go build gitlab.com/elixxir/gateway
 go build gitlab.com/elixxir/server
