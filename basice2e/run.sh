@@ -10,7 +10,6 @@ rm blob* || true
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
-CHANNELOUT=results/channelbot.console
 DUMMYOUT=results/dummy.console
 UDBOUT=results/udb.console
 
@@ -87,13 +86,6 @@ runclients() {
     done
 }
 
-# Start a channelbot server
-CHANNELCMD="../bin/channelbot -v -i 31 -c ..//keys/gateway.cmix.rip.crt -g $GATEWAY -f blobchannel"
-$CHANNELCMD >> $CHANNELOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$CHANNELCMD -- $PIDVAL"
-
 # Start a user discovery bot server
 UDBCMD="../bin/udb -v --config udb.yaml"
 $UDBCMD >> $UDBOUT 2>&1 &
@@ -102,7 +94,7 @@ echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
 # Start a dummy client
-DUMMYCMD="../bin/client -i 35 -d 35 -g $GATEWAY -m \"dummy\" --dummyfrequency 2 -c ../keys/gateway.cmix.rip.crt -f blobdummy"
+DUMMYCMD="../bin/client -i 23 -d 23 -g $GATEWAY -m \"dummy\" --dummyfrequency 2 -c ../keys/gateway.cmix.rip.crt -f blobdummy"
 $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -150,14 +142,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-# Send a channel message that all clients will receive
-CLIENTCMD="timeout 60s ../bin/client -f blob8 -c ../keys/gateway.cmix.rip.crt -g $GATEWAY -i 8 -d 31 -m \"Channel, Hello\""
-eval $CLIENTCMD >> $CLIENTOUT/client8.out 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-
-sleep 10 # Spend some time waiting for the channel bot to send messages
+sleep 10
 
 echo "RUNNING CLIENTS..."
 runclients
@@ -180,9 +165,6 @@ diff -ruN clients.goldoutput $CLIENTOUT
 cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
 cat $SERVERLOGS/*.log | grep "FATAL" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
-cat $CHANNELOUT | grep "ERROR" > results/channel-errors.txt || true
-cat $CHANNELOUT | grep "FATAL" >> results/channel-errors.txt || true
-diff -ruN results/channel-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
