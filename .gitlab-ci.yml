@@ -43,7 +43,7 @@ stages:
   - smokeinfra
   - smokeinfraBatch4
   - smokeinfraBatch1
-#  - benchmark
+  - benchmark
 
 installbinaries:
   stage: installbinaries
