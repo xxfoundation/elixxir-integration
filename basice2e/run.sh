@@ -22,7 +22,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -v -i $IDX --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -31,10 +31,23 @@ do
     echo "$SERVERCMD -- $PIDVAL"
 done
 
+sleep 15 # Give servers some time to boot
+
+# Start gateways
+for GWID in $(seq 5 -1 1)
+do
+    IDX=$(($GWID - 1))
+    GATEWAYCMD="../bin/gateway -v -i $IDX --config gateway-$GWID.yaml"
+    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
+    PIDVAL=$!
+    echo "$GATEWAYCMD -- $PIDVAL"
+done
+
+
 jobs -p > results/serverpids
 
 finish() {
-    echo "STOPPING SERVERS..."
+    echo "STOPPING SERVERS AND GATEWAYS..."
     # NOTE: jobs -p doesn't work in a signal handler
     for job in $(cat results/serverpids)
     do
@@ -49,7 +62,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 45 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 15 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 export GATEWAY="localhost:8444,localhost:8443,localhost:8442,localhost:8441,localhost:8440"
@@ -99,16 +112,6 @@ $DUMMYCMD >> $DUMMYOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
-
-# Start gateways
-for GWID in $(seq 5 -1 1)
-do
-    GATEWAYCMD="../bin/gateway -v --config gateway-$GWID.yaml"
-    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
-    PIDVAL=$!
-    echo $PIDVAL >> results/serverpids
-    echo "$GATEWAYCMD -- $PIDVAL"
-done
 
 # Register two users and then do UDB search on each other
 CLIENTCMD="timeout 90s ../bin/client -f blob9 -g $GATEWAY -E spencer@elixxir.io -i 9 -c ../keys/gateway.cmix.rip.crt"
