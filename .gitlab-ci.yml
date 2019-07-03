@@ -39,10 +39,7 @@ before_script:
 
 stages:
   - installbinaries
-  - basice2e # Basic end to end testing
-  - smokeinfra
-  - smokeinfraBatch4
-  - smokeinfraBatch1
+  - tests
   - benchmark
 
 installbinaries:
@@ -70,7 +67,7 @@ installbinaries:
      - bin/
 
 basice2e:
-  stage: basice2e
+  stage: tests
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
@@ -85,7 +82,7 @@ basice2e:
      - bin/
 
 smokeinfra:
-  stage: smokeinfra
+  stage: tests
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
@@ -101,7 +98,7 @@ smokeinfra:
 
 
 smokeinfraBatch4:
-  stage: smokeinfraBatch4
+  stage: tests
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
@@ -118,7 +115,7 @@ smokeinfraBatch4:
      - bin/
 
 smokeinfraBatch1:
-  stage: smokeinfraBatch1
+  stage: tests
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
