@@ -39,8 +39,11 @@ before_script:
 
 stages:
   - installbinaries
-  - basice2e # Basic end to end testing
-  - benchmark
+#  - basice2e # Basic end to end testing
+  - smokeinfra
+  - smokeinfraBatch4
+  - smokeinfraBatch1
+#  - benchmark
 
 installbinaries:
   stage: installbinaries
@@ -80,6 +83,57 @@ basice2e:
     paths:
      - basice2e/results/
      - bin/
+
+smokeinfra:
+  stage: smokeinfra
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd smokeinfra
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - smokeinfra/results/
+     - bin/
+
+
+smokeinfraBatch4:
+  stage: smokeinfraBatch4
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd smokeinfra
+    - git checkout -- .
+    - sed 's/\ 42/\ 4/g' *.yaml
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - smokeinfra/results/
+     - bin/
+
+smokeinfraBatch1:
+  stage: smokeinfraBatch1
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd smokeinfra
+    - git checkout -- .
+    - sed 's/\ 42/\ 1/g' *.yaml
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - smokeinfra/results/
+     - bin/
+
 
 benchmark:
   stage: benchmark
