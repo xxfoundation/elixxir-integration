@@ -15,11 +15,11 @@ node:
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-5.log"
     addresses:
-        - "0.0.0.0:50000"
-        - "0.0.0.0:50001"
-        - "0.0.0.0:50002"
-        - "0.0.0.0:50003"
-        - "0.0.0.0:50004"
+        - "localhost:50000"
+        - "localhost:50001"
+        - "localhost:50002"
+        - "localhost:50003"
+        - "localhost:50004"
 database:
     name: "node5"
     username: "cmix_server"
@@ -34,11 +34,11 @@ gateways:
     paths:
         cert: "../keys/gateway.cmix.rip.crt"
     addresses:
-        - "0.0.0.0:8440"
-        - "0.0.0.0:8441"
-        - "0.0.0.0:8442"
-        - "0.0.0.0:8443"
-        - "0.0.0.0:8444"
+        - "localhost:8440"
+        - "localhost:8441"
+        - "localhost:8442"
+        - "localhost:8443"
+        - "localhost:8444"
 permissioning:
     paths:
         cert: ""
