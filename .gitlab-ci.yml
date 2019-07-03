@@ -39,7 +39,7 @@ before_script:
 
 stages:
   - installbinaries
-#  - basice2e # Basic end to end testing
+  - basice2e # Basic end to end testing
   - smokeinfra
   - smokeinfraBatch4
   - smokeinfraBatch1
