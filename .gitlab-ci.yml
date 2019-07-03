@@ -105,7 +105,7 @@ smokeinfraBatch4:
     - echo $PWD
     - cd smokeinfra
     - git checkout -- .
-    - sed 's/\ 42/\ 4/g' *.yaml
+    - sed -i 's/\ 42/\ 4/g' *.yaml
     - ./run.sh
     - cd ..
   artifacts:
@@ -122,7 +122,7 @@ smokeinfraBatch1:
     - echo $PWD
     - cd smokeinfra
     - git checkout -- .
-    - sed 's/\ 42/\ 1/g' *.yaml
+    - sed -i 's/\ 42/\ 1/g' *.yaml
     - ./run.sh
     - cd ..
   artifacts:
