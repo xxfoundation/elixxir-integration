@@ -1,0 +1,41 @@
+# START YAML ===
+################################################################################
+## Copyright © 2019 Privategrity Corporation                                   #
+##                                                                             #
+## All rights reserved.                                                        #
+################################################################################
+
+# Output log file
+log: "results/gateways/gateway-3.log"
+
+# Used for debugging
+verbose: "true"
+
+# The cMix nodes in the network
+cMixNodes:
+ - "localhost:50000"
+ - "localhost:50001"
+ - "localhost:50002"
+ - "localhost:50003"
+ - "localhost:50004"
+
+# The listening address of this gateway
+GatewayAddress: "localhost:8442"
+
+# The number of seconds a message should remain in the globals before being
+# deleted from the user's message queue
+MessageTimeout: 1800
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the gateway private key file
+keyPath: "../keys/gateway.cmix.rip.key"
+# Path to the gateway certificate file
+certPath: "../keys/gateway.cmix.rip.crt"
+# Path to the gateway certificate file
+serverCertPath: "../keys/cmix.rip.crt"
+
+### Anything below this line is to be deprecated ###
+
+# Batch size of the cMix Network (to be deprecated)
+batchSize: 4
+# === END YAML
