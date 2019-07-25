@@ -5,7 +5,7 @@
 ## All rights reserved.                                                        #
 ################################################################################
 # batch size
-batch: 4
+batch: 42
 # debug logging
 verbose: true
 node:
@@ -13,20 +13,16 @@ node:
     paths:
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
-        log:  "results/servers/server-4.log"
+        log:  "results/server-1.log"
     addresses:
-        - "localhost:50000"
-        - "localhost:50001"
-        - "localhost:50002"
-        - "localhost:50003"
-        - "localhost:50004"
+        - "localhost:60000"
+        - "localhost:60001"
+        - "localhost:60002"
 database:
-    name: "node4"
+    name: "node1"
     username: "cmix_server"
     password: ""
     addresses:
-        - ""
-        - ""
         - ""
         - ""
         - ""
@@ -34,11 +30,9 @@ gateways:
     paths:
         cert: "../keys/gateway.cmix.rip.crt"
     addresses:
-        - "localhost:8440"
-        - "localhost:8441"
-        - "localhost:8442"
-        - "localhost:8443"
-        - "localhost:8444"
+        - "localhost:9440"
+        - "localhost:9441"
+        - "localhost:9442"
 permissioning:
     paths:
         cert: ""
