@@ -18,7 +18,7 @@ cMixNodes:
  - "localhost:60002"
 
 # The listening address of this gateway
-GatewayAddress: "localhost:9440"
+Port: 9440
 
 # The number of seconds a message should remain in the globals before being
 # deleted from the user's message queue
