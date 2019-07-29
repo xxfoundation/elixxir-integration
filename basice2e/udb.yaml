@@ -1,10 +1,4 @@
 # UDB Config for E2E Integration test
-logPath: "logfile.log"
+logPath: "./results/udb.log"
 sessionfile: "./results/udb.session"
-gateways:
-    - "localhost:8440"
-    - "localhost:8441"
-    - "localhost:8442"
-    - "localhost:8443"
-    - "localhost:8444"
-certPath: "../keys/gateway.cmix.rip.crt"
+certPath: ""
