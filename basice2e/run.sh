@@ -120,38 +120,37 @@ echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
 # Register two users and then do UDB search on each other
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -f blob9 -E spencer@elixxir.io -i 9"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E spencer@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL spencer@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL spencer@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 3  -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 3  -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-CLIENTCMD="timeout 65s ../bin/client $CLIENTOPTS -v -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -v -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
 sleep 2
 
-CLIENTCMD="timeout 63s ../bin/client $CLIENTOPTS -v -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -v -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-
-sleep 10
+wait $PIDVAL
 
 echo "RUNNING CLIENTS..."
 runclients
