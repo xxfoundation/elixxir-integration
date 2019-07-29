@@ -23,6 +23,7 @@ variables:
   DL_URL_FRAG: jobs/artifacts/dispatch/raw/release
   SERVER_URL: ${REPOS_API}server/$DL_URL_FRAG/server.linux64?job=build
   CLIENT_URL: ${REPOS_API}client/$DL_URL_FRAG/client.linux64?job=build
+  REGISTRATION_URL: ${REPOS_API}registration/$DL_URL_FRAG/registration.linux64?job=build
   UDB_URL: ${REPOS_API}user-discovery-bot/$DL_URL_FRAG/udb.linux64?job=build
   GATEWAY_URL: ${REPOS_API}gateway/$DL_URL_FRAG/gateway.linux64?job=build
 
@@ -54,6 +55,8 @@ installbinaries:
     - chmod +x bin/client
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/udb $UDB_URL"
     - chmod +x bin/udb
+    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/permissioning $REGISTRATION_URL"
+    - chmod +x bin/permissioning
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/gateway $GATEWAY_URL"
     - chmod +x bin/gateway
     - echo $PWD
