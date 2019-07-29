@@ -1,0 +1,27 @@
+# ==================================
+# Permissioning Server Configuration
+# ==================================
+
+# Verbose logging
+verbose: "true"
+# Path to log file
+logPath: "permissioning.log"
+
+# The listening port of this server
+port: 18000
+
+# Database connection information
+dbUsername: "cmix2"
+dbPassword: "cmix"
+dbName: "cmix_server"
+dbAddress: ""
+
+# List of Node registration codes (in order of network placement)
+registrationCodes:
+  - ""
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the registration server private key file
+keyPath: ""
+# Path to the registration server certificate file
+certPath: ""
