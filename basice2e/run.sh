@@ -200,7 +200,7 @@ head -4 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
 rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
-    sort $CLIENTCLEAN/$C || true
+    sort -o $CLIENTCLEAN/$C $CLIENTCLEAN/$C || true
 done
 
 diff -ruN clients.goldoutput $CLIENTCLEAN
