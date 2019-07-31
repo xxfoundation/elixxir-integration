@@ -12,12 +12,14 @@ GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
 DUMMYOUT=results/dummy.console
 UDBOUT=results/udb.console
+CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="-n ndf.json --skipNDFVerification"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
+mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
@@ -62,8 +64,8 @@ finish() {
         kill $job || true
     done
     tail $SERVERLOGS/*
-    tail $CLIENTOUT/*
-    diff -ruN clients.goldoutput $CLIENTOUT
+    tail $CLIENTCLEAN/*
+    diff -ruN clients.goldoutput $CLIENTCLEAN
 }
 
 trap finish EXIT
@@ -74,16 +76,16 @@ sleep 15 # FIXME: We should not need this, but the servers don't respond quickly
 
 runclients() {
     echo "Starting clients..."
-    CTR=0
 
     # Registration pass
+    CTR=0
     for cid in $(seq 4 7)
     do
         eval NICK=\${NICK${cid}}
         # Send a regular message
         # NOTE: This is deliberately broken not to send -E email$cid@email.com
         # when UDB is fixed to allow concurrent registration, put it back in.
-        CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -i $cid -d $cid -m \"Hello, $cid\""
+        CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $cid -m \"Hello, $cid\""
         eval $CLIENTCMD >> $CLIENTOUT/client$cid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -99,6 +101,7 @@ runclients() {
     done
 
     # Now send messages to each other
+    CTR=0
     for cid in $(seq 4 7)
     do
         # TODO: Change the recipients to send multiple messages. We can't
@@ -144,26 +147,21 @@ PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
-echo "RUNNING CLIENTS..."
-runclients
-echo "RUNNING CLIENTS (2nd time)..."
-runclients
-
 # Register two users and then do UDB search on each other
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E spencer@elixxir.io -i 9 -d 9 -m \"Hi\""
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL spencer@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 || true &
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
+eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 3  -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 || true &
+eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
@@ -178,22 +176,37 @@ CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello,
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 
 
-# Confirm all messages and rekeys by counting with grep
-grep -ac "Sending Message to 9, Spencer" $CLIENTOUT/client18_rekey.out >> $CLIENTOUT/client18.out
-grep -ac "Message from 9, Spencer Received" $CLIENTOUT/client18_rekey.out >> $CLIENTOUT/client18.out
-grep -ac "Generated new send keys" $CLIENTOUT/client18_rekey.out  >> $CLIENTOUT/client18.out
-grep -ac "Generated new receiving keys" $CLIENTOUT/client18_rekey.out  >> $CLIENTOUT/client18.out
+echo "RUNNING CLIENTS..."
+runclients
+echo "RUNNING CLIENTS (2nd time)..."
+runclients
 
-grep -ac "Sending Message to 18, Bernardo" $CLIENTOUT/client9_rekey.out >> $CLIENTOUT/client9.out
-grep -ac "Message from 18, Bernardo Received" $CLIENTOUT/client9_rekey.out >> $CLIENTOUT/client9.out
-grep -ac "Generated new send keys" $CLIENTOUT/client9_rekey.out  >> $CLIENTOUT/client9.out
-grep -ac "Generated new receiving keys" $CLIENTOUT/client9_rekey.out  >> $CLIENTOUT/client9.out
-rm $CLIENTOUT/client18_rekey.out $CLIENTOUT/client9_rekey.out
+trap - EXIT
+trap - INT
 
-diff -ruN clients.goldoutput $CLIENTOUT
+# FIXME: Go into client and clean up it's output so this is not necessary
+for C in $(ls -1 $CLIENTOUT); do
+    # Remove the [CLIENT] Lines and cut them down
+    cat $CLIENTOUT/$C | grep "[CLIENT]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
+    # Take the clean lines and add them
+    cat $CLIENTOUT/$C | grep -v "[CLIENT]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+done
+
+# only expect 4 messages from the e2e clients
+head -4 $CLIENTCLEAN/client9_rekey.out > $CLIENTCLEAN/client9.out || true
+head -4 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
+rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
+
+for C in $(ls -1 $CLIENTCLEAN); do
+    sort $CLIENTCLEAN/$C || true
+done
+
+diff -ruN clients.goldoutput $CLIENTCLEAN
+
+cat $CLIENTOUT/* | grep -e "ERROR" -e "FATAL" > results/client-errors || true
+diff -ruN results/client-errors.txt noerrors.txt
 cat $SERVERLOGS/*.log | grep "ERROR" > results/server-errors.txt || true
 cat $SERVERLOGS/*.log | grep "FATAL" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
