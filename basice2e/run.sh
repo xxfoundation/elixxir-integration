@@ -3,6 +3,7 @@
 # NOTE: This is verbose on purpose.
 
 set -e
+set -x
 
 rm -fr results || true
 rm blob* || true
@@ -139,14 +140,14 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -v -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
 sleep 2
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -v -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
