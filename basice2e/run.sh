@@ -185,6 +185,7 @@ runclients
 
 trap - EXIT
 trap - INT
+set +e
 
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
@@ -221,3 +222,5 @@ diff -ruN results/gateway-errors.txt noerrors.txt
 
 
 echo "SUCCESS!"
+
+finish()
