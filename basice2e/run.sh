@@ -187,7 +187,7 @@ diff -ruN clients.goldoutput $CLIENTCLEAN
 cat $CLIENTOUT/* | grep -e "ERROR" -e "FATAL" > results/client-errors || true
 diff -ruN results/client-errors.txt noerrors.txt
 cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "Context" > results/server-errors.txt || true
-cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "Context" >> results/server-errors.txt || true
+cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "Context" | grep -v "database" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" | grep -v "Context" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" | grep -v "Context" >> results/dummy-errors.txt || true
