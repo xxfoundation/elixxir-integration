@@ -193,7 +193,7 @@ cat $DUMMYOUT | grep "ERROR" | grep -v "context" > results/dummy-errors.txt || t
 cat $DUMMYOUT | grep "FATAL" | grep -v "context" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
 IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
-cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" -v "certificate" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
+cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
