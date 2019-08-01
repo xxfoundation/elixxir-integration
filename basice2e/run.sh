@@ -176,7 +176,7 @@ head -10 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
 rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
-    sort -o $CLIENTCLEAN/$C tmp || true
+    sort -o tmp $CLIENTCLEAN/$C  || true
     uniq tmp $CLIENTCLEAN/$C || true
 done
 
