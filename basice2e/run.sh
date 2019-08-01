@@ -77,29 +77,6 @@ sleep 15 # FIXME: We should not need this, but the servers don't respond quickly
 runclients() {
     echo "Starting clients..."
 
-    # Registration pass
-    CTR=0
-    for cid in $(seq 4 7)
-    do
-        eval NICK=\${NICK${cid}}
-        # Send a regular message
-        # NOTE: This is deliberately broken not to send -E email$cid@email.com
-        # when UDB is fixed to allow concurrent registration, put it back in.
-        CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $cid -m \"Hello, $cid\""
-        eval $CLIENTCMD >> $CLIENTOUT/client$cid.out 2>&1 &
-            PIDVAL=$!
-            eval CLIENTS${CTR}=$PIDVAL
-            echo "$CLIENTCMD -- $PIDVAL"
-            CTR=$(($CTR + 1))
-    done
-
-    echo "WAITING FOR $CTR CLIENTS TO EXIT..."
-    for i in $(seq 0 $(($CTR - 1)))
-    do
-        eval echo "Waiting on \${CLIENTS${i}} ..."
-        eval wait \${CLIENTS${i}}
-    done
-
     # Now send messages to each other
     CTR=0
     for cid in $(seq 4 7)
@@ -114,7 +91,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -147,6 +124,11 @@ PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$DUMMYCMD -- $PIDVAL"
 
+echo "RUNNING CLIENTS..."
+runclients
+echo "RUNNING CLIENTS (2nd time)..."
+runclients
+
 # Register two users and then do UDB search on each other
 CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
@@ -176,16 +158,7 @@ CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello,
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-
-
-echo "RUNNING CLIENTS..."
-runclients
-echo "RUNNING CLIENTS (2nd time)..."
-runclients
-
-trap - EXIT
-trap - INT
-set +e
+WAITPIT $PIDVAL
 
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
@@ -196,12 +169,13 @@ for C in $(ls -1 $CLIENTOUT); do
 done
 
 # only expect 4 messages from the e2e clients
-head -4 $CLIENTCLEAN/client9_rekey.out > $CLIENTCLEAN/client9.out || true
-head -4 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
+head -10 $CLIENTCLEAN/client9_rekey.out > $CLIENTCLEAN/client9.out || true
+head -10 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
 rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o $CLIENTCLEAN/$C $CLIENTCLEAN/$C || true
+    uniq -u $CLIENTCLEAN/$C $CLIENTCLEAN/$C || true
 done
 
 diff -ruN clients.goldoutput $CLIENTCLEAN
@@ -215,12 +189,8 @@ cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
 IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
-cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v $IGNOREMSG > results/gateway-errors.txt || true
+cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
-
-
 echo "SUCCESS!"
-
-finish()
