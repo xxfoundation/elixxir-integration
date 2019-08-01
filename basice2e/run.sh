@@ -186,15 +186,15 @@ diff -ruN clients.goldoutput $CLIENTCLEAN
 
 cat $CLIENTOUT/* | grep -e "ERROR" -e "FATAL" > results/client-errors || true
 diff -ruN results/client-errors.txt noerrors.txt
-cat $SERVERLOGS/server-*.log | grep "ERROR" > results/server-errors.txt || true
-cat $SERVERLOGS/server-*.log | grep "FATAL" >> results/server-errors.txt || true
+cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "Context" > results/server-errors.txt || true
+cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "Context" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
-cat $DUMMYOUT | grep "ERROR" > results/dummy-errors.txt || true
-cat $DUMMYOUT | grep "FATAL" >> results/dummy-errors.txt || true
+cat $DUMMYOUT | grep "ERROR" | grep -v "Context" > results/dummy-errors.txt || true
+cat $DUMMYOUT | grep "FATAL" | grep -v "Context" >> results/dummy-errors.txt || true
 diff -ruN results/dummy-errors.txt noerrors.txt
 IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
-cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
-cat $GATEWAYLOGS/*.log | grep "FATAL" >> results/gateway-errors.txt || true
+cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "Context" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
+cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "Context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
 echo "SUCCESS!"
