@@ -158,7 +158,9 @@ CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello,
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-WAITPIT $PIDVAL
+
+set +e
+wait $PIDVAL || true
 
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
@@ -168,15 +170,17 @@ for C in $(ls -1 $CLIENTOUT); do
     cat $CLIENTOUT/$C | grep -v "[CLIENT]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
 done
 
-# only expect 4 messages from the e2e clients
+# only expect up to 10c messages from the e2e clients
 head -10 $CLIENTCLEAN/client9_rekey.out > $CLIENTCLEAN/client9.out || true
 head -10 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
 rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
-    sort -o $CLIENTCLEAN/$C $CLIENTCLEAN/$C || true
-    uniq -u $CLIENTCLEAN/$C $CLIENTCLEAN/$C || true
+    sort -o $CLIENTCLEAN/$C tmp || true
+    uniq tmp $CLIENTCLEAN/$C || true
 done
+
+set -e
 
 diff -ruN clients.goldoutput $CLIENTCLEAN
 
