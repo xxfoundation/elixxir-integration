@@ -5,15 +5,15 @@
 # Verbose logging
 verbose: "true"
 # Path to log file
-logPath: "permissioning.log"
+logPath: "results/permissioning.log"
 
 # The listening port of this server
 port: 18000
 
 # Database connection information
-dbUsername: "cmix2"
-dbPassword: "cmix"
-dbName: "cmix_server"
+dbUsername: ""
+dbPassword: ""
+dbName: ""
 dbAddress: ""
 
 # List of Node registration codes (in order of network placement)
@@ -25,3 +25,5 @@ registrationCodes:
 keyPath: ""
 # Path to the registration server certificate file
 certPath: ""
+
+ndfOutputPath: "results/permissions-ndfoutput.json"
