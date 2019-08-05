@@ -7,6 +7,8 @@ set -e
 rm -fr results || true
 rm blob* || true
 
+mkdir -p .elixxir
+
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
