@@ -8,3 +8,4 @@ blob*
 # Vim swap files
 *.swp
 *.swo
+*.elixxir*
