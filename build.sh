@@ -4,6 +4,7 @@
 # and assumes that you've cloned the Go repos to your GOPATH and updated them
 # with Glide.
 
+set -x
 mkdir -p bin
 pushd bin
 go build gitlab.com/elixxir/client
