@@ -18,7 +18,11 @@ dbAddress: ""
 
 # List of Node registration codes (in order of network placement)
 registrationCodes:
-  - ""
+  - "AAAA"
+  - "BBBB"
+  - "CCCC"
+  - "DDDD"
+  - "EEEE"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file

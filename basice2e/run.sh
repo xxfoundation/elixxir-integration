@@ -33,7 +33,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --keyPairOverride dsa.json"
+    SERVERCMD="../bin/server --disablePermissioning -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --keyPairOverride dsa.json"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
