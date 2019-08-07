@@ -20,12 +20,11 @@ variables:
   DOCKER_IMAGE: bmastc/golang-glide:latest
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
-  DL_URL_FRAG: jobs/artifacts/master/raw/release
-  SERVER_URL: ${REPOS_API}server/$DL_URL_FRAG/server.linux64?job=build
-  CLIENT_URL: ${REPOS_API}client/$DL_URL_FRAG/client.linux64?job=build
-  REGISTRATION_URL: ${REPOS_API}registration/$DL_URL_FRAG/registration.linux64?job=build
-  UDB_URL: ${REPOS_API}user-discovery-bot/$DL_URL_FRAG/udb.linux64?job=build
-  GATEWAY_URL: ${REPOS_API}gateway/$DL_URL_FRAG/gateway.linux64?job=build
+  SERVER_URL: ${REPOS_API}server/jobs/artifacts/$SERVER_ID/raw/release/server.linux64?job=build
+  CLIENT_URL: ${REPOS_API}client/jobs/artifacts/$CLIENT_ID/raw/release/client.linux64?job=build
+  REGISTRATION_URL: ${REPOS_API}registration/jobs/artifacts/$REGISTRATION_ID/raw/release/registration.linux64?job=build
+  UDB_URL: ${REPOS_API}user-discovery-bot/jobs/artifacts/$UDB_ID/raw/release/udb.linux64?job=build
+  GATEWAY_URL: ${REPOS_API}gateway/jobs/artifacts/$GATEWAY_ID/raw/release/gateway.linux64?job=build
 
 before_script:
   ##
