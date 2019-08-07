@@ -42,7 +42,7 @@ update() {
 }
 
 for ((i=0; i<${#project_arr[@]}; ++i)); do
-    printf "\n\033[1m%s\033[0m\n" "${project_arr[i]}"
+    printf "\n%s\n" "${project_arr[i]}"
     pushd "$GOPATH"/src/gitlab.com/elixxir/client || exit
     update "${branch_arr[i]}"
     go test ./...
