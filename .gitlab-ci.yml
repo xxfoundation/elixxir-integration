@@ -90,7 +90,7 @@ basice2eTLS:
     - mkdir -p ~/.elixxir
     - echo $PWD
     - cd basice2e
-    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \"\"/key\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; done
+    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \"\"/key\:\ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
     - ./run.sh
     - cd ..
   artifacts:
