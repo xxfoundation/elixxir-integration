@@ -48,7 +48,7 @@ sleep 15 # Give servers some time to boot
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
