@@ -2,3 +2,4 @@
 logPath: "./results/udb.log"
 sessionfile: "./results/udb.session"
 certPath: ""
+ndfPath: "ndf.json"
