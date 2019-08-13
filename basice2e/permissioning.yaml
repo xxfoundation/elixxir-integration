@@ -26,8 +26,8 @@ registrationCodes:
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
-keyPath: ""
+keyPath: "../keys/cmix.rip.key"
 # Path to the registration server certificate file
-certPath: ""
+certPath: "../keys/cmix.rip.crt"
 
 ndfOutputPath: "results/permissions-ndfoutput.json"
