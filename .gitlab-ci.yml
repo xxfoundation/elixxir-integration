@@ -83,6 +83,24 @@ basice2e:
      - basice2e/results/
      - bin/
 
+basice2eTLS:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd basice2e
+    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \ \"\"/key\:\ \ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
+    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/ertPath\:\ \"\"/ertPath\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/keyPath\:\ \"\"/keyPath\:\ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
+    - sed -i "s/\"Tls\_certificate\"\:\ \"\"/\"Tls\_certificate\"\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g" ndf.json 
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - basice2e/results/
+     - bin/
+
 smokeinfra:
   stage: tests
   image: $DOCKER_IMAGE
