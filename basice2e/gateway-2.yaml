@@ -28,11 +28,11 @@ MessageTimeout: 1800
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the private key file
-keyPath: "../keys/cmix.rip.key"
+keyPath: ""
 # Path to the certificate file
-certPath: "../keys/cmix.rip.crt"
+certPath: ""
 # Path to the certificate file
-serverCertPath: "../keys/cmix.rip.crt"
+serverCertPath: ""
 
 ### Anything below this line is to be deprecated ###
 
