@@ -98,7 +98,7 @@ basice2eTLS:
   artifacts:
     when: always
     paths:
-     - basice2e/results/
+     - basice2e/
      - bin/
 
 smokeinfra:
