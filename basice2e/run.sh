@@ -16,7 +16,7 @@ DUMMYOUT=results/dummy.console
 UDBOUT=results/udb.console
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-n ndf.json --skipNDFVerification"
+CLIENTOPTS="-n ndf.json --skipNDFVerification --noTLS"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -25,7 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning -c permissioning.yaml -k dsa.json"
+PERMCMD="../bin/permissioning -c permissioning.yaml -k dsa.json --noTLS"
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
@@ -33,7 +33,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --disablePermissioning -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --keyPairOverride dsa.json"
+    SERVERCMD="../bin/server --disablePermissioning --noTLS -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -48,7 +48,7 @@ sleep 15 # Give servers some time to boot
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --noTLS --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
