@@ -93,6 +93,7 @@ basice2eTLS:
     - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \ \"\"/key\:\ \ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
     - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/ertPath\:\ \"\"/ertPath\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/keyPath\:\ \"\"/keyPath\:\ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
     - sed -i "s/\"Tls\_certificate\"\:\ \"\"/\"Tls\_certificate\"\:\ \"$(awk -v ORS='\\n' '1' ../keys/cmix.rip.crt | sed -e 's/[\/&]/\\&/g')\"/g" ndf.json
+    - sed -i 's/\-\-noTLS//g' run.sh
     - ./run.sh
     - cd ..
   artifacts:

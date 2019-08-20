@@ -17,7 +17,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --keyPairOverride dsa.json"
+    SERVERCMD="../bin/server -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --noTLS"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -31,7 +31,7 @@ echo "STARTING GATEWAYS..."
 for GWID in $(seq 3 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX --config gateway-$GWID.yaml --noTLS"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
