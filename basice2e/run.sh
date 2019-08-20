@@ -25,7 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning -c permissioning.yaml -k dsa.json --noTLS"
+PERMCMD="../bin/permissioning -c permissioning.yaml --noTLS"
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
