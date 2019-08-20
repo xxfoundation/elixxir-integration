@@ -12,8 +12,8 @@ mkdir -p .elixxir
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
-DUMMYOUT=results/dummy.console
-UDBOUT=results/udb.console
+DUMMYOUT=results/dummy-console.txt
+UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="-n ndf.json --skipNDFVerification --noTLS"
@@ -37,7 +37,7 @@ do
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
-    $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
+    $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
 done
@@ -49,7 +49,7 @@ for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
     GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --noTLS --config gateway-$GWID.yaml"
-    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
+    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
 done
@@ -94,7 +94,7 @@ runclients() {
             eval NICK=\${NICK${cid}}
             # Send a regular message
             CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
-            eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.out 2>&1 &
+            eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
             echo "$CLIENTCMD -- $PIDVAL"
@@ -133,31 +133,31 @@ runclients
 
 # Register two users and then do UDB search on each other
 CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
-eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client18.out 2>&1 &
+eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 3  -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client9.out 2>&1 &
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
-eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.out 2>&1 || true &
+eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
-eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.out 2>&1 || true &
+eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
@@ -173,9 +173,9 @@ for C in $(ls -1 $CLIENTOUT); do
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.out > $CLIENTCLEAN/client9.out || true
-head -10 $CLIENTCLEAN/client18_rekey.out > $CLIENTCLEAN/client18.out || true
-rm $CLIENTCLEAN/client9_rekey.out $CLIENTCLEAN/client18_rekey.out || true
+head -10 $CLIENTCLEAN/client9_rekey.txt > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt > $CLIENTCLEAN/client18.txt || true
+rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
