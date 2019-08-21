@@ -111,7 +111,7 @@ runclients() {
 }
 
 # Start a user discovery bot server
-UDBCMD="../bin/udb -v --config udb.yaml"
+UDBCMD="../bin/udb -v --config udb.yaml --noTLS"
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
