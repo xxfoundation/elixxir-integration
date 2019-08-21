@@ -36,6 +36,7 @@ before_script:
   ##  - cd $GOPATH/src/$REPO_DIR/$REPO_NAME
   - echo $CI_BUILD_REF
   - echo $CI_PROJECT_DIR
+  - echo $CI_BUILD_REF_NAME
 
 stages:
   - installbinaries
@@ -48,6 +49,7 @@ installbinaries:
   script:
     - mkdir -p ~/.elixxir
     - mkdir -p bin
+    - if [ $CI_BUILD_REF == "release" ]; then 
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
     - chmod +x bin/server
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
