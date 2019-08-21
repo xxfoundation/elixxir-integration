@@ -49,7 +49,6 @@ installbinaries:
   script:
     - mkdir -p ~/.elixxir
     - mkdir -p bin
-    - if [ $CI_BUILD_REF == "release" ]; then 
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
     - chmod +x bin/server
     - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
