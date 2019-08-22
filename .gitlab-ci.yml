@@ -25,7 +25,6 @@ variables:
   REGISTRATION_URL: ${REPOS_API}registration/jobs/artifacts/$REGISTRATION_ID/raw/release/registration.linux64?job=build
   UDB_URL: ${REPOS_API}user-discovery-bot/jobs/artifacts/$UDB_ID/raw/release/udb.linux64?job=build
   GATEWAY_URL: ${REPOS_API}gateway/jobs/artifacts/$GATEWAY_ID/raw/release/gateway.linux64?job=build
-  REPOS: "server client registration user-discovery-bot gateway"
   DEFAULTBRANCH: "release"
 
 before_script:
