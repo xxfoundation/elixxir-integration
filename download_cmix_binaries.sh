@@ -23,6 +23,7 @@ UDB_URL="${PRIVATEGRITY_REPOS}user-discovery-bot/$MASTER_URL_FRAG/udb$BIN"
 SERVER_URL="${PRIVATEGRITY_REPOS}server/$MASTER_URL_FRAG/server$BIN"
 GW_URL="${PRIVATEGRITY_REPOS}gateway/$MASTER_URL_FRAG/gateway$BIN"
 PERMISSIONING_URL="${PRIVATEGRITY_REPOS}registration/$MASTER_URL_FRAG/registration$BIN"
+CLIENT_URL="${PRIVATEGRITY_REPOS}client/$MASTER_URL_FRAG/client$BIN"
 
 # Set up the gitlab access token
 PATKEY="rBxQ6BvKP-eFxxeM3Ugm"
@@ -42,6 +43,10 @@ curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/gateway" ${GW_URL}
 
 # Silently download the permissioning binary to the provisioning directory
 curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/permissioning" ${PERMISSIONING_URL}
+
+# Silently download the permissioning binary to the provisioning directory
+curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/client" ${CLIENT_URL}
+
 
 # Make binaries executable
 chmod +x "$download_path"/*
