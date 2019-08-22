@@ -1,2 +1,2 @@
-Message from 1122492445..., +CrSKtshK1HhaYaw+S8ePLYeVru/E+z/bwVOpfn3noY= Received: Hello, 18, with E2E Encryption
+Received: Hello, 18, with E2E Encryption
 Sending Message to 9, Spencer: Hello, 9, with E2E Encryption

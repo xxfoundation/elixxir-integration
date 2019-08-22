@@ -161,11 +161,12 @@ for C in $(ls -1 $CLIENTOUT); do
     cat $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
     # Take the clean lines and add them
     cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 for C in $(ls -1 $CLIENTCLEAN); do

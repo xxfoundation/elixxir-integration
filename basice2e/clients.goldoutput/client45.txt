@@ -1,2 +1,3 @@
 Message from 7, Rick Received: Hello, 4
+Received: Hello, 4
 Sending Message to 5, Ben: Hello, 5
