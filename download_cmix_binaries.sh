@@ -44,7 +44,7 @@ curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/gateway" ${GW_URL}
 curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/permissioning" ${PERMISSIONING_URL}
 
 # Make binaries executable
-chmod +x "$download_path"/*.binary
+chmod +x "$download_path"/*
 
 file "$download_path"/*
 
