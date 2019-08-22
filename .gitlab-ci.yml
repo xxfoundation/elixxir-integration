@@ -51,6 +51,7 @@ installbinaries:
   script:
     - mkdir -p ~/.elixxir
     - mkdir -p bin
+    - cd bin
     - "DOWNLOADS=\"$SERVER_URL $CLIENT_URL $REGISTRATION_URL $UDB_URL $GATEWAY_URL\""
     - >
       if [ "$CI_BUILD_REF_NAME" == "master" ]; then
@@ -58,6 +59,7 @@ installbinaries:
       fi
     - >
       for D in $DOWNLOADS; do
+        echo $D
         curl -f -O -L -H "PRIVATE-TOKEN: $PATKEY" $D
       done
     - mv server.linux64 bin/server
@@ -65,7 +67,8 @@ installbinaries:
     - mv udb.linux64 bin/udb
     - mv registration.linux64 bin/permissioning
     - mv gateway.linux64 bin/gateway
-    - "chmod +x bin/*"
+    - "chmod +x *"
+    - cd ..
     - bin/server --version
     - bin/client --version
     - bin/udb --version
