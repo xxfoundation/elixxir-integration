@@ -52,7 +52,14 @@ installbinaries:
     - mkdir -p ~/.elixxir
     - mkdir -p bin
     - "DOWNLOADS=\"$SERVER_URL $CLIENT_URL $REGISTRATION_URL $UDB_URL $GATEWAY_URL\""
-    - "for D in $DOWNLOADS; do curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" $D; done"
+    - >
+      if [ "$CI_BUILD_REF_NAME" == "master" ]; then
+        DOWNLOADS=$(echo $DOWNLOADS | sed -i "s/artifacts\/$DEFAULTBRANCH\/raw/artifacts\/master\/raw/g")
+      done
+    - >
+      for D in $DOWNLOADS; do
+        curl -f -L -H "PRIVATE-TOKEN: $PATKEY" $D
+      done
     - mv server.linux64 bin/server
     - mv client.linux64 bin/client
     - mv udb.linux64 bin/udb
