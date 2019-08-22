@@ -49,6 +49,7 @@ installbinaries:
   stage: installbinaries
   image: $DOCKER_IMAGE
   script:
+    - git clean -ffdx
     - mkdir -p ~/.elixxir
     - mkdir -p bin
     - cd bin
@@ -63,11 +64,11 @@ installbinaries:
         curl -f -O -# -L -H "PRIVATE-TOKEN: $PATKEY" $D
       done
     - ls -lha
-    - mv server.linux64 bin/server
-    - mv client.linux64 bin/client
-    - mv udb.linux64 bin/udb
-    - mv registration.linux64 bin/permissioning
-    - mv gateway.linux64 bin/gateway
+    - mv server.linux64?job=build server
+    - mv client.linux64?job=build client
+    - mv udb.linux64?job=build udb
+    - mv registration.linux64?job=build permissioning
+    - mv gateway.linux64?job=build gateway
     - "chmod +x *"
     - cd ..
     - bin/server --version
