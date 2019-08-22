@@ -158,9 +158,9 @@ wait $PIDVAL || true
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
     # Remove the [CLIENT] Lines and cut them down
-    cat $CLIENTOUT/$C | grep "[CLIENT]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
     # Take the clean lines and add them
-    cat $CLIENTOUT/$C | grep -v "[CLIENT]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
 done
 
 # only expect up to 10c messages from the e2e clients
