@@ -42,7 +42,7 @@ do
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 15 # Give servers some time to boot
+sleep 5 # Give servers some time to boot
 
 # Start gateways
 for GWID in $(seq 5 -1 1)
@@ -93,7 +93,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -111,20 +111,11 @@ runclients() {
 }
 
 # Start a user discovery bot server
-UDBCMD="../bin/udb -v --config udb.yaml"
+UDBCMD="../bin/udb -v --config udb.yaml --noTLS"
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
-
-sleep 10
-
-# Start a dummy client
-DUMMYCMD="../bin/client $CLIENTOPTS -i 23 -d 23 -m \"dummy\" --dummyfrequency 2 -f blobdummy"
-$DUMMYCMD >> $DUMMYOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$DUMMYCMD -- $PIDVAL"
 
 echo "RUNNING CLIENTS..."
 runclients
@@ -138,25 +129,25 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 3 -m \"SEARCH EMAIL niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 3  -m \"SEARCH EMAIL bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9  -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end --dummyfrequency 0.1"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -167,14 +158,15 @@ wait $PIDVAL || true
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
     # Remove the [CLIENT] Lines and cut them down
-    cat $CLIENTOUT/$C | grep "[CLIENT]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
     # Take the clean lines and add them
-    cat $CLIENTOUT/$C | grep -v "[CLIENT]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
