@@ -25,6 +25,7 @@ variables:
   REGISTRATION_URL: ${REPOS_API}registration/jobs/artifacts/$REGISTRATION_ID/raw/release/registration.linux64?job=build
   UDB_URL: ${REPOS_API}user-discovery-bot/jobs/artifacts/$UDB_ID/raw/release/udb.linux64?job=build
   GATEWAY_URL: ${REPOS_API}gateway/jobs/artifacts/$GATEWAY_ID/raw/release/gateway.linux64?job=build
+  DEFAULTBRANCH: "release"
 
 before_script:
   ##
@@ -47,19 +48,28 @@ installbinaries:
   stage: installbinaries
   image: $DOCKER_IMAGE
   script:
+    - git clean -ffdx
     - mkdir -p ~/.elixxir
     - mkdir -p bin
-    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/server $SERVER_URL"
-    - chmod +x bin/server
-    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/client $CLIENT_URL"
-    - chmod +x bin/client
-    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/udb $UDB_URL"
-    - chmod +x bin/udb
-    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/permissioning $REGISTRATION_URL"
-    - chmod +x bin/permissioning
-    - "curl -f -L -H \"PRIVATE-TOKEN: $PATKEY\" -o bin/gateway $GATEWAY_URL"
-    - chmod +x bin/gateway
-    - echo $PWD
+    - cd bin
+    - "DOWNLOADS=\"$SERVER_URL $CLIENT_URL $REGISTRATION_URL $UDB_URL $GATEWAY_URL\""
+    - >
+      if [ "$CI_BUILD_REF_NAME" == "master" ]; then
+        DOWNLOADS=$(echo $DOWNLOADS | sed -i "s/artifacts\/$DEFAULTBRANCH\/raw/artifacts\/master\/raw/g")
+      fi
+    - >
+      for D in $DOWNLOADS; do
+        echo $D
+        curl -f -O -s -L -H "PRIVATE-TOKEN: $PATKEY" $D
+      done
+    - ls -lha
+    - mv server.linux64?job=build server
+    - mv client.linux64?job=build client
+    - mv udb.linux64?job=build udb
+    - mv registration.linux64?job=build permissioning
+    - mv gateway.linux64?job=build gateway
+    - "chmod +x *"
+    - cd ..
     - bin/server --version
     - bin/client --version
     - bin/udb --version
