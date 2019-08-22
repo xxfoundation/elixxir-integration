@@ -58,7 +58,7 @@ installbinaries:
       fi
     - >
       for D in $DOWNLOADS; do
-        curl -f -L -H "PRIVATE-TOKEN: $PATKEY" $D
+        curl -f -O -L -H "PRIVATE-TOKEN: $PATKEY" $D
       done
     - mv server.linux64 bin/server
     - mv client.linux64 bin/client
