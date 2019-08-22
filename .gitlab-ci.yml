@@ -60,8 +60,9 @@ installbinaries:
     - >
       for D in $DOWNLOADS; do
         echo $D
-        curl -f -O -L -H "PRIVATE-TOKEN: $PATKEY" $D
+        curl -f -O -# -L -H "PRIVATE-TOKEN: $PATKEY" $D
       done
+    - ls -lha
     - mv server.linux64 bin/server
     - mv client.linux64 bin/client
     - mv udb.linux64 bin/udb
