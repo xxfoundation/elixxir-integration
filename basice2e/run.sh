@@ -16,7 +16,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-n ndf.json --skipNDFVerification --noTLS"
+CLIENTOPTS="-n ndf.json --skipNDFVerification -P dummypassword --noTLS"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
