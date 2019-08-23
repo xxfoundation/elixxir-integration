@@ -1,2 +1,2 @@
-Received: Hello, 9, with E2E Encryption
+Message from 18, Bernardo Received: Hello, 9, with E2E Encryption
 Sending Message to 18, Bernardo: Hello, 18, with E2E Encryption
