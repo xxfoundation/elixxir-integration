@@ -142,12 +142,12 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
