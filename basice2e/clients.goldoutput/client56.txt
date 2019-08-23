@@ -1,3 +1,75 @@
-Message from 4, Jim Received: Hello, 5
-Received: Hello, 5
+[CLIENT] WARN 2019/08/23 18:29:28 Skipping NDF verification
+[CLIENT] WARN 2019/08/23 18:29:28 Running without signed network definition file
+[CLIENT] INFO 2019/08/23 18:29:28 No storage provided, initializing Client with default storage
+[CLIENT] INFO 2019/08/23 18:29:28 Initialized OS Storage
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=-Gateway at 127.0.0.1:8440...
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=-Gateway at 127.0.0.1:8441...
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM=-Gateway at 127.0.0.1:8442...
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=-Gateway at 127.0.0.1:8443...
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU=-Gateway at 127.0.0.1:8444...
+[CLIENT] INFO 2019/08/23 18:29:28 Connecting to permissioning/registration at 127.0.0.1:18000...
+[CLIENT] INFO 2019/08/23 18:29:28 Connected to permissioning at 127.0.0.1:18000 successfully!
+[CLIENT] INFO 2019/08/23 18:29:28 Registering...
+[CLIENT] INFO 2019/08/23 18:29:28 Attempting to register with code UAV6IWD6...
+[CLIENT] INFO 2019/08/23 18:29:31 Registering precanned user...
+[CLIENT] INFO 2019/08/23 18:29:31 Successfully registered user AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU=!
+[CLIENT] INFO 2019/08/23 18:29:31 Listening now: user &[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0], message type 1, id 1
+[CLIENT] INFO 2019/08/23 18:29:31 Listening now: user &[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0], message type 0, id 2
+[CLIENT] INFO 2019/08/23 18:29:31 Logging in...
+[CLIENT] INFO 2019/08/23 18:29:31 Sending gateway: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=-Gateway
+[CLIENT] INFO 2019/08/23 18:29:31 Receiving gateway: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU=-Gateway
+[CLIENT] INFO 2019/08/23 18:29:31 Registering user as email5@email.com
+[CLIENT] INFO 2019/08/23 18:29:33 Got a message waiting on the gateway: ymNF+1fyU/IrBT7f6A5KopTd91gJHUO23r3WPRLCPv4=
+[CLIENT] INFO 2019/08/23 18:29:33 Adding message ID ymNF+1fyU/IrBT7f6A5KopTd91gJHUO23r3WPRLCPv4= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:33 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:35 Got a message waiting on the gateway: 7wumV/zubvaC86y+NTMvY389ALmfc447FgnhsaRnp8Y=
+[CLIENT] INFO 2019/08/23 18:29:35 Adding message ID 7wumV/zubvaC86y+NTMvY389ALmfc447FgnhsaRnp8Y= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:35 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:38 Got a message waiting on the gateway: n33OS0ogSA2hDy2lh6JTKi3pdewqj27AuUztwKtNxDU=
+[CLIENT] INFO 2019/08/23 18:29:38 Adding message ID n33OS0ogSA2hDy2lh6JTKi3pdewqj27AuUztwKtNxDU= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:38 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:40 Got a message waiting on the gateway: 2Z0rZ5bG2MD8thchGm6X0c7JIG7NHrVQUlPKUhmhiyw=
+[CLIENT] INFO 2019/08/23 18:29:40 Adding message ID 2Z0rZ5bG2MD8thchGm6X0c7JIG7NHrVQUlPKUhmhiyw= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:40 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:40 Registered!
+[CLIENT] INFO 2019/08/23 18:29:40 Logged In!
 Sending Message to 6, Steph: Hello, 6
+[CLIENT] INFO 2019/08/23 18:29:45 Got a message waiting on the gateway: J+9p5eS5IGGF7d4EFpZvEFlFpZ9W34+y6yP/sIr+odE=
+[CLIENT] INFO 2019/08/23 18:29:45 Adding message ID J+9p5eS5IGGF7d4EFpZvEFlFpZ9W34+y6yP/sIr+odE= to received message IDs
+[CLIENT] INFO 2019/08/23 18:29:45 Hearing a text message
+Message from 4, Jim Received: Hello, 5
+[CLIENT] WARN 2019/08/23 18:29:45 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] WARN 2019/08/23 18:29:46 Skipping NDF verification
+[CLIENT] WARN 2019/08/23 18:29:46 Running without signed network definition file
+[CLIENT] INFO 2019/08/23 18:29:46 No storage provided, initializing Client with default storage
+[CLIENT] INFO 2019/08/23 18:29:46 Initialized OS Storage
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=-Gateway at 127.0.0.1:8440...
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=-Gateway at 127.0.0.1:8441...
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM=-Gateway at 127.0.0.1:8442...
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=-Gateway at 127.0.0.1:8443...
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to gateway AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU=-Gateway at 127.0.0.1:8444...
+[CLIENT] INFO 2019/08/23 18:29:46 Connecting to permissioning/registration at 127.0.0.1:18000...
+[CLIENT] INFO 2019/08/23 18:29:46 Connected to permissioning at 127.0.0.1:18000 successfully!
+[CLIENT] INFO 2019/08/23 18:29:46 Skipped Registration, user: &[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5]
+[CLIENT] INFO 2019/08/23 18:29:46 Listening now: user &[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0], message type 1, id 1
+[CLIENT] INFO 2019/08/23 18:29:46 Listening now: user &[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0], message type 0, id 2
+[CLIENT] INFO 2019/08/23 18:29:46 Logging in...
+[CLIENT] INFO 2019/08/23 18:29:46 Sending gateway: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=-Gateway
+[CLIENT] INFO 2019/08/23 18:29:46 Receiving gateway: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU=-Gateway
+[CLIENT] INFO 2019/08/23 18:29:46 Registering user as email5@email.com
+[CLIENT] INFO 2019/08/23 18:29:47 Got a message waiting on the gateway: xI/yNEpnWOVcRBjwjTF3e8ZC2ode3nUJ6UUHHvKbFAs=
+[CLIENT] INFO 2019/08/23 18:29:47 Adding message ID xI/yNEpnWOVcRBjwjTF3e8ZC2ode3nUJ6UUHHvKbFAs= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:47 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:48 Got a message waiting on the gateway: MGrAUTla+KZbZIRkg8lHTkFhQczOXdB4+n/3pEOV1nk=
+[CLIENT] INFO 2019/08/23 18:29:48 Adding message ID MGrAUTla+KZbZIRkg8lHTkFhQczOXdB4+n/3pEOV1nk= to received message IDs
+[CLIENT] INFO 2019/08/23 18:29:48 Got a message waiting on the gateway: KEWSzATjHI8p/7WOtiM7LK1iVBqm4Z7SVs/6T9Wm3bo=
+[CLIENT] INFO 2019/08/23 18:29:48 Adding message ID KEWSzATjHI8p/7WOtiM7LK1iVBqm4Z7SVs/6T9Wm3bo= to received message IDs
+[CLIENT] WARN 2019/08/23 18:29:48 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
+[CLIENT] INFO 2019/08/23 18:29:48 Registered!
+[CLIENT] INFO 2019/08/23 18:29:48 Logged In!
+Sending Message to 6, Steph: Hello, 6
+[CLIENT] INFO 2019/08/23 18:29:49 Got a message waiting on the gateway: 2dio3Pi4tSLXFE0i1K14Ko5ORkeKs2kfBz4jGsNrhzE=
+[CLIENT] INFO 2019/08/23 18:29:49 Adding message ID 2dio3Pi4tSLXFE0i1K14Ko5ORkeKs2kfBz4jGsNrhzE= to received message IDs
+[CLIENT] INFO 2019/08/23 18:29:49 Hearing a text message
+Message from 4, Jim Received: Hello, 5
+[CLIENT] WARN 2019/08/23 18:29:49 Received message with NO_TYPE but not Rekey CryptoType, needs to be fixed!
