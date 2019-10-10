@@ -16,7 +16,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-n ndf.json --skipNDFVerification -P dummypassword --noTLS"
+CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword --noTLS"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -129,25 +129,25 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9  -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 18 -d 9 -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 9 -d 18 -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 9 -d 18 -s \"bernardo@elixxir.io\" -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -155,18 +155,25 @@ echo "$CLIENTCMD -- $PIDVAL"
 set +e
 wait $PIDVAL || true
 
+# CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E rick42@elixxir.io -i 9 -d 9 -m \"Hi\""
+# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+
+
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
     # Remove the [CLIENT] Lines and cut them down
-    cat $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
+    strings $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
     # Take the clean lines and add them
-    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
-    cat $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
+    strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+    strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 for C in $(ls -1 $CLIENTCLEAN); do
@@ -178,9 +185,9 @@ set -e
 
 diff -ruN clients.goldoutput $CLIENTCLEAN
 
-cat $CLIENTOUT/* | grep -e "ERROR" -e "FATAL" > results/client-errors || true
+cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
 diff -ruN results/client-errors.txt noerrors.txt
-cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "context" > results/server-errors.txt || true
+cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "context" | grep -v "metrics" | grep -v "database" > results/server-errors.txt || true
 cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "context" | grep -v "database" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" | grep -v "context" | grep -v "failed\ to\ read\ certificate" > results/dummy-errors.txt || true
