@@ -16,7 +16,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword --noTLS"
+CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword "
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -25,7 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning -c permissioning.yaml --noTLS"
+PERMCMD="../bin/permissioning -c permissioning.yaml "
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
@@ -33,7 +33,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --disablePermissioning --noTLS -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --disablePermissioning  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -48,7 +48,7 @@ sleep 5 # Give servers some time to boot
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --noTLS --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning  --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -111,11 +111,19 @@ runclients() {
 }
 
 # Start a user discovery bot server
-UDBCMD="../bin/udb -v --config udb.yaml --noTLS"
+UDBCMD="../bin/udb -v --config udb.yaml "
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
+
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io --privateKey rick42-priv.pem"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+
 
 echo "RUNNING CLIENTS..."
 runclients
@@ -154,13 +162,6 @@ echo "$CLIENTCMD -- $PIDVAL"
 
 set +e
 wait $PIDVAL || true
-
-# CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E rick42@elixxir.io -i 9 -d 9 -m \"Hi\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-
 
 # FIXME: Go into client and clean up it's output so this is not necessary
 for C in $(ls -1 $CLIENTOUT); do
