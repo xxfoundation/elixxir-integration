@@ -16,7 +16,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword --noTLS"
+CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword "
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -25,7 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning -c permissioning.yaml --noTLS"
+PERMCMD="../bin/permissioning -c permissioning.yaml "
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
@@ -33,7 +33,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --disablePermissioning --noTLS -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --disablePermissioning  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -48,7 +48,7 @@ sleep 5 # Give servers some time to boot
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning --noTLS --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning  --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -65,9 +65,9 @@ finish() {
         echo "KILLING $job"
         kill $job || true
     done
-    tail $SERVERLOGS/*
-    tail $CLIENTCLEAN/*
-    diff -ruN clients.goldoutput $CLIENTCLEAN
+    #tail $SERVERLOGS/*
+    #tail $CLIENTCLEAN/*
+    #diff -ruN clients.goldoutput $CLIENTCLEAN
 }
 
 trap finish EXIT
@@ -111,30 +111,30 @@ runclients() {
 }
 
 # Start a user discovery bot server
-UDBCMD="../bin/udb -v --config udb.yaml --noTLS"
+echo "STARTING UDB..."
+UDBCMD="../bin/udb -v --config udb.yaml "
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
-echo "RUNNING CLIENTS..."
+echo "RUNNING BASIC CLIENTS..."
 runclients
-echo "RUNNING CLIENTS (2nd time)..."
+echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
 
 # Register two users and then do UDB search on each other
+echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
 CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-
 CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
@@ -142,24 +142,62 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
+echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKAY..."
 CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-
 CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 20 -w 20 -i 9 -d 18 -s \"bernardo@elixxir.io\" -f blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-
 set +e
 wait $PIDVAL || true
 
-# CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E rick42@elixxir.io -i 9 -d 9 -m \"Hi\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
+
+# Register non-precanned users
+echo "REGISTERING NEW USERS..."
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io --privateKey rick42-priv.pem"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob43 -E ben43@elixxir.io --privateKey ben43-priv.pem"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+# Have each non-precanned user search for each other
+echo "SEARCHING FOR NEW USERS..."
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+TMPID=$(cat $CLIENTOUT/client42.txt | grep "Successfully registered user" | awk -F' ' '{print $8}')
+RICKID=${TMPID%?} # remove ! from end
+TMPID=$(cat $CLIENTOUT/client43.txt | grep "Successfully registered user" | awk -F' ' '{print $8}')
+BENID=${TMPID%?} # remove ! from end
+
+# Non-precanned user messaging
+echo "SENDING E2E MESSAGES TO NEW USERS..."
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 
 # FIXME: Go into client and clean up it's output so this is not necessary
@@ -176,6 +214,12 @@ head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCL
 head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
+
+strings $CLIENTCLEAN/client42.txt | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
+strings $CLIENTCLEAN/client43.txt | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
+mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
+
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
     uniq tmp $CLIENTCLEAN/$C || true
@@ -183,6 +227,8 @@ done
 
 set -e
 
+
+echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 diff -ruN clients.goldoutput $CLIENTCLEAN
 
 cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
@@ -198,4 +244,4 @@ cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
-echo "SUCCESS!"
+echo "NO OUTPUT ERRORS, SUCCESS!"
