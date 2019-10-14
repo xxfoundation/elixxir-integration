@@ -94,24 +94,27 @@ basice2e:
      - basice2e/results/
      - bin/
 
-basice2eTLS:
-  stage: tests
-  image: $DOCKER_IMAGE
-  script:
-    - mkdir -p ~/.elixxir
-    - echo $PWD
-    - cd basice2e
-    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \ \"\"/key\:\ \ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
-    - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/ertPath\:\ \"\"/ertPath\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/keyPath\:\ \"\"/keyPath\:\ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
-    - sed -i "s/\"Tls\_certificate\"\:\ \"\"/\"Tls\_certificate\"\:\ \"$(awk -v ORS='\\n' '1' ../keys/cmix.rip.crt | sed -e 's/[\/&]/\\&/g')\"/g" ndf.json
-    - sed -i 's/\-\-noTLS//g' run.sh
-    - ./run.sh
-    - cd ..
-  artifacts:
-    when: always
-    paths:
-     - basice2e/
-     - bin/
+
+# NOTE: This was removed because of port conflicts with the base test. Instead
+# we run in TLS mode by default and disable this version
+# basice2eTLS:
+#   stage: tests
+#   image: $DOCKER_IMAGE
+#   script:
+#     - mkdir -p ~/.elixxir
+#     - echo $PWD
+#     - cd basice2e
+#     - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/cert\:\ \"\"/cert\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/key\:\ \ \"\"/key\:\ \ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
+#     - for CONFIG in $(echo *.yaml); do echo $CONFIG; sed -i 's/ertPath\:\ \"\"/ertPath\:\ \"\.\.\/keys\/cmix\.rip\.crt\"/g'  $CONFIG; sed -i 's/keyPath\:\ \"\"/keyPath\:\ \"\.\.\/keys\/cmix\.rip\.key\"/g'  $CONFIG; done
+#     - sed -i "s/\"Tls\_certificate\"\:\ \"\"/\"Tls\_certificate\"\:\ \"$(awk -v ORS='\\n' '1' ../keys/cmix.rip.crt | sed -e 's/[\/&]/\\&/g')\"/g" ndf.json
+#     - sed -i 's/\-\-noTLS//g' run.sh
+#     - ./run.sh
+#     - cd ..
+#   artifacts:
+#     when: always
+#     paths:
+#      - basice2e/
+#      - bin/
 
 smokeinfra:
   stage: tests
