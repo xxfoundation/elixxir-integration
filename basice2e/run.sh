@@ -23,6 +23,14 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
+# Start a user discovery bot server
+echo "STARTING UDB..."
+UDBCMD="../bin/udb -v --config udb.yaml "
+$UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
+
 echo "STARTING SERVERS..."
 
 PERMCMD="../bin/permissioning -c permissioning.yaml "
@@ -109,14 +117,6 @@ runclients() {
         eval wait \${CLIENTS${i}}
     done
 }
-
-# Start a user discovery bot server
-echo "STARTING UDB..."
-UDBCMD="../bin/udb -v --config udb.yaml "
-$UDBCMD >> $UDBOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$UDBCMD -- $PIDVAL"
 
 echo "RUNNING BASIC CLIENTS..."
 runclients
