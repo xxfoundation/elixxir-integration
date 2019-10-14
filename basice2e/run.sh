@@ -157,11 +157,11 @@ wait $PIDVAL || true
 
 # Register non-precanned users
 echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io --privateKey rick42-priv.pem"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob43 -E ben43@elixxir.io --privateKey ben43-priv.pem"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob43 -E ben43@elixxir.io"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -181,6 +181,8 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+# Extract generated user name from logs
+echo "EXTRACTING USER IDs FROM LOG FILES..."
 TMPID=$(cat $CLIENTOUT/client42.txt | grep "Successfully registered user" | awk -F' ' '{print $8}')
 RICKID=${TMPID%?} # remove ! from end
 TMPID=$(cat $CLIENTOUT/client43.txt | grep "Successfully registered user" | awk -F' ' '{print $8}')
@@ -229,6 +231,7 @@ set -e
 
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
+set +x
 diff -ruN clients.goldoutput $CLIENTCLEAN
 
 cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
