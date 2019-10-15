@@ -247,4 +247,12 @@ cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
 
+echo "CHECKING THAT AT LEAST 2 ROUNDS RAN"
+cat results/servers/server-5.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
+if [ ! -s rid.txt ]; then
+    echo "FAILURE!"
+    exit 42
+fi
+
+
 echo "NO OUTPUT ERRORS, SUCCESS!"
