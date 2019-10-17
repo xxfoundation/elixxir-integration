@@ -50,7 +50,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 5
+sleep 15
 
 echo "STOPPING SERVERS AND GATEWAYS..."
 # NOTE: jobs -p doesn't work in a signal handler
