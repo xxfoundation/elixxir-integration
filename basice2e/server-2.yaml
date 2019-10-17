@@ -6,7 +6,7 @@
 ################################################################################
 # batch size
 batch: 4
-skipReg: true
+skipReg: false
 # debug logging
 verbose: true
 node:
