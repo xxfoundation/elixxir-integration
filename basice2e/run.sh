@@ -38,6 +38,18 @@ $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
 
+
+# Start gateways
+for GWID in $(seq 5 -1 1)
+do
+    IDX=$(($GWID - 1))
+    GATEWAYCMD="../bin/gateway -v -i $IDX  --config gateway-$GWID.yaml"
+    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
+    PIDVAL=$!
+    echo "$GATEWAYCMD -- $PIDVAL"
+done
+
+
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
@@ -48,18 +60,6 @@ do
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
-done
-
-sleep 5 # Give servers some time to boot
-
-# Start gateways
-for GWID in $(seq 5 -1 1)
-do
-    IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX  --config gateway-$GWID.yaml"
-    $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
-    PIDVAL=$!
-    echo "$GATEWAYCMD -- $PIDVAL"
 done
 
 
