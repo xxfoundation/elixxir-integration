@@ -40,6 +40,8 @@ certPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
+udbID: 3
+
 
 groups:
   cmix:

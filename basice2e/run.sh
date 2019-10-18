@@ -50,7 +50,7 @@ do
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 5 # Give servers some time to boot
+sleep 15 # Give servers some time to boot
 
 # Start gateways
 for GWID in $(seq 5 -1 1)
