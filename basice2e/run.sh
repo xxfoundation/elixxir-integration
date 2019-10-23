@@ -41,7 +41,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --disablePermissioning  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 4 ]; then
         sleep 15 # This will force a CDE timeout
     fi
@@ -50,13 +50,13 @@ do
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 5 # Give servers some time to boot
+sleep 15 # Give servers some time to boot
 
 # Start gateways
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --disablePermissioning  --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway -v -i $IDX  --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -246,5 +246,13 @@ IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = 
 cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate" | grep -v "Failed to read key" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
+
+echo "CHECKING THAT AT LEAST 2 ROUNDS RAN"
+cat results/servers/server-5.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
+if [ ! -s rid.txt ]; then
+    echo "FAILURE!"
+    exit 42
+fi
+
 
 echo "NO OUTPUT ERRORS, SUCCESS!"
