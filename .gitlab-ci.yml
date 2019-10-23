@@ -149,22 +149,22 @@ smokeinfraBatch4:
      - smokeinfra/results/
      - bin/
 
-smokeinfraBatch1:
-  stage: tests
-  image: $DOCKER_IMAGE
-  script:
-    - mkdir -p ~/.elixxir
-    - echo $PWD
-    - cd smokeinfra
-    - git checkout -- .
-    - sed -i 's/\ 42/\ 1/g' *.yaml
-    - ./run.sh
-    - cd ..
-  artifacts:
-    when: always
-    paths:
-     - smokeinfra/results/
-     - bin/
+# smokeinfraBatch1:
+#   stage: tests
+#   image: $DOCKER_IMAGE
+#   script:
+#     - mkdir -p ~/.elixxir
+#     - echo $PWD
+#     - cd smokeinfra
+#     - git checkout -- .
+#     - sed -i 's/\ 42/\ 1/g' *.yaml
+#     - ./run.sh
+#     - cd ..
+#   artifacts:
+#     when: always
+#     paths:
+#      - smokeinfra/results/
+#      - bin/
 
 
 benchmark:
