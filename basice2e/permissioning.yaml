@@ -24,6 +24,10 @@ registrationCodes:
   - "DDDD"
   - "EEEE"
 
+clientRegCodes:
+  - "FFFF"
+  - "GGGG"
+
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
 keyPath: "../keys/cmix.rip.key"
