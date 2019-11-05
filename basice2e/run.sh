@@ -81,7 +81,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 15 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 30 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 runclients() {
