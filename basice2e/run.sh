@@ -208,8 +208,8 @@ for C in $(ls -1 $CLIENTOUT); do
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." | grep -v "Timestamp" > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\."  | grep -v "Timestamp" > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 
