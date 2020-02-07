@@ -215,8 +215,13 @@ rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 strings $CLIENTCLEAN/client42.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
 strings $CLIENTCLEAN/client43.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+strings $CLIENTCLEAN/client74.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client74-clean.txt || true
 mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
 mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
+mv $CLIENTCLEAN/client74-clean.txt $CLIENTCLEAN/client74.txt
+
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client42.txt
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client43.txt
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
