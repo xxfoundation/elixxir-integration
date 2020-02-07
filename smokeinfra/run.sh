@@ -28,6 +28,8 @@ done
 
 echo "STARTING GATEWAYS..."
 
+sleep 5
+
 # Start gateways
 for GWID in $(seq 3 -1 1)
 do
@@ -37,6 +39,8 @@ do
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
 done
+
+sleep 120
 
 jobs -p > results/serverpids
 
