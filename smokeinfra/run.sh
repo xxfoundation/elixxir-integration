@@ -21,6 +21,9 @@ do
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
+    if [ $SERVERID -eq 2 ]; then
+        sleep 15 # This will force a CDE timeout
+    fi
 done
 
 echo "STARTING GATEWAYS..."

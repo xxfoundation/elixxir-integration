@@ -42,15 +42,12 @@ for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
-    if [ $SERVERID -eq 4 ]; then
-        sleep 15 # This will force a CDE timeout
-    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 15 # Give servers some time to boot
+sleep 15
 
 # Start gateways
 for GWID in $(seq 5 -1 1)
@@ -61,7 +58,6 @@ do
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
 done
-
 
 jobs -p > results/serverpids
 
@@ -81,7 +77,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 30 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 120 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 runclients() {
@@ -101,7 +97,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -125,17 +121,17 @@ runclients
 
 # Register two users and then do UDB search on each other
 echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
+CLIENTCMD="timeout 30s ../bin/client  $CLIENTOPTS -f blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -f blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -f blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -157,12 +153,12 @@ wait $PIDVAL || true
 
 # Register non-precanned users
 echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
+CLIENTCMD="timeout 30s ../bin/client  $CLIENTOPTS -f blob42 -E rick42@elixxir.io -r FFFF"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -f blob43 -E ben43@elixxir.io"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 &
+CLIENTCMD="timeout 30s ../bin/client  $CLIENTOPTS -f blob43 -E ben43@elixxir.io -r GGGG"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
@@ -170,12 +166,12 @@ wait $PIDVAL2
 
 # Have each non-precanned user search for each other
 echo "SEARCHING FOR NEW USERS..."
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 &
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -f blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 &
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -f blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
@@ -190,12 +186,12 @@ BENID=${TMPID%?} # remove ! from end
 
 # Non-precanned user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt 2>&1 || true &
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt 2>&1 || true &
+CLIENTCMD="timeout 30s ../bin/client $CLIENTOPTS -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
@@ -212,15 +208,20 @@ for C in $(ls -1 $CLIENTOUT); do
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." | grep -v "Timestamp" > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\."  | grep -v "Timestamp" > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 
-strings $CLIENTCLEAN/client42.txt | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
-strings $CLIENTCLEAN/client43.txt | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+strings $CLIENTCLEAN/client42.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
+strings $CLIENTCLEAN/client43.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+strings $CLIENTCLEAN/client74.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client74-clean.txt || true
 mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
 mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
+mv $CLIENTCLEAN/client74-clean.txt $CLIENTCLEAN/client74.txt
+
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client42.txt
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client43.txt
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
