@@ -116,38 +116,38 @@ basice2e:
 #      - basice2e/
 #      - bin/
 
-# smokeinfra:
-#   stage: tests
-#   image: $DOCKER_IMAGE
-#   script:
-#     - mkdir -p ~/.elixxir
-#     - echo $PWD
-#     - cd smokeinfra
-#     - ./run.sh
-#     - cd ..
-#   artifacts:
-#     when: always
-#     paths:
-#      - smokeinfra/results/
-#      - bin/
+smokeinfra:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd smokeinfra
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - smokeinfra/results/
+     - bin/
 
 
-# smokeinfraBatch4:
-#   stage: tests
-#   image: $DOCKER_IMAGE
-#   script:
-#     - mkdir -p ~/.elixxir
-#     - echo $PWD
-#     - cd smokeinfra
-#     - git checkout -- .
-#     - sed -i 's/\ 42/\ 4/g' *.yaml
-#     - ./run.sh
-#     - cd ..
-#   artifacts:
-#     when: always
-#     paths:
-#      - smokeinfra/results/
-#      - bin/
+smokeinfraBatch4:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd smokeinfra
+    - git checkout -- .
+    - sed -i 's/\ 42/\ 4/g' *.yaml
+    - ./run.sh
+    - cd ..
+  artifacts:
+    when: always
+    paths:
+     - smokeinfra/results/
+     - bin/
 
 # smokeinfraBatch1:
 #   stage: tests
