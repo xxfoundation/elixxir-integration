@@ -28,6 +28,8 @@ done
 
 echo "STARTING GATEWAYS..."
 
+sleep 5
+
 # Start gateways
 for GWID in $(seq 3 -1 1)
 do
@@ -38,10 +40,12 @@ do
     echo "$GATEWAYCMD -- $PIDVAL"
 done
 
+sleep 120
+
 jobs -p > results/serverpids
 
 finish() {
-    echo "KILLED! STOPPING SERVERS AND GATEWAYS..."
+    echo "STOPPING SERVERS AND GATEWAYS..."
     # NOTE: jobs -p doesn't work in a signal handler
     for job in $(cat results/serverpids)
     do
@@ -55,13 +59,6 @@ trap finish INT
 
 sleep 15
 
-echo "STOPPING SERVERS AND GATEWAYS..."
-# NOTE: jobs -p doesn't work in a signal handler
-for job in $(cat results/serverpids)
-do
-    echo "Stopping $job"
-    kill $job
-done
 
 echo "CHECKING OUTPUT FOR ERRORS"
 set +x
@@ -83,6 +80,5 @@ if [ ! -s rid.txt ]; then
     exit 42
 fi
 
-echo "SUCCESS!"
-
 tail $SERVERLOGS/*.console
+echo "SUCCESS!"

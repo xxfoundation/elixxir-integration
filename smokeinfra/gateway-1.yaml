@@ -11,6 +11,9 @@ log: "results/gateway-1.log"
 # Used for debugging
 verbose: "true"
 
+# I am first node
+firstNode: "true"
+
 # The cMix nodes in the network
 cMixNodes:
  - "localhost:60000"
