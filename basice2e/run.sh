@@ -42,15 +42,12 @@ for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
-    if [ $SERVERID -eq 4 ]; then
-        sleep 15 # This will force a CDE timeout
-    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 15 # Give servers some time to boot
+sleep 15
 
 # Start gateways
 for GWID in $(seq 5 -1 1)
@@ -61,7 +58,6 @@ do
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
 done
-
 
 jobs -p > results/serverpids
 
@@ -81,7 +77,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 30 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 120 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 runclients() {
@@ -212,15 +208,20 @@ for C in $(ls -1 $CLIENTOUT); do
 done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\." > $CLIENTCLEAN/client18.txt || true
+head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." | grep -v "Timestamp" > $CLIENTCLEAN/client9.txt || true
+head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\."  | grep -v "Timestamp" > $CLIENTCLEAN/client18.txt || true
 rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 
-strings $CLIENTCLEAN/client42.txt | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
-strings $CLIENTCLEAN/client43.txt | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+strings $CLIENTCLEAN/client42.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
+strings $CLIENTCLEAN/client43.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+strings $CLIENTCLEAN/client74.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client74-clean.txt || true
 mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
 mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
+mv $CLIENTCLEAN/client74-clean.txt $CLIENTCLEAN/client74.txt
+
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client42.txt
+sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client43.txt
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true

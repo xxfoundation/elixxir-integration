@@ -76,6 +76,7 @@ installbinaries:
     - bin/gateway --version
   artifacts:
     when: always
+    expire_in: '1 day'
     paths:
      - bin/
 
@@ -90,6 +91,7 @@ basice2e:
     - cd ..
   artifacts:
     when: always
+    expire_in: '1 day'
     paths:
      - basice2e/results/
      - bin/
@@ -112,6 +114,7 @@ basice2e:
 #     - cd ..
 #   artifacts:
 #     when: always
+#     expire_in: '1 day'
 #     paths:
 #      - basice2e/
 #      - bin/
@@ -127,6 +130,7 @@ smokeinfra:
     - cd ..
   artifacts:
     when: always
+    expire_in: '1 day'
     paths:
      - smokeinfra/results/
      - bin/
@@ -145,6 +149,7 @@ smokeinfraBatch4:
     - cd ..
   artifacts:
     when: always
+    expire_in: '1 day'
     paths:
      - smokeinfra/results/
      - bin/
@@ -162,6 +167,7 @@ smokeinfraBatch4:
 #     - cd ..
 #   artifacts:
 #     when: always
+#     expire_in: '1 day'
 #     paths:
 #      - smokeinfra/results/
 #      - bin/
@@ -176,6 +182,7 @@ benchmark:
     - ./bin/server benchmark -b 1024 -n 5 -i 1
   artifacts:
     when: always
+    expire_in: '1 day'
     paths:
       - bin/
   only:
