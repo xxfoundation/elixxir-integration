@@ -70,10 +70,10 @@ installbinaries:
     - mv gateway.linux64?job=build gateway
     - "chmod +x *"
     - cd ..
-    - bin/server --version
-    - bin/client --version
-    - bin/udb --version
-    - bin/gateway --version
+    - bin/server version
+    - bin/client --version || bin/client version
+    - bin/udb --version || bin/udb version
+    - bin/gateway --version || bin/gateway version
   artifacts:
     when: always
     expire_in: '1 day'
