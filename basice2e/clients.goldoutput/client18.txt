@@ -1,3 +1,0 @@
-Message from 9, Spencer Received: Hello, 18, with E2E Encryption
-Received: Hello, 18, with E2E Encryption
-Sending Message to AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk=, Spencer: Hello, 9, with E2E Encryption

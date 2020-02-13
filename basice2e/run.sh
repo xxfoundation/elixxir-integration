@@ -199,29 +199,34 @@ wait $PIDVAL2
 
 
 # FIXME: Go into client and clean up it's output so this is not necessary
-for C in $(ls -1 $CLIENTOUT); do
-    # Remove the [CLIENT] Lines and cut them down
-    strings $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
-    # Take the clean lines and add them
-    strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
-    strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
-done
+# for C in $(ls -1 $CLIENTOUT); do
+#     # Remove the [CLIENT] Lines and cut them down
+#     strings $CLIENTOUT/$C | grep "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" -e "Sending Message" -e "Message from" > $CLIENTCLEAN/$C || true
+#     # Take the clean lines and add them
+#     strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | grep -e "Received\:" -e "Sending Message" -e "Message from" >> $CLIENTCLEAN/$C || true
+#     strings $CLIENTOUT/$C | grep -v "\[CLIENT\]" | cut -d\  -f5- | grep -e "Received\:" >> $CLIENTCLEAN/$C || true
+# done
 
 # only expect up to 10c messages from the e2e clients
-head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." | grep -v "Timestamp" > $CLIENTCLEAN/client9.txt || true
-head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\."  | grep -v "Timestamp" > $CLIENTCLEAN/client18.txt || true
-rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
+# head -10 $CLIENTCLEAN/client9_rekey.txt | strings | grep -v "\.\.\." | grep -v "Timestamp" > $CLIENTCLEAN/client9.txt || true
+# head -10 $CLIENTCLEAN/client18_rekey.txt | strings | grep -v "\.\.\."  | grep -v "Timestamp" > $CLIENTCLEAN/client18.txt || true
+# rm $CLIENTCLEAN/client9_rekey.txt $CLIENTCLEAN/client18_rekey.txt || true
 
 
-strings $CLIENTCLEAN/client42.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
-strings $CLIENTCLEAN/client43.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
-strings $CLIENTCLEAN/client74.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client74-clean.txt || true
-mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
-mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
-mv $CLIENTCLEAN/client74-clean.txt $CLIENTCLEAN/client74.txt
+# strings $CLIENTCLEAN/client42.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client42-clean.txt || true
+# strings $CLIENTCLEAN/client43.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client43-clean.txt || true
+# strings $CLIENTCLEAN/client74.txt | grep -v "Timestamp" | grep -v "\.\.\." > $CLIENTCLEAN/client74-clean.txt || true
+# mv $CLIENTCLEAN/client42-clean.txt $CLIENTCLEAN/client42.txt
+# mv $CLIENTCLEAN/client43-clean.txt $CLIENTCLEAN/client43.txt
 
-sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client42.txt
-sed -i 's/Sending\ Message\ to\ .*,\ ://g' $CLIENTCLEAN/client43.txt
+
+cp $CLIENTOUT/*.txt $CLIENTCLEAN/
+
+# Ignore rekey for now
+rm $CLIENTCLEAN/*_rekey.txt
+
+sed -i 's/Sending\ Message\ to\ .*,\ :/Sent:/g' $CLIENTCLEAN/client4[23].txt
+sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
 
 for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
