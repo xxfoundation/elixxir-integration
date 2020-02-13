@@ -1,3 +1,2 @@
 Message from 4, Jim Received: Hello, 5
-Received: Hello, 5
-Sending Message to AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY=, Steph: Hello, 6
+Sending Message to 6, Steph: Hello, 6

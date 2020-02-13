@@ -1,2 +1,2 @@
- Hello from Rick42, with E2E Encryption
 Received: Hello from Ben43, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
