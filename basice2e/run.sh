@@ -82,7 +82,7 @@ cnt=0
 echo -n "Waiting for a round to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
     sleep 1
-    cat results/servers/server-5.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
+    cat results/servers/server-5.log | grep "RID 0 ReceiveFinishRealtime END" > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
