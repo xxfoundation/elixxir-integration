@@ -75,8 +75,19 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 20 # FIXME: We should not need this, but the servers don't respond quickly
-         #        enough on boot right now.
+# Sleeps can die in a fire on the sun, we wait for the servers to start running
+# rounds
+rm rid.txt || touch rid.txt
+cnt=0
+echo -n "Waiting for a round to run"
+while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
+    sleep 1
+    cat results/servers/server-5.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
+
+
 
 runclients() {
     echo "Starting clients..."
@@ -228,13 +239,5 @@ IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = 
 cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate" | grep -v "Failed to read key" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" >> results/gateway-errors.txt || true
 diff -ruN results/gateway-errors.txt noerrors.txt
-
-echo "CHECKING THAT AT LEAST 2 ROUNDS RAN"
-cat results/servers/server-5.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
-if [ ! -s rid.txt ]; then
-    echo "FAILURE!"
-    exit 42
-fi
-
 
 echo "NO OUTPUT ERRORS, SUCCESS!"
