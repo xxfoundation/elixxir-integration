@@ -47,8 +47,6 @@ do
     echo "$SERVERCMD -- $PIDVAL"
 done
 
-sleep 15
-
 # Start gateways
 for GWID in $(seq 5 -1 1)
 do
@@ -77,7 +75,7 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 120 # FIXME: We should not need this, but the servers don't respond quickly
+sleep 15 # FIXME: We should not need this, but the servers don't respond quickly
          #        enough on boot right now.
 
 runclients() {
