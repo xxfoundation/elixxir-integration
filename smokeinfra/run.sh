@@ -17,7 +17,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --noTLS --disablePermissioning"
+    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --noTLS --disablePermissioning"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -34,7 +34,7 @@ sleep 5
 for GWID in $(seq 3 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX --config gateway-$GWID.yaml --noTLS --disablePermissioning"
+    GATEWAYCMD="../bin/gateway -i $IDX --config gateway-$GWID.yaml --noTLS --disablePermissioning"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"

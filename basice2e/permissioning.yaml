@@ -2,8 +2,9 @@
 # Permissioning Server Configuration
 # ==================================
 
-# Verbose logging
-verbose: "true"
+# Log message level
+logLevel: 1
+
 # Path to log file
 logPath: "results/permissioning.log"
 

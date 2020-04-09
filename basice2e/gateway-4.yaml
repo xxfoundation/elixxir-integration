@@ -8,8 +8,8 @@
 # Output log file
 log: "results/gateways/gatway-4.log"
 
-# Used for debugging
-verbose: "true"
+# Log message level
+logLevel: 1
 
 # The cMix nodes in the network
 cMixNodes:
