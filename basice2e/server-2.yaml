@@ -7,8 +7,10 @@
 # batch size
 batch: 4
 skipReg: true
-# debug logging
-verbose: true
+
+# Log message level
+logLevel: 1
+
 node:
     id: ""
     paths:

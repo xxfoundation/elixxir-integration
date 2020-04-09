@@ -25,7 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 # Start a user discovery bot server
 echo "STARTING UDB..."
-UDBCMD="../bin/udb -v --config udb.yaml "
+UDBCMD="../bin/udb -v --config udb.yaml -l 1"
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -41,7 +41,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server  -v -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server   -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -51,7 +51,7 @@ done
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -v -i $IDX  --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
