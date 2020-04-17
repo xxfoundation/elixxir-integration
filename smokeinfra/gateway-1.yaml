@@ -29,11 +29,12 @@ MessageTimeout: 1800
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the gateway private key file
-keyPath: "../keys/gateway.cmix.rip.key"
+keyPath: "../keys/cmix.rip.key"
 # Path to the gateway certificate file
-certPath: "../keys/gateway.cmix.rip.crt"
+certPath: "../keys/cmix.rip.crt"
 # Path to the gateway certificate file
 serverCertPath: "../keys/cmix.rip.crt"
+IP_Whitelist_File: whitelist.txt
 
 ### Anything below this line is to be deprecated ###
 
