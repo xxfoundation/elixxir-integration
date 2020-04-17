@@ -12,12 +12,17 @@ GATEWAYLOGS=results/
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 
+PERMCMD="../bin/permissioning -c permissioning.yaml"
+$PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
+PIDVAL=$!
+echo "$PERMCMD -- $PIDVAL"
+
 echo "STARTING SERVERS..."
 
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml --noTLS --disablePermissioning"
+    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -34,13 +39,11 @@ sleep 5
 for GWID in $(seq 3 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -i $IDX --config gateway-$GWID.yaml --noTLS --disablePermissioning"
+    GATEWAYCMD="../bin/gateway -i $IDX --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
 done
-
-sleep 120
 
 jobs -p > results/serverpids
 
@@ -57,13 +60,21 @@ finish() {
 trap finish EXIT
 trap finish INT
 
-sleep 15
-
+# Sleeps can die in a fire on the sun, we wait for the servers to run 2 rounds
+rm rid.txt || touch rid.txt
+cnt=0
+echo -n "Waiting for 2 rounds to run"
+while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
+    sleep 1
+    cat results/server-3.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
 
 echo "CHECKING OUTPUT FOR ERRORS"
 set +x
 
-cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "context" | grep -v "metrics" | grep -v "database" > results/server-errors.txt || true
+cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "Poll error" | grep -v "RoundTripPing" | grep -v "context" | grep -v "metrics" | grep -v "database" > results/server-errors.txt || true
 cat $SERVERLOGS/server-*.log | grep "FATAL" |  grep -v "context" | grep -v "database" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
 
