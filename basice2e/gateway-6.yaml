@@ -6,7 +6,7 @@
 ################################################################################
 
 # Output log file
-log: "results/gateways/gatway-1.log"
+log: "results/gateways/gatway-6.log"
 
 # Log message level
 logLevel: 1
@@ -21,7 +21,7 @@ cMixNodes:
   - "localhost:50005"
 
 # The listening address of this gateway
-Port: 8440
+Port: 8445
 
 # The number of seconds a message should remain in the globals before being
 # deleted from the user's message queue

@@ -38,7 +38,7 @@ $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
 
-for SERVERID in $(seq 5 -1 1)
+for SERVERID in $(seq 6 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server   -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
@@ -48,7 +48,7 @@ do
 done
 
 # Start gateways
-for GWID in $(seq 5 -1 1)
+for GWID in $(seq 6 -1 1)
 do
     IDX=$(($GWID - 1))
     GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"

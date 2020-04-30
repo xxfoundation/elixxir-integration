@@ -14,11 +14,12 @@ logLevel: 1
 
 # The cMix nodes in the network
 cMixNodes:
- - "localhost:50000"
- - "localhost:50001"
- - "localhost:50002"
- - "localhost:50003"
- - "localhost:50004"
+  - "localhost:50000"
+  - "localhost:50001"
+  - "localhost:50002"
+  - "localhost:50003"
+  - "localhost:50004"
+  - "localhost:50005"
 
 # The listening address of this gateway
 Port: 8442
