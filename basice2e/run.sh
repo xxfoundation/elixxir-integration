@@ -33,22 +33,26 @@ echo "$UDBCMD -- $PIDVAL"
 
 echo "STARTING SERVERS..."
 
+export GRPC_GO_LOG_VERBOSITY_LEVEL=99 
+export GRPC_GO_LOG_SEVERITY_LEVEL=info
+rm -f ../keys/cmix.rip.crt-definitio
+
 PERMCMD="../bin/permissioning -c permissioning.yaml "
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
 
-for SERVERID in $(seq 6 -1 1)
+for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server   -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
 done
 
 # Start gateways
-for GWID in $(seq 6 -1 1)
+for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
     GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"

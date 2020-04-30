@@ -19,7 +19,7 @@ dbPassword: ""
 dbName: ""
 dbAddress: ""
 
-minimumNodes: 6
+minimumNodes: 5
 
 # List of Node registration codes (in order of network placement)
 registrationCodes:
