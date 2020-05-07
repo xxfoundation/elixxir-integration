@@ -7,9 +7,10 @@
 # batch size
 batch: 4
 skipReg: true
-
 # Log message level
 logLevel: 1
+
+useGpu: false
 
 node:
     id: ""

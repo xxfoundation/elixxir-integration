@@ -29,16 +29,16 @@ database:
         - ""
 gateways:
     paths:
-        cert: "../keys/gateway.cmix.rip.crt"
+        cert: "../keys/cmix.rip.crt"
     addresses:
         - "localhost:9440"
         - "localhost:9441"
         - "localhost:9442"
 permissioning:
   paths:
-    cert: ""
-  address: ""
-  registrationCode: ""
+    cert: "../keys/cmix.rip.crt"
+  address: "localhost:18000"
+  registrationCode: "CCCC"
   publicKey: "-----BEGIN PUBLIC KEY-----\nMIIDNTCCAiwCggEBAJ22+1lRtmu2/h4UDx0s5VAjdBYf1lON8WSCGGQvC1xIyPek\nGq36GHMkuHZ0+hgisA8ez4E2lD18VXVyZOWhpE/+AS6ZNuAMHT6TELAcfReYBdMF\niyqfS7b5cWv+YRfGtbPMTZvjQRBK1KgK1slOAF9LmT4U8JHrUXQ78zBQw43iNVZ+\nGzTD1qXAzqoaDzaCE8PRmEPQtLCdy5/HLTnI3kHxvxTUu0Vjyig3FiHK0zJLai05\nIUW+v6x0iAUjb1yi/pK4cc2PnDbTKStVCcqMqneirfx7/XfdpvcRJadFb+oVPkMy\nVqImHGoG7TaTeX55lfrVqrvPvj7aJ0HjdUBK4lsCIQDywxGTdM52yTVpkLRlN0oX\n8j+e01CJvZafYcbd6ZmMHwKCAQBcf/awb48UP+gohDNJPkdpxNmIrOW+JaDiSAln\nBxbGE9ewzuaTL4+qfETSyyRSPaU/vk9uw1lYktGqWMQyigbEahVmLn6qcDod7Pi7\nstBdvi65VsFCozhmHRBGHA0TVHIIUFfzSUMJ/6c8YR94syrbtXQMNhyfNb6QmX2y\nAU4u9apheC9Sq+uL1kMsTdCXvFQjsoXa+2DcNk6BYfSio1rKOhCxxNIDzHakcKM6\n/cvdkpWYWavYtW4XJSUteOrGbnG6muPx3SSHGZh0OTzU2DIYaABlR2Dh40wJ5NFV\nF5+ewNxEc/mWvc5u7Ryr7YtvEW962c9QXfD5mONKsnUUsP/nAoIBAQCTyv8fEcAA\nD0B3f5owQ9YTkIelBuTfRYSSTlprDw7cvvAtB72N+Mqv7v+eHgwZgp8litEn/l2n\nr8eI1UODFgBiOXq7INgKjDSu1zM4FcFJ2O6pCcF0NgJGWgfVTLuS6nW0kgAss9rj\nHSkRkJjHTbixeNSruFcqZ4B5CMtgyJKa4LajIlbet/+XPbs4GlaF6M8e0RKbuA3Q\nbbnSHwQDj7A9i4CvAbQKsGu8HFGFpBl+rqJ5YA4wqS9HhWcMgmCZCcKtGeRcXaoq\nsxaBsbk13sZHgUnJ3f2W2F1qR2D+Q9XC1NM9tc3GtgFQKFwxvUMFGOTKZziaJP2z\nk/AYVzv2LJ6N\n-----END PUBLIC KEY-----\n"
 groups:
   cmix:
