@@ -148,7 +148,7 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send multiple E2E encrypted messages between users that discovered each other
-echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKAY..."
+echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
 CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
