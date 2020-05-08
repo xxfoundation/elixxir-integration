@@ -8,8 +8,6 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
-batchSize: 4
-
 # The listening port of this server
 port: 18000
 

@@ -4,8 +4,6 @@
 ##                                                                             #
 ## All rights reserved.                                                        #
 ################################################################################
-# batch size
-batch: 4
 skipReg: true
 # Log message level
 logLevel: 1
