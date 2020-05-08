@@ -107,7 +107,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -163,11 +163,11 @@ wait $PIDVAL || true
 
 # Register non-precanned users
 echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -E rick42@elixxir.io -r FFFF"
+CLIENTCMD="timeout 180s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -E rick42@elixxir.io -r FFFF"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -E ben43@elixxir.io -r GGGG"
+CLIENTCMD="timeout 180s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -E ben43@elixxir.io -r GGGG"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -176,11 +176,11 @@ wait $PIDVAL2
 
 # Have each non-precanned user search for each other
 echo "SEARCHING FOR NEW USERS..."
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -196,11 +196,11 @@ BENID=${TMPID%?} # remove ! from end
 
 # Non-precanned user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 70s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 70s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
