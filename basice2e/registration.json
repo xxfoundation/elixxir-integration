@@ -1,6 +1,6 @@
 {
     "TeamSize": 5,
-    "BatchSize": 100,
+    "BatchSize": 4,
     "RandomOrdering": false,
-    "MinimumDelay": 50
+    "MinimumDelay": 300
  }
