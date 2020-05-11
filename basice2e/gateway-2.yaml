@@ -14,11 +14,12 @@ logLevel: 1
 
 # The cMix nodes in the network
 cMixNodes:
- - "localhost:50000"
- - "localhost:50001"
- - "localhost:50002"
- - "localhost:50003"
- - "localhost:50004"
+  - "127.0.0.1:50000"
+  - "127.0.0.1:50001"
+  - "127.0.0.1:50002"
+  - "127.0.0.1:50003"
+  - "127.0.0.1:50004"
+  - "127.0.0.1:50005"
 
 # The listening address of this gateway
 Port: 8441
@@ -37,9 +38,6 @@ serverCertPath: "../keys/cmix.rip.crt"
 IP_Whitelist_File: whitelist.txt
 
 ### Anything below this line is to be deprecated ###
-
-# Batch size of the cMix Network (to be deprecated)
-batchSize: 4
 
 groups:
   cmix:
