@@ -141,7 +141,7 @@ smokeinfraBatch4:
     - echo $PWD
     - cd smokeinfra
     - git checkout -- .
-    - sed -i 's/\ 42/\ 4/g' *.yaml
+    - sed -i 's/\ 42,/\ 4,/g' registration.json
     - ./run.sh
     - cd ..
   artifacts:

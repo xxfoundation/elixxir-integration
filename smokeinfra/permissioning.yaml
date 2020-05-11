@@ -8,8 +8,6 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
-batchSize: 42
-
 # The listening port of this server
 port: 18000
 
@@ -18,6 +16,21 @@ dbUsername: ""
 dbPassword: ""
 dbName: ""
 dbAddress: ""
+
+# Selection of scheduling algorithem to use. Options are:
+#   simple - Schedules multiple teams to maximize performance, does not randomly re-arrange teams, if only a single
+#            only scheduling a single team, will use numerical ordering data for AlphaNet
+#   secure - Schedules new teams randomly, has apropreate buffers to ensure unpredictability, designed for BetaNet
+schedulingAlgorithm: "simple"
+
+# Path to file with config for scheduling algorithem within the user directory
+schedulingConfigPath: "registration.json"
+
+# Path to JSON file with list of Node registration codes (in order of network
+# placement)
+RegCodesFilePath: "regCodes.json"
+
+minimumNodes: 3
 
 # List of Node registration codes (in order of network placement)
 registrationCodes:
