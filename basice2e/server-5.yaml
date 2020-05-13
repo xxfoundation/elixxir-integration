@@ -12,7 +12,7 @@ useGpu: false
 
 node:
     paths:
-        idf:  "nodeID-2.json"
+        idf:  "nodeID-5.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-5.log"
