@@ -32,6 +32,8 @@ MessageTimeout: 1800
 keyPath: "../keys/cmix.rip.key"
 # Path to the certificate file
 certPath: "../keys/cmix.rip.crt"
+# Path to the permissioning certificate
+permissioningCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 IP_Whitelist_File: whitelist.txt

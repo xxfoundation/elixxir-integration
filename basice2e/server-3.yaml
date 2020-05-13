@@ -11,8 +11,8 @@ logLevel: 1
 useGpu: false
 
 node:
-    id: ""
     paths:
+        idf:  "nodeID-2.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-3.log"

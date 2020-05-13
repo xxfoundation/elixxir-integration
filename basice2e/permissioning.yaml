@@ -8,6 +8,8 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
+ndfOutputPath: "results/ndf.json"
+
 # The listening port of this server
 port: 18000
 
@@ -18,14 +20,6 @@ dbName: ""
 dbAddress: ""
 
 minimumNodes: 5
-
-# List of Node registration codes (in order of network placement)
-registrationCodes:
-  - "AAAA"
-  - "BBBB"
-  - "CCCC"
-  - "DDDD"
-  - "EEEE"
 
 clientRegCodes:
   - "FFFF"
