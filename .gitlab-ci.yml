@@ -20,8 +20,8 @@ variables:
   DOCKER_IMAGE: sydney112/cuda-go:latest
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
-  SERVER_URL: ${REPOS_API}server/jobs/artifacts/$SERVER_ID/raw/release/server.linux64?job=build
-  SERVER_GPU_URL: ${REPOS_API}server/jobs/artifacts/$SERVER_ID/raw/release/server-cuda.linux64?job=build
+  SERVER_URL: ""
+  SERVER_GPU_URL: ""
   GPULIB_URL: ${REPOS_API}server/jobs/artifacts/$SERVER_ID/raw/gpumaths/cgbnBindings/powm/libpowmosm75.so?job=build
   CLIENT_URL: ${REPOS_API}client/jobs/artifacts/$CLIENT_ID/raw/release/client.linux64?job=build
   REGISTRATION_URL: ${REPOS_API}registration/jobs/artifacts/$REGISTRATION_ID/raw/release/registration.linux64?job=build
@@ -52,30 +52,10 @@ installbinaries:
   script:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
-    - mkdir -p bin
-    - cd bin
-    - "DOWNLOADS=\"$SERVER_URL $CLIENT_URL $REGISTRATION_URL $UDB_URL $GATEWAY_URL $SERVER_GPU_URL $GPULIB_URL\""
-    - >
-      if [ "$CI_BUILD_REF_NAME" == "master" ]; then
-        DOWNLOADS=$(echo $DOWNLOADS | sed "s/artifacts\/$DEFAULTBRANCH\/raw/artifacts\/master\/raw/g")
-      fi
-    - >
-      for D in $DOWNLOADS; do
-        echo $D
-        curl -f -O -s -L -H "PRIVATE-TOKEN: $PATKEY" $D
-      done
-    - ls -lha
-    - mv server.linux64?job=build server
-    - mv server-cuda.linux64?job=build server-cuda
-    - mv client.linux64?job=build client
-    - mv udb.linux64?job=build udb
-    - mv registration.linux64?job=build permissioning
-    - mv gateway.linux64?job=build gateway
-    - mv libpowmosm75.so?job=build libpowmosm75.so
+    - ./download_cmix_binaries.sh
     - mkdir -p /opt/elixxir/lib
-    - cp libpowmosm75.so /opt/elixxir/lib/
+    - cp lib/libpowmosm75.so /opt/elixxir/lib/
     - "chmod +x *"
-    - cd ..
     - bin/server version
     - bin/server-cuda version
     - bin/client --version || bin/client version
