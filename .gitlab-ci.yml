@@ -22,11 +22,11 @@ variables:
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
   SERVER_URL: ""
   SERVER_GPU_URL: ""
-  GPULIB_URL: ${REPOS_API}server/jobs/artifacts/$SERVER_ID/raw/gpumaths/cgbnBindings/powm/libpowmosm75.so?job=build
-  CLIENT_URL: ${REPOS_API}client/jobs/artifacts/$CLIENT_ID/raw/release/client.linux64?job=build
-  REGISTRATION_URL: ${REPOS_API}registration/jobs/artifacts/$REGISTRATION_ID/raw/release/registration.linux64?job=build
-  UDB_URL: ${REPOS_API}user-discovery-bot/jobs/artifacts/$UDB_ID/raw/release/udb.linux64?job=build
-  GATEWAY_URL: ${REPOS_API}gateway/jobs/artifacts/$GATEWAY_ID/raw/release/gateway.linux64?job=build
+  GPULIB_URL: ""
+  CLIENT_URL: ""
+  REGISTRATION_URL: ""
+  UDB_URL: ""
+  GATEWAY_URL: ""
   DEFAULTBRANCH: "release"
 
 before_script:
