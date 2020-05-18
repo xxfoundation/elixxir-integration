@@ -10,6 +10,7 @@ logLevel: 1
 node:
     id: ""
     paths:
+        idf:  "nodeID-2.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/server-2.log"
