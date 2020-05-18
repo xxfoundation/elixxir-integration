@@ -26,6 +26,10 @@ rm $download_path/*
 
 # If we are on a feature branch, add it to the eval list
 FBRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$CI_BUILD_REF_NAME" != "" ]]; then
+    FBRANCH=$CI_BUILD_REF_NAME
+fi
+FBRANCH=$(echo $FBRANCH | grep feature)
 # Also check for the branch name without the "feature" on it.
 FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 
@@ -33,9 +37,8 @@ echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
 echo "(Note: if you forced a branch, that is checked first!)"
 
 for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
-    echo $BRANCH
+    echo "Attempting downloads from: $BRANCH"
     BRANCH_URL=${BRANCH_URL:="jobs/artifacts/$BRANCH/raw/release"}
-    echo $BRANCH_URL
     # Get URLs for artifacts from all relevant repos
     UDB_URL=${UDB_URL:="${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"}
     SERVER_URL=${SERVER_URL:="${REPOS_API}server/$BRANCH_URL/server$BIN"}
@@ -48,37 +51,37 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     set -x
 
     # Silently download the UDB binary to the provisioning directory
-    if [ ! -f $download_path/udb ]; then
+    if [ ! -f $download_path/udb ] && [[ "$UDB_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/udb" ${UDB_URL}
     fi
 
     # Silently download the Server binary to the provisioning directory
-    if [ ! -f $download_path/server ]; then
+    if [ ! -f $download_path/server ] && [[ "$SERVER_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server" ${SERVER_URL}
     fi
 
     # Silently download the Gateway binary to the provisioning directory
-    if [ ! -f $download_path/gateway ]; then
+    if [ ! -f $download_path/gateway ] && [[ "$GW_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/gateway" ${GW_URL}
     fi
 
     # Silently download the permissioning binary to the provisioning directory
-    if [ ! -f $download_path/permissioning ]; then
+    if [ ! -f $download_path/permissioning ] && [[ "$PERMISSIONING_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/permissioning" ${PERMISSIONING_URL}
     fi
 
     # Silently download the permissioning binary to the provisioning directory
-    if [ ! -f $download_path/client ]; then
+    if [ ! -f $download_path/client ] && [[ "$CLIENT_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/client" ${CLIENT_URL}
     fi
 
     # Silently download the Server binary to the provisioning directory
-    if [ ! -f $download_path/server-cuda ]; then
-        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server-cuda" ${SERVER_URL}
+    if [ ! -f $download_path/server-cuda ] && [[ "$SERVER_GPU_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server-cuda" ${SERVER_GPU_URL}
     fi
 
     # Silently download the GPU Library to the provisioning directory
-    if [ ! -f $download_path/libpowmosm75.so ]; then
+    if [ ! -f $download_path/libpowmosm75.so ] && [[ "$GPULIB_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/libpowmosm75.so" ${GPULIB_URL}
     fi
 
