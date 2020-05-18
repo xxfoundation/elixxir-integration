@@ -25,7 +25,7 @@ mkdir -p "$download_path"
 rm $download_path/*
 
 # If we are on a feature branch, add it to the eval list
-FBRANCH=$(git status | grep branch | grep feature | awk '{print $3}')
+FBRANCH=$(git rev-parse --abbrev-ref HEAD)
 # Also check for the branch name without the "feature" on it.
 FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 
