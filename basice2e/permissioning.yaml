@@ -17,7 +17,7 @@ port: 18000
 dbUsername: ""
 dbPassword: ""
 dbName: ""
-dbAddress: ""
+dbAddress: "0.0.0.0:9600"
 
 minimumNodes: 5
 

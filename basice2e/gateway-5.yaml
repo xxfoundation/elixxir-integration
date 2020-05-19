@@ -11,14 +11,7 @@ log: "results/gateways/gatway-5.log"
 # Log message level
 logLevel: 1
 
-# The cMix nodes in the network
-cMixNodes:
-  - "127.0.0.1:50000"
-  - "127.0.0.1:50001"
-  - "127.0.0.1:50002"
-  - "127.0.0.1:50003"
-  - "127.0.0.1:50004"
-  - "127.0.0.1:50005"
+GatewayNode: "127.0.0.1:50004"
 
 # The listening address of this gateway
 Port: 8444
