@@ -11,14 +11,8 @@ log: "results/gateway-1.log"
 # Log message level
 logLevel: 1
 
-# I am first node
-firstNode: "true"
-
 # The cMix nodes in the network
-cMixNodes:
- - "localhost:60000"
- - "localhost:60001"
- - "localhost:60002"
+GatewayNode: "localhost:60000"
 
 # The listening address of this gateway
 Port: 9440
