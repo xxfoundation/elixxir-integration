@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Get platform parameter
 if [[ $1 == "l" ]] ||[[ $1 == "linux" ]] || [[ -z $1 ]]; then
     BIN=".linux64?job=build"
@@ -15,42 +13,94 @@ else
 fi
 
 # Set up the URL for downloading the binaries
-PRIVATEGRITY_REPOS="https://gitlab.com/api/v4/projects/elixxir%2F"
-MASTER_URL_FRAG="jobs/artifacts/release/raw/release"
-
-# Get URLs for artifacts from all relevant repos
-UDB_URL="${PRIVATEGRITY_REPOS}user-discovery-bot/$MASTER_URL_FRAG/udb$BIN"
-SERVER_URL="${PRIVATEGRITY_REPOS}server/$MASTER_URL_FRAG/server$BIN"
-GW_URL="${PRIVATEGRITY_REPOS}gateway/$MASTER_URL_FRAG/gateway$BIN"
-PERMISSIONING_URL="${PRIVATEGRITY_REPOS}registration/$MASTER_URL_FRAG/registration$BIN"
-CLIENT_URL="${PRIVATEGRITY_REPOS}client/$MASTER_URL_FRAG/client$BIN"
-
+DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
+REPOS_API=${REPOS_API:="https://gitlab.com/api/v4/projects/elixxir%2F"}
 # Set up the gitlab access token
-PATKEY="rBxQ6BvKP-eFxxeM3Ugm"
+PATKEY=${PATKEY:="rBxQ6BvKP-eFxxeM3Ugm"}
 
 # Make the binaries directory
 download_path="$(pwd)/bin"
 mkdir -p "$download_path"
+# Delete old binaries
+rm $download_path/*
 
-# Silently download the UDB binary to the provisioning directory
-curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/udb" ${UDB_URL}
+# If we are on a feature branch, add it to the eval list
+FBRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [[ "$CI_BUILD_REF_NAME" != "" ]]; then
+    FBRANCH=$CI_BUILD_REF_NAME
+fi
+FBRANCH=$(echo $FBRANCH | grep feature)
+# Also check for the branch name without the "feature" on it.
+FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 
-# Silently download the Server binary to the provisioning directory
-curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server" ${SERVER_URL}
+echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
+echo "(Note: if you forced a branch, that is checked first!)"
 
-# Silently download the Gateway binary to the provisioning directory
-curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/gateway" ${GW_URL}
+for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
+    echo "Attempting downloads from: $BRANCH"
+    BRANCH_URL=${BRANCH_URL:="jobs/artifacts/$BRANCH/raw/release"}
+    # Get URLs for artifacts from all relevant repos
+    UDB_URL=${UDB_URL:="${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"}
+    SERVER_URL=${SERVER_URL:="${REPOS_API}server/$BRANCH_URL/server$BIN"}
+    GW_URL=${GW_URL:="${REPOS_API}gateway/$BRANCH_URL/gateway$BIN"}
+    PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$BIN"}
+    CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
+    SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
+    GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
 
-# Silently download the permissioning binary to the provisioning directory
-curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/permissioning" ${PERMISSIONING_URL}
+    set -x
 
-# Silently download the permissioning binary to the provisioning directory
-curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/client" ${CLIENT_URL}
+    # Silently download the UDB binary to the provisioning directory
+    if [ ! -f $download_path/udb ] && [[ "$UDB_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/udb" ${UDB_URL}
+    fi
 
+    # Silently download the Server binary to the provisioning directory
+    if [ ! -f $download_path/server ] && [[ "$SERVER_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server" ${SERVER_URL}
+    fi
+
+    # Silently download the Gateway binary to the provisioning directory
+    if [ ! -f $download_path/gateway ] && [[ "$GW_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/gateway" ${GW_URL}
+    fi
+
+    # Silently download the permissioning binary to the provisioning directory
+    if [ ! -f $download_path/permissioning ] && [[ "$PERMISSIONING_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/permissioning" ${PERMISSIONING_URL}
+    fi
+
+    # Silently download the permissioning binary to the provisioning directory
+    if [ ! -f $download_path/client ] && [[ "$CLIENT_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/client" ${CLIENT_URL}
+    fi
+
+    # Silently download the Server binary to the provisioning directory
+    if [ ! -f $download_path/server-cuda ] && [[ "$SERVER_GPU_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/server-cuda" ${SERVER_GPU_URL}
+    fi
+
+    # Silently download the GPU Library to the provisioning directory
+    if [ ! -f $download_path/libpowmosm75.so ] && [[ "$GPULIB_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $PATKEY" -o "$download_path/libpowmosm75.so" ${GPULIB_URL}
+    fi
+
+    set +x
+
+
+    unset BRANCH_URL
+    unset UDB_URL
+    unset SERVER_URL
+    unset GW_URL
+    unset PERMISSIONING_URL
+    unset CLIENT_URL
+    unset SERVER_GPU_URL
+    unset GPULIB_URL
+done
 
 # Make binaries executable
-chmod +x "$download_path"/*
+chmod +x "$download_path"/[^l]*
 
 file "$download_path"/*
 
-echo "If you see HTML or anything but linux binaries above, something is messed up!"
+echo "If you see HTML or anything but linux/mac binaries above, something is messed up!"
