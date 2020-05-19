@@ -14,25 +14,16 @@ node:
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/server-2.log"
-    addresses:
-        - "localhost:60000"
-        - "localhost:60001"
-        - "localhost:60002"
+    address: "localhost:60001"
 database:
     name: "node2"
     username: "cmix_server"
     password: ""
-    addresses:
-        - ""
-        - ""
-        - ""
-gateways:
+    address: ""
+gateway:
     paths:
         cert: "../keys/cmix.rip.crt"
-    addresses:
-        - "localhost:9440"
-        - "localhost:9441"
-        - "localhost:9442"
+    address: "localhost:9441"
 permissioning:
   paths:
     cert: "../keys/cmix.rip.crt"
