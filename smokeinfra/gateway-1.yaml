@@ -12,7 +12,7 @@ log: "results/gateway-1.log"
 logLevel: 1
 
 # The cMix nodes in the network
-GatewayNode: "localhost:60000"
+Node: "localhost:60000"
 
 # The listening address of this gateway
 Port: 9440

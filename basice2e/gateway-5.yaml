@@ -11,7 +11,7 @@ log: "results/gateways/gatway-5.log"
 # Log message level
 logLevel: 1
 
-GatewayNode: "127.0.0.1:50004"
+Node: "127.0.0.1:50004"
 
 # The listening address of this gateway
 Port: 8444
