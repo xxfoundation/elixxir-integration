@@ -23,11 +23,13 @@ node:
       - "127.0.0.1:50003"
       - "127.0.0.1:50004"
       - "127.0.0.1:50005"
+      - "127.0.0.1:50006"
 database:
     name: "node5"
     username: "cmix_server"
     password: ""
     addresses:
+        - ""
         - ""
         - ""
         - ""
@@ -42,6 +44,7 @@ gateways:
         - "127.0.0.1:8442"
         - "127.0.0.1:8443"
         - "127.0.0.1:8444"
+        - "127.0.0.1:8445"
 permissioning:
   paths:
     cert: "../keys/cmix.rip.crt"

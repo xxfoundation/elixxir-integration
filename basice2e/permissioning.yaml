@@ -17,9 +17,9 @@ port: 18000
 dbUsername: ""
 dbPassword: ""
 dbName: ""
-dbAddress: ""
+dbAddress: "0.0.0.0:6969"
 
-minimumNodes: 5
+minimumNodes: 6
 
 clientRegCodes:
   - "FFFF"
@@ -43,6 +43,9 @@ serverCertPath: "../keys/cmix.rip.crt"
 
 udbID: 3
 
+# Time interval (in minutes) in which the database is
+# checked for banned nodes
+BanTrackerInterval: "3"
 
 groups:
   cmix:
