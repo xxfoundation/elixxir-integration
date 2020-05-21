@@ -1,11 +1,11 @@
 {
-  "TeamSize": 3,
+  "TeamSize": 5,
   "BatchSize": 32,
   "RandomOrdering": false,
   "MinimumDelay": 60,
   "RealtimeDelay": 120,
   "Threshold":     3,
   "NodeCleanUpInterval": 3,
-  "Secure": 		     true
+  "Secure": 		     false
 
  }

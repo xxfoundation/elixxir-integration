@@ -19,7 +19,7 @@ dbPassword: ""
 dbName: ""
 dbAddress: "0.0.0.0:6969"
 
-minimumNodes: 6
+minimumNodes: 5
 
 clientRegCodes:
   - "FFFF"
