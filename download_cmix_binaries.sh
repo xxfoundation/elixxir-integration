@@ -43,7 +43,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     UDB_URL=${UDB_URL:="${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"}
     SERVER_URL=${SERVER_URL:="${REPOS_API}server/$BRANCH_URL/server$BIN"}
     GW_URL=${GW_URL:="${REPOS_API}gateway/$BRANCH_URL/gateway$BIN"}
-    PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/origin/xx-2152/IndependantNodeTracker/registration$BIN"}
+    PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$BIN"}
     CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
     SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
     GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
