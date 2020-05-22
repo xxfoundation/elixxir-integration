@@ -49,7 +49,7 @@ do
     SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
     then
-        SERVERCMD="nsys profile --trace=cuda -w -x -o server-$SERVERID $SERVERCMD"
+        SERVERCMD="nsys profile --trace=cuda -o server-$SERVERID $SERVERCMD"
     fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
