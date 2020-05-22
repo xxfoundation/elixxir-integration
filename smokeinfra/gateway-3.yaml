@@ -11,14 +11,7 @@ log: "results/gateway-3.log"
 # Log message level
 logLevel: 1
 
-# I am last node
-lastNode: "true"
-
-# The cMix nodes in the network
-cMixNodes:
- - "localhost:60000"
- - "localhost:60001"
- - "localhost:60002"
+Node: "localhost:60002"
 
 # The listening address of this gateway
 Port: 9442

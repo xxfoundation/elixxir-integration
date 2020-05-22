@@ -16,32 +16,16 @@ node:
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-4.log"
-    addresses:
-      - "127.0.0.1:50000"
-      - "127.0.0.1:50001"
-      - "127.0.0.1:50002"
-      - "127.0.0.1:50003"
-      - "127.0.0.1:50004"
+    address: "127.0.0.1:50003"
 database:
-  name: "node5"
-  username: "cmix_server"
-  password: ""
-  addresses:
-    - ""
-    - ""
-    - ""
-    - ""
-    - ""
-    - ""
-gateways:
-  paths:
-    cert: "../keys/cmix.rip.crt"
-  addresses:
-    - "127.0.0.1:8440"
-    - "127.0.0.1:8441"
-    - "127.0.0.1:8442"
-    - "127.0.0.1:8443"
-    - "127.0.0.1:8444"
+    name: "node4"
+    username: "cmix_server"
+    password: ""
+    address: ""
+gateway:
+    paths:
+        cert: "../keys/cmix.rip.crt"
+    address: "127.0.0.1:8443"
 permissioning:
   paths:
     cert: "../keys/cmix.rip.crt"
