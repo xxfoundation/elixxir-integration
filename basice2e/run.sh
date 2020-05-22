@@ -71,7 +71,7 @@ jobs -p > results/serverpids
 
 finish() {
     echo "STOPPING SERVERS AND GATEWAYS..."
-    if [ -z "NSYSENABLED" ]; then
+    if [ -z "$NSYSENABLED" ]; then
         nsys shutdown --kill=sigterm
     fi
     # NOTE: jobs -p doesn't work in a signal handler
