@@ -6,6 +6,8 @@ set -e
 
 rm -fr results || true
 rm blob* || true
+rm server-5.qdstrm || true
+rm server-5.qdrep || true
 
 mkdir -p .elixxir
 
@@ -44,10 +46,16 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    if [ $SERVERID -eq 5 ]
+    then
+        SERVERCMD="nsys profile --trace=cuda -o server-$SERVERID ../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    else
+        SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
+    echo $(pgrep -P $PIDVAL)
 done
 
 # Start gateways
@@ -64,6 +72,8 @@ jobs -p > results/serverpids
 
 finish() {
     echo "STOPPING SERVERS AND GATEWAYS..."
+    killall -9 server
+    sleep 5
     # NOTE: jobs -p doesn't work in a signal handler
     for job in $(cat results/serverpids)
     do
