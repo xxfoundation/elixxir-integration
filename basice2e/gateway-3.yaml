@@ -19,7 +19,6 @@ cMixNodes:
   - "127.0.0.1:50002"
   - "127.0.0.1:50003"
   - "127.0.0.1:50004"
-  - "127.0.0.1:50005"
 
 # The listening address of this gateway
 Port: 8442
