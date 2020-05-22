@@ -86,7 +86,7 @@ basice2e:
     - cp ../bin/libpowmosm75.so /opt/elixxir/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
     - sed -i 's/useGpu\:\ false/useGpu\:\ true/g' server-[12345].yaml
-    - ./run.sh
+    - NSYSENABLED=TRUE ./run.sh
     - mv results results-gpu
     - cd ..
   artifacts:

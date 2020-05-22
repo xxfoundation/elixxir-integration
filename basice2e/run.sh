@@ -46,11 +46,10 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    if [ $SERVERID -eq 5 ]
+    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    if [[ $SERVERID -eq 5 && -z "$NSYSENABLED" ]]
     then
-        SERVERCMD="nsys profile --trace=cuda -o server-$SERVERID ../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
-    else
-        SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+        SERVERCMD="nsys profile --trace=cuda -o server-$SERVERID $SERVERCMD"
     fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
@@ -72,8 +71,9 @@ jobs -p > results/serverpids
 
 finish() {
     echo "STOPPING SERVERS AND GATEWAYS..."
-    killall -9 server
-    sleep 5
+    if [ -z "NSYSENABLED" ]; then
+        nsys shutdown --kill=sigterm
+    fi
     # NOTE: jobs -p doesn't work in a signal handler
     for job in $(cat results/serverpids)
     do
