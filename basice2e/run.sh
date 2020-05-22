@@ -47,14 +47,13 @@ for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
     SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
-    if [[ $SERVERID -eq 5 && -z "$NSYSENABLED" ]]
+    if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
     then
         SERVERCMD="nsys profile --trace=cuda -o server-$SERVERID $SERVERCMD"
     fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
-    echo $(pgrep -P $PIDVAL)
 done
 
 # Start gateways
@@ -71,7 +70,7 @@ jobs -p > results/serverpids
 
 finish() {
     echo "STOPPING SERVERS AND GATEWAYS..."
-    if [ -z "$NSYSENABLED" ]; then
+    if [ -n "$NSYSENABLED" ]; then
         nsys shutdown --kill=sigterm
     fi
     # NOTE: jobs -p doesn't work in a signal handler
