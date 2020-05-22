@@ -11,14 +11,8 @@ log: "results/gateway-1.log"
 # Log message level
 logLevel: 1
 
-# I am first node
-firstNode: "true"
-
 # The cMix nodes in the network
-cMixNodes:
- - "localhost:60000"
- - "localhost:60001"
- - "localhost:60002"
+Node: "localhost:60000"
 
 # The listening address of this gateway
 Port: 9440
@@ -32,7 +26,9 @@ MessageTimeout: 1800
 keyPath: "../keys/cmix.rip.key"
 # Path to the gateway certificate file
 certPath: "../keys/cmix.rip.crt"
-# Path to the gateway certificate file
+# Path to permissioning cert
+permissioningCertPath: "../keys/cmix.rip.crt"
+# Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 IP_Whitelist_File: whitelist.txt
 

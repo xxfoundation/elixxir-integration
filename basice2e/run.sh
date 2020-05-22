@@ -90,7 +90,8 @@ trap finish INT
 
 # Sleeps can die in a fire on the sun, we wait for the servers to start running
 # rounds
-touch rid.txt || rm rid.txt || touch rid.txt
+rm rid.txt || true
+touch rid.txt
 cnt=0
 echo -n "Waiting for a round to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
