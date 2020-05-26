@@ -21,6 +21,10 @@ dbAddress: "0.0.0.0:6969"
 
 minimumNodes: 5
 
+minGatewayVersion: "1.1.0"
+minServerVersion:  "1.1.0"
+nodeMetricInterval: 3
+
 clientRegCodes:
   - "FFFF"
   - "GGGG"
