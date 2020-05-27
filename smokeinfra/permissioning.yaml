@@ -60,11 +60,14 @@ serverCertPath: "../keys/cmix.rip.crt"
 
 udbID: 3
 
-
+# The minimum version required of gateways to connect
 minGatewayVersion: "1.1.0"
+# The minimum version required of servers to connect
 minServerVersion:  "1.0.0"
 nodeMetricInterval: 3
-BanTrackerInterval: 3
+# Time interval (in minutes) in which the database is
+# checked for banned nodes
+BanTrackerInterval: "3"
 
 groups:
   cmix:
