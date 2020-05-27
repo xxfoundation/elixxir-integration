@@ -24,7 +24,7 @@ variables:
   SERVER_GPU_URL: ""
   GPULIB_URL: ""
   CLIENT_URL: ""
-  REGISTRATION_URL: "https://gitlab.com/elixxir/registration/-/jobs/562683212/artifacts/file/release/registration.linux64"
+  REGISTRATION_URL: ""
   UDB_URL: ""
   GATEWAY_URL: ""
   DEFAULTBRANCH: "release"
