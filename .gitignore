@@ -9,3 +9,5 @@ blob*
 *.swp
 *.swo
 *.elixxir*
+rid.txt
+nodeID-*.json
