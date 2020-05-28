@@ -17,7 +17,7 @@ cache:
 variables:
   REPO_DIR: gitlab.com/elixxir
   REPO_NAME: server
-  DOCKER_IMAGE: sydney112/cuda-go:latest
+  DOCKER_IMAGE: elixxirlabs/cuda-go:latest
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
   SERVER_URL: ""
@@ -86,7 +86,7 @@ basice2e:
     - cp ../bin/libpowmosm75.so /opt/elixxir/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
     - sed -i 's/useGpu\:\ false/useGpu\:\ true/g' server-[12345].yaml
-    - ./run.sh
+    - NSYSENABLED=TRUE ./run.sh
     - mv results results-gpu
     - cd ..
   artifacts:
