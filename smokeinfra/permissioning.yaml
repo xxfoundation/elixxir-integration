@@ -30,10 +30,10 @@ clientRegCodes:
   - "GGGG"
 
 # Path to the file containing the round ID
-roundIdPath: "roundId.txt"
+roundIdPath: "results/roundId.txt"
 
 # Path to the file containing the update ID
-updateIdPath: "updateId.txt"
+updateIdPath: "results/updateId.txt"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
