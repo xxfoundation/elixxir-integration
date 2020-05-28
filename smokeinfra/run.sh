@@ -27,7 +27,7 @@ do
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
     if [ $SERVERID -eq 2 ]; then
-        sleep 15 # This will force a CDE timeout
+        sleep 10 # This will force a CDE timeout
     fi
 done
 

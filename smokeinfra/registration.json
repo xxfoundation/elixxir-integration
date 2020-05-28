@@ -1,5 +1,5 @@
 {
-  "TeamSize": 5,
+  "TeamSize": 3,
   "BatchSize": 32,
   "RandomOrdering": false,
   "MinimumDelay": 60,
@@ -8,4 +8,4 @@
   "NodeCleanUpInterval": 3,
   "Secure": 		     false
 
-}
+ }
