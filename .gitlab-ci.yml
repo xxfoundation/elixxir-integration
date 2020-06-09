@@ -53,8 +53,8 @@ installbinaries:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
     - ./download_cmix_binaries.sh
-    - mkdir -p /opt/elixxir/lib
-    - cp bin/libpowmosm75.so /opt/elixxir/lib/
+    - mkdir -p /opt/xxnetwork/lib
+    - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
     - "chmod +x *"
     - bin/server version
     - bin/server-cuda version
