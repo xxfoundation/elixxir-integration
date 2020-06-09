@@ -6,7 +6,7 @@
 ################################################################################
 
 # Output log file
-log: "results/gateways/gatway-4.log"
+log: "results/gateways/gateway-4.log"
 
 # Log message level
 logLevel: 2
