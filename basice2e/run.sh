@@ -46,7 +46,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
     then
         SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
@@ -60,7 +60,7 @@ done
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
