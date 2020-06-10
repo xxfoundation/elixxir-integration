@@ -24,7 +24,6 @@ database:
 gateway:
     paths:
         cert: "../keys/cmix.rip.crt"
-    address: "127.0.0.1:8441"
 permissioning:
   paths:
     cert: "../keys/cmix.rip.crt"
