@@ -109,6 +109,8 @@ while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
     echo -n "."
 done
 
+sleep 5
+
 runclients() {
     echo "Starting clients..."
 
