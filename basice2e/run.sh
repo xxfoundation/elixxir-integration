@@ -28,14 +28,6 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
-# Start a user discovery bot server
-echo "STARTING UDB..."
-UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
-$UDBCMD >> $UDBOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$UDBCMD -- $PIDVAL"
-
 echo "STARTING SERVERS..."
 
 PERMCMD="../bin/permissioning -c permissioning.yaml "
@@ -96,10 +88,20 @@ cnt=0
 echo -n "Waiting for a round to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
     sleep 1
-    cat results/servers/server-5.log | grep "RID 0 ReceiveFinishRealtime END" > rid.txt || true
+    grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-5.log > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
+
+# Start a user discovery bot server
+echo "STARTING UDB..."
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+$UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
+
+sleep 5
 
 runclients() {
     echo "Starting clients..."
