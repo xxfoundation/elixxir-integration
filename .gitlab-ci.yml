@@ -53,8 +53,8 @@ installbinaries:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
     - ./download_cmix_binaries.sh
-    - mkdir -p /opt/elixxir/lib
-    - cp bin/libpowmosm75.so /opt/elixxir/lib/
+    - mkdir -p /opt/xxnetwork/lib
+    - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
     - "chmod +x *"
     - bin/server version
     - bin/server-cuda version
@@ -82,8 +82,8 @@ basice2e:
     - ls -lha
     - ./run.sh
     - mv results results-cpu
-    - mkdir -p /opt/elixxir/lib
-    - cp ../bin/libpowmosm75.so /opt/elixxir/lib/
+    - mkdir -p /opt/xxnetwork/lib
+    - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
     - sed -i 's/useGpu\:\ false/useGpu\:\ true/g' server-[12345].yaml
     - NSYSENABLED=TRUE ./run.sh

@@ -28,14 +28,6 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
-# Start a user discovery bot server
-echo "STARTING UDB..."
-UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
-$UDBCMD >> $UDBOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$UDBCMD -- $PIDVAL"
-
 echo "STARTING SERVERS..."
 
 PERMCMD="../bin/permissioning -c permissioning.yaml "
@@ -46,7 +38,7 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
     then
         SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
@@ -60,7 +52,7 @@ done
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -96,10 +88,28 @@ cnt=0
 echo -n "Waiting for a round to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
     sleep 1
-    cat results/servers/server-5.log | grep "RID 0 ReceiveFinishRealtime END" > rid.txt || true
+    grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-5.log > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
+
+# Start a user discovery bot server
+echo "STARTING UDB..."
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+$UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
+
+rm rid.txt || true
+while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
+    sleep 1
+    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
+
+sleep 5
 
 runclients() {
     echo "Starting clients..."
@@ -118,7 +128,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL

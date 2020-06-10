@@ -3,7 +3,7 @@
 # ==================================
 
 # Log message level
-logLevel: 1
+logLevel: 2
 
 # Path to log file
 logPath: "results/permissioning.log"
