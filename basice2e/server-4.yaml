@@ -9,7 +9,7 @@ registrationCode: "gwxs"
 useGPU: false
 node:
     paths:
-        idf:  "nodeID-4.json"
+        idf:  "results/servers/nodeID-4.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-4.log"

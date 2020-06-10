@@ -9,7 +9,7 @@ registrationCode: "qpol"
 useGPU: false
 node:
     paths:
-        idf:  "nodeID-1.json"
+        idf:  "results/servers/nodeID-1.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-1.log"

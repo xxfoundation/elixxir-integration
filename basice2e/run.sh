@@ -101,7 +101,13 @@ PIDVAL=$!
 echo $PIDVAL >> results/serverpids
 echo "$UDBCMD -- $PIDVAL"
 
-sleep 5
+rm rid.txt || true
+while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
+    sleep 1
+    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
 
 runclients() {
     echo "Starting clients..."

@@ -9,7 +9,7 @@ registrationCode: "vydz"
 useGPU: false
 node:
     paths:
-        idf:  "nodeID-3.json"
+        idf:  "results/servers/nodeID-3.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-3.log"
