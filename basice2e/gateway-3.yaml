@@ -35,7 +35,8 @@ permissioningCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
-IP_Whitelist: "whitelist.txt"
+IP_Whitelist_File: "whitelist.txt"
+User_Whitelist_File: "whitelist.txt"
 
 
 # === END YAML
