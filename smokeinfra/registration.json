@@ -6,6 +6,7 @@
   "RealtimeDelay": 120,
   "Threshold":     3,
   "NodeCleanUpInterval": 3,
+  "ResourceQueueTimeout": 300000,
   "Secure": 		     false
 
  }
