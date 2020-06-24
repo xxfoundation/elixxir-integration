@@ -22,24 +22,22 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
     if [ $SERVERID -eq 2 ]; then
-        sleep 15 # This will force a CDE timeout
+        sleep 10 # This will force a CDE timeout
     fi
 done
 
 echo "STARTING GATEWAYS..."
 
-sleep 5
-
 # Start gateways
 for GWID in $(seq 3 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway -i $IDX --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID.console 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"

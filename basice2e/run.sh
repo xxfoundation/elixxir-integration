@@ -6,6 +6,8 @@ set -e
 
 rm -fr results || true
 rm blob* || true
+rm server-5.qdstrm || true
+rm server-5.qdrep || true
 
 mkdir -p .elixxir
 
@@ -26,14 +28,6 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
-# Start a user discovery bot server
-echo "STARTING UDB..."
-UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
-$UDBCMD >> $UDBOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$UDBCMD -- $PIDVAL"
-
 echo "STARTING SERVERS..."
 
 PERMCMD="../bin/permissioning -c permissioning.yaml "
@@ -44,7 +38,11 @@ echo "$PERMCMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server -i $IDX --roundBufferTimeout 300s --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
+    if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
+    then
+        SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
+    fi
     $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -54,7 +52,7 @@ done
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway  -i $IDX  --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -64,6 +62,10 @@ jobs -p > results/serverpids
 
 finish() {
     echo "STOPPING SERVERS AND GATEWAYS..."
+    if [ -n "$NSYSENABLED" ]
+    then
+        nsys stop --session=gputest
+    fi
     # NOTE: jobs -p doesn't work in a signal handler
     for job in $(cat results/serverpids)
     do
@@ -86,10 +88,28 @@ cnt=0
 echo -n "Waiting for a round to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
     sleep 1
-    cat results/servers/server-5.log | grep "RID 0 ReceiveFinishRealtime END" > rid.txt || true
+    grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-5.log > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
+
+# Start a user discovery bot server
+echo "STARTING UDB..."
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+$UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
+
+rm rid.txt || true
+while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
+    sleep 1
+    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
+
+sleep 5
 
 runclients() {
     echo "Starting clients..."
@@ -108,7 +128,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            CLIENTCMD="timeout 60s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -164,11 +184,11 @@ wait $PIDVAL || true
 
 # Register non-precanned users
 echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 180s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -E rick42@elixxir.io -r FFFF"
+CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42 -E rick42@elixxir.io -r FFFF"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -E ben43@elixxir.io -r GGGG"
+CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43 -E ben43@elixxir.io -r GGGG"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -197,11 +217,11 @@ BENID=${TMPID%?} # remove ! from end
 
 # Non-precanned user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"

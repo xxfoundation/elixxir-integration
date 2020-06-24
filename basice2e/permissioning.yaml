@@ -3,10 +3,12 @@
 # ==================================
 
 # Log message level
-logLevel: 1
+logLevel: 2
 
 # Path to log file
 logPath: "results/permissioning.log"
+
+ndfOutputPath: "results/ndf.json"
 
 # The listening port of this server
 port: 18000
@@ -15,21 +17,23 @@ port: 18000
 dbUsername: ""
 dbPassword: ""
 dbName: ""
-dbAddress: ""
+dbAddress: "0.0.0.0:6969"
 
 minimumNodes: 5
 
-# List of Node registration codes (in order of network placement)
-registrationCodes:
-  - "AAAA"
-  - "BBBB"
-  - "CCCC"
-  - "DDDD"
-  - "EEEE"
+minGatewayVersion: "1.1.0"
+minServerVersion:  "1.0.0"
+nodeMetricInterval: 3
 
 clientRegCodes:
   - "FFFF"
   - "GGGG"
+
+# Path to the file containing the round ID
+roundIdPath: "results/roundId.txt"
+
+# Path to the file containing the update ID
+updateIdPath: "results/updateId.txt"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
@@ -49,6 +53,9 @@ serverCertPath: "../keys/cmix.rip.crt"
 
 udbID: 3
 
+# Time interval (in minutes) in which the database is
+# checked for banned nodes
+BanTrackerInterval: "3"
 
 groups:
   cmix:
