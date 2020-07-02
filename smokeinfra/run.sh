@@ -22,7 +22,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --logLevel 2 --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
@@ -63,7 +63,7 @@ rm rid.txt || touch rid.txt
 cnt=0
 echo -n "Waiting for 2 rounds to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
-    sleep 1
+    sleep 300
     cat results/server-3.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."

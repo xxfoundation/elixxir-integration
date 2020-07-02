@@ -72,6 +72,14 @@ finish() {
         echo "KILLING $job"
         kill $job || true
     done
+
+    sleep 5
+
+    for job in $(cat results/serverpids)
+    do
+        echo "KILL -9 $job"
+        kill -9 $job || true
+    done
     #tail $SERVERLOGS/*
     #tail $CLIENTCLEAN/*
     #diff -ruN clients.goldoutput $CLIENTCLEAN

@@ -82,6 +82,7 @@ basice2e:
     - ls -lha
     - ./run.sh
     - mv results results-cpu
+    - sleep 60
     - mkdir -p /opt/xxnetwork/lib
     - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
