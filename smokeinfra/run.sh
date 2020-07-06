@@ -63,7 +63,7 @@ rm rid.txt || touch rid.txt
 cnt=0
 echo -n "Waiting for 2 rounds to run"
 while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
-    sleep 300
+    sleep 1
     cat results/server-3.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
