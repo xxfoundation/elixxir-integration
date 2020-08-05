@@ -136,6 +136,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
+            mkdir -p blob$cid
             CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid/blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
@@ -159,6 +160,8 @@ echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
 
 # Register two users and then do UDB search on each other
+mkdir -p blob9
+mkdir -p blob18
 echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
 CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
@@ -191,6 +194,8 @@ wait $PIDVAL || true
 
 
 # Register non-precanned users
+mkdir -p blob42
+mkdir -p blob43
 echo "REGISTERING NEW USERS..."
 CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -E rick42@elixxir.io -r FFFF"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
