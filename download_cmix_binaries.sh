@@ -13,7 +13,7 @@ else
 fi
 
 # Set up the URL for downloading the binaries
-DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
+DEFAULTBRANCH=${DEFAULTBRANCH:="master"}
 REPOS_API=${REPOS_API:="https://gitlab.com/api/v4/projects/elixxir%2F"}
 # Set up the gitlab access token
 PATKEY=${PATKEY:="rBxQ6BvKP-eFxxeM3Ugm"}
