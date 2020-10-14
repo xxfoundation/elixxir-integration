@@ -38,5 +38,6 @@ serverCertPath: "../keys/cmix.rip.crt"
 IP_Whitelist_File: "whitelist.txt"
 User_Whitelist_File: "whitelist.txt"
 
+knownRoundsPath: "results/gateways/knownrounds-2.json"
 
 # === END YAML

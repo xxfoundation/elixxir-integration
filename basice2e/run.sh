@@ -101,6 +101,8 @@ while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
     echo -n "."
 done
 
+echo "DONE LETS DO STUFF"
+
 # Start a user discovery bot server
 echo "STARTING UDB..."
 UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
