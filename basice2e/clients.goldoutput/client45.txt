@@ -1,2 +1,6 @@
-Message from 7, Rick Received: Hello, 4
-Sending Message to 5, Ben: Hello, 5
+Sending to AAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 5
+Message received: Hello, 4
+Received 1
+Sending to AAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 5
+Message received: Hello, 4
+Received 1
