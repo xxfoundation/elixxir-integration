@@ -21,7 +21,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-v -n ndf.json --skipNDFVerification -P dummypassword "
+CLIENTOPTS="-v --password hello --ndf ndf.json"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -104,22 +104,22 @@ done
 echo "DONE LETS DO STUFF"
 
 # Start a user discovery bot server
-echo "STARTING UDB..."
-UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
-$UDBCMD >> $UDBOUT 2>&1 &
-PIDVAL=$!
-echo $PIDVAL >> results/serverpids
-echo "$UDBCMD -- $PIDVAL"
+# echo "STARTING UDB..."
+# UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+# $UDBCMD >> $UDBOUT 2>&1 &
+# PIDVAL=$!
+# echo $PIDVAL >> results/serverpids
+# echo "$UDBCMD -- $PIDVAL"
 
-rm rid.txt || true
-while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
-    sleep 1
-    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
-    cnt=$(($cnt + 1))
-    echo -n "."
-done
+# rm rid.txt || true
+# while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
+#     sleep 1
+#     grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+#     cnt=$(($cnt + 1))
+#     echo -n "."
+# done
 
-sleep 5
+# sleep 5
 
 runclients() {
     echo "Starting clients..."
@@ -132,14 +132,13 @@ runclients() {
         #       run multiple clients with the same user id so we need
         #       updates to make that work.
         #     for nid in 1 2 3 4; do
-
         for nid in 1
         do
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
             mkdir -p blob$cid
-            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -f blob$cid/blob$cid -E email$cid@email.com -i $cid -d $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blob$cid/blob$cid --unsafe --sendid $cid --destid $nid -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -162,86 +161,86 @@ echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
 
 # Register two users and then do UDB search on each other
-mkdir -p blob9
-mkdir -p blob18
-echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
-eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log -f blob18/blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
+# mkdir -p blob9
+# mkdir -p blob18
+# echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
+# CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
+# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log -f blob18/blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
+# eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
+# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
 
-# Send multiple E2E encrypted messages between users that discovered each other
-echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18/blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log -c 20 -w 20 -i 9 -d 18 -s \"bernardo@elixxir.io\" -f blob9/blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-set +e
-wait $PIDVAL || true
+# # Send multiple E2E encrypted messages between users that discovered each other
+# echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
+# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18/blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
+# eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log -c 20 -w 20 -i 9 -d 18 -s \"bernardo@elixxir.io\" -f blob9/blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
+# eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# set +e
+# wait $PIDVAL || true
 
 
-# Register non-precanned users
-mkdir -p blob42
-mkdir -p blob43
-echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -E rick42@elixxir.io -r FFFF"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -E ben43@elixxir.io -r GGGG"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+# # Register non-precanned users
+# mkdir -p blob42
+# mkdir -p blob43
+# echo "REGISTERING NEW USERS..."
+# CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -E rick42@elixxir.io -r FFFF"
+# eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -E ben43@elixxir.io -r GGGG"
+# eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
+# PIDVAL2=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# wait $PIDVAL2
 
-# Have each non-precanned user search for each other
-echo "SEARCHING FOR NEW USERS..."
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+# # Have each non-precanned user search for each other
+# echo "SEARCHING FOR NEW USERS..."
+# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
+# eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
+# eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
+# PIDVAL2=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# wait $PIDVAL2
 
-# Extract generated user name from logs
-echo "EXTRACTING USER IDs FROM LOG FILES..."
-TMPID=$(cat $CLIENTOUT/client42.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
-RICKID=${TMPID%?} # remove ! from end
-TMPID=$(cat $CLIENTOUT/client43.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
-BENID=${TMPID%?} # remove ! from end
+# # Extract generated user name from logs
+# echo "EXTRACTING USER IDs FROM LOG FILES..."
+# TMPID=$(cat $CLIENTOUT/client42.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
+# RICKID=${TMPID%?} # remove ! from end
+# TMPID=$(cat $CLIENTOUT/client43.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
+# BENID=${TMPID%?} # remove ! from end
 
-# Non-precanned user messaging
-echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42/blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43/blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+# # Non-precanned user messaging
+# echo "SENDING E2E MESSAGES TO NEW USERS..."
+# CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42/blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
+# eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43/blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+# eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+# PIDVAL2=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# wait $PIDVAL2
 
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
