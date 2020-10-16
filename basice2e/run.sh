@@ -21,7 +21,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="-v --password hello --ndf ndf.json"
+CLIENTOPTS="-v --password hello --ndf ndf.json --unsafe-channel-creation"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
