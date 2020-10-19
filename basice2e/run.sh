@@ -164,35 +164,23 @@ runclients
 mkdir -p blob9
 mkdir -p blob18
 echo "TEST E2E WITH PRECANNED USERS..."
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-echo "TEST E2E WITH PRECANNED USERS..."
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Send E2E messages between two users
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 1 --receiveCount 1 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 3 --receiveCount 3 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 1 --receiveCount 1 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL1
-wait $PIDVAL2
-
-CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 5 --receiveCount 5 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 5 --receiveCount 5 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
+CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendDelay 1000  --sendCount 3 --receiveCount 3 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -214,40 +202,43 @@ wait $PIDVAL2
 # wait $PIDVAL || true
 
 
-# # Register non-precanned users
-# mkdir -p blob42
-# mkdir -p blob43
-# echo "REGISTERING NEW USERS..."
-# CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -E rick42@elixxir.io -r FFFF"
-# eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -E ben43@elixxir.io -r GGGG"
-# eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+# # Register and send messages between non-precanned users
+mkdir -p blob42
+mkdir -p blob43
+echo "REGISTERING NEW USERS..."
+CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42/blob42 --unsafe -m \"Hello, World\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43/blob43 --unsafe -m \"Hello, World\""
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
-# # Have each non-precanned user search for each other
-# echo "SEARCHING FOR NEW USERS..."
-# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -f blob42/blob42 -s \"ben43@elixxir.io\" --keyParams 3,4,2,1.0,2"
-# eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -f blob43/blob43 -s \"rick42@elixxir.io\" --keyParams 3,4,2,1.0,2"
-# eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+# Extract generated user name from logs
+echo "EXTRACTING USER IDs FROM LOG FILES..."
+TMPID=$(cat $CLIENTOUT/client42.log | grep "User\:" | awk -F' ' '{print $5}')
+RICKID=${TMPID}
+TMPID=$(cat $CLIENTOUT/client43.log | grep "User\:" | awk -F' ' '{print $5}')
+BENID=${TMPID}
+echo "RICKID: $RICKID"
+echo "BENID: $BENID"
 
-# # Extract generated user name from logs
-# echo "EXTRACTING USER IDs FROM LOG FILES..."
-# TMPID=$(cat $CLIENTOUT/client42.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
-# RICKID=${TMPID%?} # remove ! from end
-# TMPID=$(cat $CLIENTOUT/client43.log | grep "Successfully registered user" | awk -F' ' '{print $8}')
-# BENID=${TMPID%?} # remove ! from end
+# Have each non-precanned user CMIX Message each other
+echo "USER CMIX MESSAGING..."
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42/blob42 --unsafe --destid b64:$BENID -m \"Hi Ben, from Rick\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43/blob43 --unsafe --destid b64:$RICKID -m \"Hi Rick, From Ben\""
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
 
 # # Non-precanned user messaging
 # echo "SENDING E2E MESSAGES TO NEW USERS..."

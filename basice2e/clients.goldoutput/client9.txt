@@ -8,21 +8,14 @@ Received 2
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
 Message received: Hi 9->9, with E2E Encryption
-Message received: Hi 9->9, with E2E Encryption
-Received 2
+Timed out!
+Received 1
 WARNING: unsafe channel creation enabled
 Adding authenticated channel for: AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
 Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
-Message received: Hi 18->9, with E2E Encryption
-Received 1
-Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
-Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
-Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
 Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
 Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
 Message received: Hi 18->9, with E2E Encryption
 Message received: Hi 18->9, with E2E Encryption
 Message received: Hi 18->9, with E2E Encryption
-Message received: Hi 18->9, with E2E Encryption
-Message received: Hi 18->9, with E2E Encryption
-Received 5
+Received 3
