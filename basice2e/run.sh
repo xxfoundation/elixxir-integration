@@ -160,25 +160,45 @@ runclients
 echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
 
-# Register two users and then do UDB search on each other
-# mkdir -p blob9
-# mkdir -p blob18
-# echo "REGISTERING AND SEARCHING WITH PRECANNED USERS..."
-# CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -E niamh@elixxir.io -i 9 -d 9 -m \"Hi\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log -f blob18/blob18 -E bernardo@elixxir.io -i 18 -d 9 -s \"niamh@elixxir.io\" --keyParams 3,4,2,1.0,2"
-# eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9.log -f blob9/blob9 -i 9 -d 18 -s \"bernardo@elixxir.io\" --keyParams 3,4,2,1.0,2"
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
+# Send E2E messages between a single user
+mkdir -p blob9
+mkdir -p blob18
+echo "TEST E2E WITH PRECANNED USERS..."
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+echo "TEST E2E WITH PRECANNED USERS..."
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# Send E2E messages between two users
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 1 --receiveCount 1 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 1 --receiveCount 1 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
+
+CLIENTCMD="timeout 90s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 5 --receiveCount 5 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 90s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 5 --receiveCount 5 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
+
 
 # # Send multiple E2E encrypted messages between users that discovered each other
 # echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
@@ -246,15 +266,15 @@ runclients
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
 # Ignore rekey for now
-rm $CLIENTCLEAN/*_rekey.txt
+#rm $CLIENTCLEAN/*_rekey.txt
 
-sed -i 's/Sending\ Message\ to\ .*,\ :/Sent:/g' $CLIENTCLEAN/client4[23].txt
-sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
+#sed -i 's/Sending\ Message\ to\ .*,\ :/Sent:/g' $CLIENTCLEAN/client4[23].txt
+#sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
 
-for C in $(ls -1 $CLIENTCLEAN); do
-    sort -o tmp $CLIENTCLEAN/$C  || true
-    uniq tmp $CLIENTCLEAN/$C || true
-done
+# for C in $(ls -1 $CLIENTCLEAN); do
+#     sort -o tmp $CLIENTCLEAN/$C  || true
+#     uniq tmp $CLIENTCLEAN/$C || true
+# done
 
 set -e
 
