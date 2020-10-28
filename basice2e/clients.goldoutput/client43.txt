@@ -1,2 +1,6 @@
-Received: Hello from Rick42, with E2E Encryption
-Sent: Hello from Ben43, with E2E Encryption
+Sending to un/Q/vosCqvAnBspJrH+NOzE+8L9TR8XfIyBMERcsGQD: Hello, World
+Timed out!
+Received 0
+Sending to B/M26uMTvJJcex4hUJjjeXjXUQ77ErzHICS4JdfEvXwD: Hi Rick, From Ben
+Timed out!
+Received 0

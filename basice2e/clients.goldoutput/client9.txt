@@ -1,2 +1,21 @@
-Message from 9, Niamh Received: Hi
-Sending Message to 9, Niamh: Hi
+WARNING: unsafe channel creation enabled
+Adding authenticated channel for: AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Received 2
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Timed out!
+Received 1
+WARNING: unsafe channel creation enabled
+Adding authenticated channel for: AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
+Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
+Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 9->18, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Received 3
