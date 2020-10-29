@@ -25,6 +25,13 @@ minGatewayVersion: "1.1.0"
 minServerVersion:  "1.0.0"
 nodeMetricInterval: 3
 
+# UDB ID
+udbID: 1
+
+# Path to UDB public key PEM file
+udbPubKeyPemPath: "../keys/cmix.rip.crt"
+
+
 clientRegCodes:
   - "FFFF"
   - "GGGG"
