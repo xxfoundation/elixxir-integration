@@ -7,11 +7,13 @@
 # registration code used for first time registration. Unique. Provided by xx network
 registrationCode: "qpol"
 useGPU: false
+devMode: true
 node:
     paths:
         idf:  "nodeID-1.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
+        ipListOutput:  "results/ipList-1.txt"
         log:  "results/server-1.log"
         errOutput: "results/server-1.err"
     port: 60000

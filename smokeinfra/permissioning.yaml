@@ -32,6 +32,9 @@ clientRegCodes:
 # Path to the file containing the round ID
 roundIdPath: "results/roundId.txt"
 
+# Path to UDB public key PEM file
+udbPubKeyPemPath: "../keys/cmix.rip.crt"
+
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 

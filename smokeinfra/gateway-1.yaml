@@ -35,4 +35,9 @@ permissioningCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
+knownRoundsPath: "results/gateways/knownrounds-1.json"
+lastUpdateIdPath: "results/gateways/lastupdateid-1.txt"
+devMode: true
+
+
 # === END YAML
