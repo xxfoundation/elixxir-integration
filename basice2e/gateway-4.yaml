@@ -39,5 +39,7 @@ IP_Whitelist_File: "whitelist.txt"
 User_Whitelist_File: "whitelist.txt"
 
 knownRoundsPath: "results/gateways/knownrounds-4.json"
+lastUpdateIdPath: "results/gateways/lastupdateid-4.txt"
+devMode: true
 
 # === END YAML

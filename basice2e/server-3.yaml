@@ -7,6 +7,7 @@
 # registration code used for first time registration. Unique. Provided by xx network
 registrationCode: "vydz"
 useGPU: false
+devMode: true
 node:
     paths:
         idf:  "results/servers/nodeID-3.json"
