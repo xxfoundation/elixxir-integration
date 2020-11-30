@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # NOTE: This is verbose on purpose.
 
@@ -6,6 +6,7 @@ set -e
 
 rm -fr results || true
 rm -fr blob* || true
+rm *-contact.json || true
 rm server-5.qdstrm || true
 rm server-5.qdrep || true
 
@@ -21,7 +22,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf ndf.json --unsafe-channel-creation"
+CLIENTOPTS="--password hello --ndf ndf.json --unsafe-channel-creation --verbose"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -30,8 +31,8 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning -c permissioning.yaml "
-$PERMCMD > $SERVERLOGS/permissioning-console.txt 2>&1 &
+PERMCMD="../bin/permissioning --logLevel 2 -c permissioning.yaml "
+$PERMCMD > results/permissioning-console.txt 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
 
@@ -52,7 +53,7 @@ done
 for GWID in $(seq 5 -1 1)
 do
     IDX=$(($GWID - 1))
-    GATEWAYCMD="../bin/gateway --config gateway-$GWID.yaml"
+    GATEWAYCMD="../bin/gateway --logLevel 2 --config gateway-$GWID.yaml"
     $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
     PIDVAL=$!
     echo "$GATEWAYCMD -- $PIDVAL"
@@ -138,7 +139,7 @@ runclients() {
             eval NICK=\${NICK${cid}}
             # Send a regular message
             mkdir -p blob$cid
-            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blob$cid/blob$cid --unsafe --sendid $cid --destid $nid -m \"Hello, $nid\""
+            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blob$cid/blob$cid --unsafe --sendid $cid --destid $nid --waitTimeout 70 --sendCount 20 --receiveCount 20 -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -159,6 +160,7 @@ echo "RUNNING BASIC CLIENTS..."
 runclients
 echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
+
 
 # Send E2E messages between a single user
 mkdir -p blob9
@@ -188,70 +190,62 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 
-# # Send multiple E2E encrypted messages between users that discovered each other
-# echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
-# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log -c 20 -w 20 -i 18 -d 9 -s \"niamh@elixxir.io\" -f blob18/blob18 -m \"Hello, 9, with E2E Encryption\" --end2end"
-# eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log -c 20 -w 20 -i 9 -d 18 -s \"bernardo@elixxir.io\" -f blob9/blob9 -m \"Hello, 18, with E2E Encryption\" --end2end"
-# eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# set +e
-# wait $PIDVAL || true
-
-
-# # Register and send messages between non-precanned users
-mkdir -p blob42
-mkdir -p blob43
-echo "REGISTERING NEW USERS..."
-CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42/blob42 --unsafe -m \"Hello, World\""
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+# Send multiple E2E encrypted messages between users that discovered each other
+echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log --sendCount 20 --receiveCount 20 --destid 9 -s blob18/blob18 -m \"Hello, 9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 210s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43/blob43 --unsafe -m \"Hello, World\""
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-PIDVAL2=$!
+CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log --sendCount 20 --receiveCount 20 --destid 18 -s blob9/blob9 -m \"Hello, 18, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL || true
+
+
+# Non-precanned E2E user messaging
+echo "SENDING E2E MESSAGES TO NEW USERS..."
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact rick42-contact.json --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact test2-contact.json --destfile test1-contact.json -w 0 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL2
-
-# Extract generated user name from logs
-echo "EXTRACTING USER IDs FROM LOG FILES..."
-TMPID=$(cat $CLIENTOUT/client42.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client42.txt | grep "User\:" | awk -F' ' '{print $5}')
 RICKID=${TMPID}
-TMPID=$(cat $CLIENTOUT/client43.log | grep "User\:" | awk -F' ' '{print $5}')
+echo "RICK ID: $RICKID"
+TMPID=$(cat $CLIENTOUT/client43.txt | grep "User\:" | awk -F' ' '{print $5}')
 BENID=${TMPID}
-echo "RICKID: $RICKID"
-echo "BENID: $BENID"
+echo "BEN ID: $BENID"
 
-# Have each non-precanned user CMIX Message each other
-echo "USER CMIX MESSAGING..."
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42/blob42 --unsafe --destid b64:$BENID -m \"Hi Ben, from Rick\""
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+# Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
+CLIENTCMD="timeout 210s ../bin/client -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID -c 10 -w 11 -m \"Hello from Rick42, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 180s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43/blob43 --unsafe --destid b64:$RICKID -m \"Hi Rick, From Ben\""
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
-PIDVAL2=$!
+wait $PIDVAL
+CLIENTCMD="timeout 210s ../bin/client -l $CLIENTOUT/client43.log -s blob43 --destid b64:$RICKID -c 10 -w 10 -m \"Hello from Ben43, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-wait $PIDVAL2
 
 
-# # Non-precanned user messaging
-# echo "SENDING E2E MESSAGES TO NEW USERS..."
-# CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -c 1 -w 1 --dest64 $BENID -s \"ben43@elixxir.io\" -f blob42/blob42 -m \"Hello from Rick42, with E2E Encryption\" --end2end"
-# eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -c 1 -w 1 --dest64 $RICKID -s \"rick42@elixxir.io\" -f blob43/blob43 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
-# eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog?" > cmd4-user2.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup user1->user2" > cmd5-user1.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd6-user2.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd7-user1.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd8-user2.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd9-user1.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd10-user2.log 2>&1 || true
+# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd11-user1.log 2>&1 || true
+# set +x
+# popd
+
 
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/

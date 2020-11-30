@@ -15,7 +15,7 @@ logLevel: 1
 nodeAddress: "127.0.0.1:50002"
 
 # The listening address of this gateway
-localAddress: "127.0.0.1"
+#localAddress: "127.0.0.1"
 port: 8442
 
 # The number of seconds a message should remain in the globals before being
