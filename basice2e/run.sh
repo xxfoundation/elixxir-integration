@@ -210,7 +210,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --waitTimeout 30 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --waitTimeout 30 --sendCount 0 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -223,7 +223,7 @@ BENID=${TMPID}
 echo "BEN ID: $BENID"
 
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID --sendCount 5 --receiveCount 6 -m \"Hello from Rick42, with E2E Encryption\""
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -249,6 +249,7 @@ cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 sed -i 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client4[23].txt
 sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
 sed -i 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
+sed -i 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 
 # for C in $(ls -1 $CLIENTCLEAN); do
 #     sort -o tmp $CLIENTCLEAN/$C  || true

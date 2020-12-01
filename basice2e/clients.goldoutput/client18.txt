@@ -1,6 +1,6 @@
 Signature verification is curently disabled, if you get this message STOP OPERATION and contact the developers at nodes@xx.network
 WARNING: unsafe channel creation enabled
-Adding authenticated channel for: AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD
+Adding a
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
