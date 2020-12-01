@@ -210,51 +210,45 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact test2-contact.json --destfile test1-contact.json -w 0 -m \"Hello from Ben43, with E2E Encryption\" --end2end"
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --waitTimeout 30 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL2
-TMPID=$(cat $CLIENTOUT/client42.txt | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client42.log | grep "User\:" | awk -F' ' '{print $5}')
 RICKID=${TMPID}
 echo "RICK ID: $RICKID"
-TMPID=$(cat $CLIENTOUT/client43.txt | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client43.log | grep "User\:" | awk -F' ' '{print $5}')
 BENID=${TMPID}
 echo "BEN ID: $BENID"
 
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 210s ../bin/client -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID -c 10 -w 11 -m \"Hello from Rick42, with E2E Encryption\""
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID --sendCount 5 --receiveCount 6 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-CLIENTCMD="timeout 210s ../bin/client -l $CLIENTOUT/client43.log -s blob43 --destid b64:$RICKID -c 10 -w 10 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
-PIDVAL=$!
+PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-
-
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog?" > cmd4-user2.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup user1->user2" > cmd5-user1.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd6-user2.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd7-user1.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd8-user2.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd9-user1.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob43 --destid b64:$ID1 -m "Watup Dog 2?" > cmd10-user2.log 2>&1 || true
-# go run main.go --verbose --password hello --ndf ~/integration/basice2e/ndf.json --unsafe-channel-creation -s blob42 --destid b64:$ID2 -m "Watup 2 user1->user2" > cmd11-user1.log 2>&1 || true
-# set +x
-# popd
-
-
+wait $PIDVAL2
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
-# Ignore rekey for now
-#rm $CLIENTCLEAN/*_rekey.txt
-
-#sed -i 's/Sending\ Message\ to\ .*,\ :/Sent:/g' $CLIENTCLEAN/client4[23].txt
-#sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
+sed -i 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client4[23].txt
+sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
+sed -i 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 
 # for C in $(ls -1 $CLIENTCLEAN); do
 #     sort -o tmp $CLIENTCLEAN/$C  || true
@@ -268,8 +262,8 @@ echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -ruN clients.goldoutput $CLIENTCLEAN
 
-cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
-diff -ruN results/client-errors.txt noerrors.txt
+#cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
+#diff -ruN results/client-errors.txt noerrors.txt
 cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "context" | grep -v "metrics" | grep -v "database" > results/server-errors.txt || true
 cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "context" | grep -v "transport is closing" | grep -v "database" >> results/server-errors.txt || true
 diff -ruN results/server-errors.txt noerrors.txt
