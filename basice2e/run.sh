@@ -83,7 +83,7 @@ finish() {
     done
     #tail $SERVERLOGS/*
     #tail $CLIENTCLEAN/*
-    #diff -ruN clients.goldoutput $CLIENTCLEAN
+    #diff -aruN clients.goldoutput $CLIENTCLEAN
 }
 
 trap finish EXIT
@@ -261,19 +261,19 @@ set -e
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
-diff -ruN clients.goldoutput $CLIENTCLEAN
+diff -aruN clients.goldoutput $CLIENTCLEAN
 
 #cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
 #diff -ruN results/client-errors.txt noerrors.txt
 cat $SERVERLOGS/server-*.log | grep "ERROR" | grep -v "context" | grep -v "metrics" | grep -v "database" > results/server-errors.txt || true
 cat $SERVERLOGS/server-*.log | grep "FATAL" | grep -v "context" | grep -v "transport is closing" | grep -v "database" >> results/server-errors.txt || true
-diff -ruN results/server-errors.txt noerrors.txt
+diff -aruN results/server-errors.txt noerrors.txt
 cat $DUMMYOUT | grep "ERROR" | grep -v "context" | grep -v "failed\ to\ read\ certificate" > results/dummy-errors.txt || true
 cat $DUMMYOUT | grep "FATAL" | grep -v "context" >> results/dummy-errors.txt || true
-diff -ruN results/dummy-errors.txt noerrors.txt
+diff -aruN results/dummy-errors.txt noerrors.txt
 IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
 cat $GATEWAYLOGS/*.log | grep "ERROR" | grep -v "context" | grep -v "certificate" | grep -v "Failed to read key" | grep -v "$IGNOREMSG" > results/gateway-errors.txt || true
 cat $GATEWAYLOGS/*.log | grep "FATAL" | grep -v "context" | grep -v "transport is closing" >> results/gateway-errors.txt || true
-diff -ruN results/gateway-errors.txt noerrors.txt
+diff -aruN results/gateway-errors.txt noerrors.txt
 
 echo "NO OUTPUT ERRORS, SUCCESS!"
