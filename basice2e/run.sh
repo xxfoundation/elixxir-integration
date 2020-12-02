@@ -22,7 +22,7 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf ndf.json --unsafe-channel-creation --verbose"
+CLIENTOPTS="--password hello --ndf ndf.json --waitTimeout 70 --unsafe-channel-creation --verbose"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -139,7 +139,7 @@ runclients() {
             eval NICK=\${NICK${cid}}
             # Send a regular message
             mkdir -p blob$cid
-            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blob$cid/blob$cid --unsafe --sendid $cid --destid $nid --waitTimeout 70 --sendCount 20 --receiveCount 20 -m \"Hello, $nid\""
+            CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blob$cid/blob$cid --unsafe --sendid $cid --destid $nid --sendCount 20 --receiveCount 20 -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -210,7 +210,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --waitTimeout 30 --sendCount 0 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 210s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --sendCount 0 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
