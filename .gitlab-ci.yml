@@ -17,7 +17,7 @@ cache:
 variables:
   REPO_DIR: gitlab.com/elixxir
   REPO_NAME: server
-  DOCKER_IMAGE: elixxirlabs/cuda-go:go1.13-cuda10.1
+  DOCKER_IMAGE: elixxirlabs/cuda-go:go1.13-cuda11.1
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
   SERVER_URL: ""
