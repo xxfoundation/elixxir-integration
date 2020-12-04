@@ -41,5 +41,6 @@ User_Whitelist_File: "whitelist.txt"
 knownRoundsPath: "results/gateways/knownrounds-5.json"
 lastUpdateIdPath: "results/gateways/lastupdateid-5.txt"
 devMode: true
+enableGossip: true
 
 # === END YAML
