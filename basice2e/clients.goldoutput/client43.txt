@@ -1,9 +1,6 @@
-Signature verification is curently disabled, if you get this message STOP OPERATION and contact the developers at nodes@xx.network
 WARNING: unsafe channel creation enabled
 Adding a
-Timed out!
 Received 0
-Signature verification is curently disabled, if you get this message STOP OPERATION and contact the developers at nodes@xx.network
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
@@ -15,7 +12,6 @@ Message received: Hello from Rick42, with E2E Encryption
 Message received: Hello from Rick42, with E2E Encryption
 Message received: Hello from Rick42, with E2E Encryption
 Received 5
-Signature verification is curently disabled, if you get this message STOP OPERATION and contact the developers at nodes@xx.network
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption

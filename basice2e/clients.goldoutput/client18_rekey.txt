@@ -1,4 +1,3 @@
-Signature verification is curently disabled, if you get this message STOP OPERATION and contact the developers at nodes@xx.network
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 9, with E2E Encryption
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 9, with E2E Encryption
 Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 9, with E2E Encryption
