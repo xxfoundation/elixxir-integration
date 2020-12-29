@@ -17,7 +17,7 @@ node:
         log:  "results/server-1.log"
         errOutput: "results/server-1.err"
     port: 60000
-    listeningAddress: "127.0.0.1"
+    addressOverride: "127.0.0.1"
 database:
     name: "node1"
     username: "cmix_server"
