@@ -14,8 +14,8 @@ logLevel: 1
 # The public IP address and port of the node associated with this gateway
 nodeAddress: "127.0.0.1:50000"
 
-# The listening address of this gateway
-#localAddress: "127.0.0.1"
+# Port for Gateway to listen on. Gateway must be the only listener on this port.
+# Required field.
 port: 8440
 
 # The number of seconds a message should remain in the globals before being
