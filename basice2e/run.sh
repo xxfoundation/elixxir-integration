@@ -105,20 +105,20 @@ done
 echo "DONE LETS DO STUFF"
 
 # Start a user discovery bot server
-# echo "STARTING UDB..."
-# UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
-# $UDBCMD >> $UDBOUT 2>&1 &
-# PIDVAL=$!
-# echo $PIDVAL >> results/serverpids
-# echo "$UDBCMD -- $PIDVAL"
+echo "STARTING UDB..."
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+$UDBCMD >> $UDBOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> results/serverpids
+echo "$UDBCMD -- $PIDVAL"
 
-# rm rid.txt || true
-# while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
-#     sleep 1
-#     grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
-#     cnt=$(($cnt + 1))
-#     echo -n "."
-# done
+rm rid.txt || true
+while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
+    sleep 1
+    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+    cnt=$(($cnt + 1))
+    echo -n "."
+done
 
 # sleep 5
 

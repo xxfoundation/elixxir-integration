@@ -57,6 +57,8 @@ ndfOutputPath: "results/permissions-ndfoutput.json"
 keyPath: "../keys/cmix.rip.key"
 # Path to the certificate file
 certPath: "../keys/cmix.rip.crt"
+# Path to the UDB certificate file
+udbCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
