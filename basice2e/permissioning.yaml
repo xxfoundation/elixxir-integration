@@ -28,8 +28,8 @@ nodeMetricInterval: 3
 disableGatewayPing: true
 
 # UDB ID
-udbID: 1
-
+udbID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD"
+udbAddress: "127.0.0.1:18001"
 # Path to UDB public key PEM file
 udbPubKeyPemPath: "../keys/cmix.rip.crt"
 
@@ -61,8 +61,6 @@ certPath: "../keys/cmix.rip.crt"
 udbCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
-
-udbID: 3
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes

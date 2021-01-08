@@ -40,11 +40,8 @@ udbPubKeyPemPath: "../keys/cmix.rip.crt"
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 
-# === REQUIRED FOR ENABLING TLS ===
-# Path to the registration server private key file
-keyPath: "../keys/cmix.rip.key"
-# Path to the registration server certificate file
-certPath: "../keys/cmix.rip.crt"
+# Path to the UDB certificate file
+udbCertPath: "../keys/cmix.rip.crt"
 
 ndfOutputPath: "results/permissions-ndfoutput.json"
 
@@ -56,7 +53,11 @@ certPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
-udbID: 3
+udbID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD"
+udbAddress: "127.0.0.1:18001"
+# Path to UDB public key PEM file
+udbPubKeyPemPath: "../keys/cmix.rip.crt"
+
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes

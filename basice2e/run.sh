@@ -32,7 +32,14 @@ mkdir -p $CLIENTCLEAN
 
 echo "STARTING SERVERS..."
 
-PERMCMD="../bin/permissioning --logLevel 2 -c permissioning.yaml "
+UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json)
+echo "GENERATED UDB ID: $UDBID"
+UDBID=$(sed -e 's/[&\\/]/\\&/g; s/$/\\/' -e '$s/\\$//' <<<"$UDBID")
+cp permissioning.yaml permissioning-actual.yaml
+sed -i "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
+
+
+PERMCMD="../bin/permissioning --logLevel 2 -c permissioning-actual.yaml "
 $PERMCMD > results/permissioning-console.txt 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
@@ -116,7 +123,7 @@ echo "$UDBCMD -- $PIDVAL"
 rm rid.txt || true
 while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
     sleep 1
-    grep -a "Gateway Polling for Message Reception Begun" results/udb-console.txt > rid.txt || true
+    grep -a "Sending Poll message" results/udb-console.txt > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
@@ -211,13 +218,13 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
 eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
 eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
