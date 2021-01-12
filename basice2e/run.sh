@@ -114,7 +114,7 @@ echo "DONE LETS DO STUFF"
 
 # Start a user discovery bot server
 echo "STARTING UDB..."
-UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1 --devMode"
 $UDBCMD >> $UDBOUT 2>&1 &
 PIDVAL=$!
 echo $PIDVAL >> results/serverpids
@@ -164,85 +164,61 @@ runclients() {
     done
 }
 
-# echo "RUNNING BASIC CLIENTS..."
-# runclients
-# echo "RUNNING BASIC CLIENTS (2nd time)..."
-# runclients
+echo "RUNNING BASIC CLIENTS..."
+runclients
+echo "RUNNING BASIC CLIENTS (2nd time)..."
+runclients
 
 
-# # Send E2E messages between a single user
-# mkdir -p blob9
-# mkdir -p blob18
-# echo "TEST E2E WITH PRECANNED USERS..."
-# CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-
-# # Send E2E messages between two users
-# CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 3 --receiveCount 3 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
-# PIDVAL1=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendDelay 1000  --sendCount 3 --receiveCount 3 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL1
-# wait $PIDVAL2
-
-
-# # Send multiple E2E encrypted messages between users that discovered each other
-# echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log --sendCount 20 --receiveCount 20 --destid 9 -s blob18/blob18 -m \"Hello, 9, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log --sendCount 20 --receiveCount 20 --destid 18 -s blob9/blob9 -m \"Hello, 18, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL || true
-
-# UD Test
-echo "UD Testing..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --writeContact josh13-contact.json --unsafe -m \"Hello from Josh13 to myself, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+# Send E2E messages between a single user
+mkdir -p blob9
+mkdir -p blob18
+echo "TEST E2E WITH PRECANNED USERS..."
+CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
-eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+# Send E2E messages between two users
+CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 3 --receiveCount 3 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendDelay 1000  --sendCount 3 --receiveCount 3 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
+
+
+# Send multiple E2E encrypted messages between users that discovered each other
+echo "SENDING MESSAGES TO PRECANNED USERS AND FORCING A REKEY..."
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18_rekey.log --sendCount 20 --receiveCount 20 --destid 9 -s blob18/blob18 -m \"Hello, 9, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client18_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
-eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client9_rekey.log --sendCount 20 --receiveCount 20 --destid 18 -s blob9/blob9 -m \"Hello, 18, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client9_rekey.txt 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-
-# TODO: Get USer ID and look it up.
-# TODO: Confirm registration
-
+wait $PIDVAL || true
 
 
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact rick42-contact.json --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact ben43-contact.json --destfile rick42-contact.json --sendCount 0 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact $CLIENTOUT/ben43-contact.bin --destfile $CLIENTOUT/rick42-contact.bin --sendCount 0 --receiveCount 0 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -271,6 +247,48 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+
+# UD Test
+echo "TESTING USER DISCOVERY..."
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --register josh31 --addemail josh31@elixxir.io --addphone 6178675310US"
+eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
+eval $CLIENTCMD > $CLIENTOUT/josh31.bin|| true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
+eval $CLIENTCMD > $CLIENTOUT/josh13.bin || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
+
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
+
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh31, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
