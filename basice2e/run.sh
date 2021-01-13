@@ -296,8 +296,8 @@ wait $PIDVAL2
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
-sed -i 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client4[23].txt
-sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client4[23].txt
+sed -i 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client[134][123].txt
+sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client[134][123].txt
 sed -i 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 
