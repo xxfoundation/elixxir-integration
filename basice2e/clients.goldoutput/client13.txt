@@ -1,11 +1,11 @@
 WARNING: unsafe channel creation enabled
-Adding authenticated channel for: 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD
+Adding a
 Received 0
-Sending to 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD: Hello from Josh13, with E2E Encryption
-Sending to 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD: Hello from Josh13, with E2E Encryption
-Sending to 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD: Hello from Josh13, with E2E Encryption
-Sending to 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD: Hello from Josh13, with E2E Encryption
-Sending to 6SBqhb1b81sVJlt0mmzoA5Sz2ljRrnVM6ZUMyKfk1QMD: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
 Message received: Hello from Josh31, with E2E Encryption
 Message received: Hello from Josh31, with E2E Encryption
 Message received: Hello from Josh31, with E2E Encryption
