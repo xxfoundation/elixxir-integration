@@ -36,7 +36,7 @@ UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --passw
 echo "GENERATED UDB ID: $UDBID"
 UDBID=$(sed -e 's/[&\\/]/\\&/g; s/$/\\/' -e '$s/\\$//' <<<"$UDBID")
 cp permissioning.yaml permissioning-actual.yaml
-sed -i "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
+sed -i '' "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
 
 
 PERMCMD="../bin/permissioning --logLevel 2 -c permissioning-actual.yaml "
