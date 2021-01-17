@@ -36,7 +36,7 @@ UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --passw
 echo "GENERATED UDB ID: $UDBID"
 UDBID=$(sed -e 's/[&\\/]/\\&/g; s/$/\\/' -e '$s/\\$//' <<<"$UDBID")
 cp permissioning.yaml permissioning-actual.yaml
-sed -i '' "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
+sed -i.bak "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
 
 
 PERMCMD="../bin/permissioning --logLevel 2 -c permissioning-actual.yaml "
@@ -296,10 +296,10 @@ wait $PIDVAL2
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
-sed -i 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client[134][123].txt
-sed -i 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client[134][123].txt
-sed -i 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
-sed -i 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
+sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client[134][123].txt
+sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client[134][123].txt
+sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
+sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 
 # for C in $(ls -1 $CLIENTCLEAN); do
 #     sort -o tmp $CLIENTCLEAN/$C  || true
