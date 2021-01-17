@@ -300,6 +300,7 @@ sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client[134][123].txt
 sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client[134][123].txt
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
+rm $CLIENTCLEAN/client*.txt.bak
 
 # for C in $(ls -1 $CLIENTCLEAN); do
 #     sort -o tmp $CLIENTCLEAN/$C  || true
