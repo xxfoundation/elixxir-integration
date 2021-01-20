@@ -52,7 +52,7 @@ installbinaries:
   script:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
-    - ./download_cmix_binaries.sh
+    - ./download_cmix_binaries.sh l d
     - mkdir -p /opt/xxnetwork/lib
     - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
     - "chmod +x *"
