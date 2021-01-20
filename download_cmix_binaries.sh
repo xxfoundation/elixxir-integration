@@ -35,7 +35,7 @@ else
 fi
 
 # Make the binaries directory
-download_path="$(pwd)/binaries"
+download_path="$(pwd)/bin"
 mkdir -p "$download_path"
 # Delete old binaries
 rm $download_path/*
