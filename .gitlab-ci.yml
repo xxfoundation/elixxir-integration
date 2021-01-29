@@ -49,6 +49,8 @@ stages:
 installbinaries:
   stage: installbinaries
   image: $DOCKER_IMAGE
+  tags:
+    - gpu
   script:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
