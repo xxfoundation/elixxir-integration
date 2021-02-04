@@ -8,8 +8,6 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
-ndfOutputPath: "results/ndf.json"
-
 # The listening port of this server
 port: 18000
 
@@ -53,10 +51,6 @@ certPath: "../keys/cmix.rip.crt"
 ndfOutputPath: "results/permissions-ndfoutput.json"
 
 # === REQUIRED FOR ENABLING TLS ===
-# Path to the private key file
-keyPath: "../keys/cmix.rip.key"
-# Path to the certificate file
-certPath: "../keys/cmix.rip.crt"
 # Path to the UDB certificate file
 udbCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
