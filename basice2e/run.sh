@@ -285,6 +285,38 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+echo "CREATING USERS for REKEY TEST..."
+REKEYOPTS="--e2eMaxKeys 2 --e2eMinKeys 0 --e2eNumReKeys 2"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --writeContact $CLIENTOUT/Jake100-contact.bin --unsafe -m \"Hello from Jake100 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/rick100-contact.bin --sendCount 0 --receiveCount 0 -m \"Hello from Niamh101, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
+TMPID=$(cat $CLIENTOUT/client100.log | grep "User\:" | awk -F' ' '{print $5}')
+JAKEID=${TMPID}
+echo "JAKE ID: $JAKEID"
+TMPID=$(cat $CLIENTOUT/client101.log | grep "User\:" | awk -F' ' '{print $5}')
+NIAMHID=${TMPID}
+echo "NIAMH ID: $NIAMHID"
+
+echo "RUNNING REKEY TEST..."
+# Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
 
 if [ "$PERMISSIONING" == "" ]
 then
