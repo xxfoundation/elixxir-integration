@@ -74,9 +74,12 @@ groups:
 #   secure - Schedules new teams randomly, has apropreate buffers to ensure unpredictability, designed for BetaNet
 schedulingAlgorithm: "simple"
 
-# Path to file with config for scheduling algorithem within the user directory
+# Path to file with config for scheduling algorithm within the user directory
 schedulingConfigPath: "registration.json"
 
 # Path to JSON file with list of Node registration codes (in order of network
 # placement)
 RegCodesFilePath: "regCodes.json"
+
+# Set address space size for ephemeral IDs
+addressSpace: 10
