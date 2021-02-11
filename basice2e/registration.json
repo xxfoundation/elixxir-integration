@@ -3,7 +3,7 @@
   "BatchSize": 32,
   "RandomOrdering": true,
   "MinimumDelay": 1000,
-  "RealtimeDelay": 2000,
+  "RealtimeDelay": 5000,
   "Threshold":     3,
   "NodeCleanUpInterval": 3,
   "ResourceQueueTimeout": 300000,

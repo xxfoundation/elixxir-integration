@@ -83,4 +83,4 @@ schedulingConfigPath: "registration.json"
 RegCodesFilePath: "regCodes.json"
 
 # Set address space size for ephemeral IDs
-addressSpace: 10
+addressSpace: 32
