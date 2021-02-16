@@ -154,8 +154,17 @@ CLIENTCMD="../bin/client getndf --permhost $(cat results/permserver.txt) --cert 
 eval $CLIENTCMD >> results/ndf.json 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 
 cat results/ndf.json | jq . | head -5
+
+file results/ndf.json
+
+if [ ! -s results/ndf.json ]
+then
+    echo "results/ndf.json is empty, cannot proceed"
+    exit -1
+fi
 
 echo "RUNNING CLIENTS..."
 
