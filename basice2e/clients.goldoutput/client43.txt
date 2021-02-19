@@ -1,6 +1,9 @@
 WARNING: unsafe channel creation enabled
 Adding a
 Received 0
+WARNING: unsafe channel creation enabled
+Adding a
+Received 0
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
