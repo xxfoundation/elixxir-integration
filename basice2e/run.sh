@@ -212,7 +212,6 @@ then
     echo "RUNNING BASIC CLIENTS (2nd time)..."
     runclients
 
-
     # Send E2E messages between a single user
     mkdir -p blob9
     mkdir -p blob18
@@ -253,6 +252,18 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL || true
 fi
+
+echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
@@ -312,8 +323,6 @@ PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
-
-
 
 if [ "$PERMISSIONING" == "" ]
 then
