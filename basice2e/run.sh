@@ -334,6 +334,20 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+# Single-use test
+echo "TESTING SINGLE-USE"
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --writeContact $CLIENTOUT/jono52-contact.bin --reply --timeout 90s"
+eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+sleep 5
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
+eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
+
 if [ "$PERMISSIONING" == "" ]
 then
     # UD Test
@@ -377,22 +391,6 @@ then
     wait $PIDVAL
     wait $PIDVAL2
 fi
-
-
-# Single-use test
-echo "TESTING SINGLE-USE"
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --writeContact $CLIENTOUT/jono52-contact.bin --reply --timeout 90s"
-eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-sleep 5
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
-eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL1
-wait $PIDVAL2
-
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
