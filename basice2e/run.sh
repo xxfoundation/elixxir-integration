@@ -4,6 +4,7 @@
 
 set -e
 
+rm -fr results.bak || true
 mv results results.bak || true
 rm -fr blob* || true
 rm *-contact.json || true
