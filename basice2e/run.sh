@@ -4,7 +4,7 @@
 
 set -e
 
-rm -fr results || true
+mv results results.bak || true
 rm -fr blob* || true
 rm *-contact.json || true
 rm server-5.qdstrm || true
