@@ -287,14 +287,14 @@ echo "BEN ID: $BENID"
 
 # Client 42 will now wait for client 43's E2E Auth channel request and not do
 # anything else.
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$RICKID --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destid b64:$RICKID --sendCount 0 --receiveCount 0 --unsafe"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Client 43 will now wait for the confirmation.
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destid b64:$BENID --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destid b64:$BENID --sendCount 0 --receiveCount 0 --unsafe"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -379,21 +379,21 @@ then
     CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 0 --receiveCount 0"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL"
+    echo "$CLIENTCMD -- $PIDVAL2"
     wait $PIDVAL2
 
     # Approve request
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh31.bin --sendCount 0 --receiveCount 0"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh31.bin --sendCount 0 --receiveCount 0 --unsafe"
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL"
+    echo "$CLIENTCMD -- $PIDVAL2"
     wait $PIDVAL2
 
     # Register confirmation
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0 --unsafe"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL"
+    echo "$CLIENTCMD -- $PIDVAL2"
     wait $PIDVAL2
 
     # now test
