@@ -367,11 +367,11 @@ then
     CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
     eval $CLIENTCMD > $CLIENTOUT/josh31.bin|| true &
     PIDVAL1=$!
-    echo "$CLIENTCMD -- $PIDVAL"
+    echo "$CLIENTCMD -- $PIDVAL1"
     CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
     eval $CLIENTCMD > $CLIENTOUT/josh13.bin || true &
     PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL"
+    echo "$CLIENTCMD -- $PIDVAL2"
     wait $PIDVAL1
     wait $PIDVAL2
 
