@@ -53,7 +53,7 @@ certPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
-udbID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD"
+udContactPath: "udContact.bin"
 udbAddress: "127.0.0.1:18001"
 # Path to UDB public key PEM file
 udbPubKeyPemPath: "../keys/cmix.rip.crt"
