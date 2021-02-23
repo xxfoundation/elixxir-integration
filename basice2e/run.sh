@@ -36,6 +36,7 @@ CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation --verbose"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json --verbose"
+CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json --verbose"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -46,14 +47,11 @@ if [ "$PERMISSIONING" == "" ]
 then
     echo "STARTING SERVERS..."
 
-    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json)
+    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json --writeContact results/udContact.bin)
     echo "GENERATED UDB ID: $UDBID"
-    UDBID=$(sed -e 's/[&\\/]/\\&/g; s/$/\\/' -e '$s/\\$//' <<<"$UDBID")
-    cp permissioning.yaml permissioning-actual.yaml
-    sed -i.bak "s/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD/$UDBID/g" permissioning-actual.yaml
 
 
-    PERMCMD="../bin/permissioning --logLevel 2 -c permissioning-actual.yaml "
+    PERMCMD="../bin/permissioning --logLevel 2 -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
     PIDVAL=$!
     echo "$PERMCMD -- $PIDVAL"
