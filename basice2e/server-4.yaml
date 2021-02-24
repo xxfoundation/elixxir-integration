@@ -17,7 +17,7 @@ node:
         errOutput: "results/servers/server-4.err"
         ipListOutput: "results/servers/iplist-4.txt"
     port: 50003
-    addressOverride: "127.0.0.1"
+    overridePublicIP: "127.0.0.1"
 database:
     name: "node4"
     username: "cmix_server"
