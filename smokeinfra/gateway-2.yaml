@@ -14,6 +14,11 @@ logLevel: 2
 # The public IP address and port of the node associated with this gateway
 nodeAddress: "127.0.0.1:60001"
 
+# The public IPv4 address of the Gateway, as reported to the network, to use
+# instead of dynamically looking up Gateway's own IP address. If a port is not
+# included, then the port flag is used instead.
+overridePublicIP: "0.0.0.0"
+
 # Port for Gateway to listen on. Gateway must be the only listener on this port.
 # Required field.
 port: 9441

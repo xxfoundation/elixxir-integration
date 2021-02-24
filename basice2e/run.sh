@@ -333,19 +333,32 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
-# Single-use test
+
+# Single-use test: client53 sends message to client52; client52 responds with
+# the same message in the set number of message parts
 echo "TESTING SINGLE-USE"
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --writeContact $CLIENTOUT/jono52-contact.bin --reply --timeout 90s"
-eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 || true &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-sleep 5
+
+# Generate contact file for client52
+CLIENTCMD="../bin/client init -s blob52 -l results/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+eval $CLIENTCMD >> /dev/null 2>&1 || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# Start client53, which sends a message and then waits for a response
 CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
 eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
+
+# Start client52, which waits for a message and then responds
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --reply --timeout 90s"
+eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
 wait $PIDVAL1
 wait $PIDVAL2
+
 
 if [ "$PERMISSIONING" == "" ]
 then
