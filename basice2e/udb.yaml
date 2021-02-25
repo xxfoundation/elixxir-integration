@@ -1,5 +1,5 @@
 # UDB Config for E2E Integration test
-logPath: "./results/udb.log"
+log: "./results/udb.log"
 sessionPath: "./results/udbsession"
 sessionPass: "hello"
 certPath: "../keys/cmix.rip.crt"
