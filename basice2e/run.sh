@@ -322,7 +322,7 @@ runclients() {
 # wait $PIDVAL2
 
 echo "CREATING USERS for REKEY TEST..."
-REKEYOPTS="--e2eMaxKeys 2 --e2eMinKeys 0 --e2eNumReKeys 1"
+REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5"
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --writeContact $CLIENTOUT/Jake100-contact.bin --unsafe -m \"Hello from Jake100 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
@@ -351,7 +351,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-=======
+
 echo "FORCING HISTORICAL ROUNDS..."
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
