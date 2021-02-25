@@ -1,6 +1,7 @@
 WARNING: unsafe channel creation enabled
 Adding a
 Received 0
+Received 0
 Sent: Hello from Josh13, with E2E Encryption
 Sent: Hello from Josh13, with E2E Encryption
 Sent: Hello from Josh13, with E2E Encryption

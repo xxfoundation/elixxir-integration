@@ -21,12 +21,13 @@ minimumNodes: 5
 
 minGatewayVersion: "1.1.0"
 minServerVersion:  "1.0.0"
+clientVersion: "1.0.0"
 nodeMetricInterval: 3
 
 disableGatewayPing: true
 
-# UDB ID
-udbID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMD"
+# "Location of the user discovery contact file.
+udContactPath: "results/udContact.bin"
 udbAddress: "127.0.0.1:18001"
 # Path to UDB public key PEM file
 udbPubKeyPemPath: "../keys/cmix.rip.crt"
@@ -74,9 +75,12 @@ groups:
 #   secure - Schedules new teams randomly, has apropreate buffers to ensure unpredictability, designed for BetaNet
 schedulingAlgorithm: "simple"
 
-# Path to file with config for scheduling algorithem within the user directory
+# Path to file with config for scheduling algorithm within the user directory
 schedulingConfigPath: "registration.json"
 
 # Path to JSON file with list of Node registration codes (in order of network
 # placement)
 RegCodesFilePath: "regCodes.json"
+
+# Set address space size for ephemeral IDs
+addressSpace: 32

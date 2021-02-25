@@ -14,10 +14,10 @@ node:
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/server-3.log"
-        ipListOutput:  "results/ipList-3.txt"
+        ipListOutput: "results/ipList-3.txt"
         errOutput: "results/server-3.err"
     port: 60002
-    addressOverride: "127.0.0.1"
+    overridePublicIP: "127.0.0.1"
 database:
     name: "node3"
     username: "cmix_server"
