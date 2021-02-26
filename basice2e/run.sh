@@ -34,9 +34,9 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation --verbose"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json --verbose"
-CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json --verbose"
+CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 1"
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 1"
+CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 1"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
