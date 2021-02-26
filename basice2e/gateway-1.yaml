@@ -40,12 +40,6 @@ permissioningCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
-IP_Whitelist_File: "whitelist.txt"
-User_Whitelist_File: "whitelist.txt"
-
-knownRoundsPath: "results/gateways/knownrounds-1.json"
-lastUpdateIdPath: "results/gateways/lastupdateid-1.txt"
 devMode: true
-enableGossip: true
 
 # === END YAML
