@@ -469,10 +469,7 @@ set -e
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
-for C in  $(ls -1 $CLIENTCLEAN)
-do
-    diff -auN clients.goldoutput/$C $CLIENTCLEAN/$C
-done
+diff -ruN clients.goldoutput $CLIENTCLEAN
 
 if [ "$PERMISSIONING" == "" ]
 then
