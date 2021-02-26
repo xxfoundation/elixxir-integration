@@ -1,8 +1,8 @@
 WARNING: unsafe channel creation enabled
 Adding a
-Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
-Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
-Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
+Sent: Hi 18->9, with E2E Encryption
+Sent: Hi 18->9, with E2E Encryption
+Sent: Hi 18->9, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
