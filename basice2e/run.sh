@@ -5,7 +5,7 @@
 set -e
 
 rm -fr results.bak || true
-mv results results.bak || true
+mv results results.bak || rm -fr results || true
 rm -fr blob* || true
 rm *-contact.json || true
 rm server-5.qdstrm || true
@@ -370,7 +370,7 @@ wait $PIDVAL2
 echo "TESTING SINGLE-USE"
 
 # Generate contact file for client52
-CLIENTCMD="../bin/client init -s blob52 -l results/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
 eval $CLIENTCMD >> /dev/null 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
