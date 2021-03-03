@@ -8,6 +8,7 @@
 registrationCode: "gwxs"
 useGPU: false
 devMode: true
+logLevel: 1
 node:
     paths:
         idf:  "results/servers/nodeID-4.json"
