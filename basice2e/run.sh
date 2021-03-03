@@ -207,9 +207,12 @@ if [ "$PERMISSIONING" == "" ]
 then
 
     echo "RUNNING BASIC CLIENTS..."
-    runclients
-    echo "RUNNING BASIC CLIENTS (2nd time)..."
-    runclients
+    for i in $(seq 0 3000)
+    do
+        runclients
+    done
+    # echo "RUNNING BASIC CLIENTS (2nd time)..."
+    # runclients
 
     # Send E2E messages between a single user
     mkdir -p blob9
