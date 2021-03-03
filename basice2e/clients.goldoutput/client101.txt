@@ -1,5 +1,5 @@
 WARNING: unsafe channel creation enabled
-Adding a
+Adding 
 Received 0
 Sent: Hello from Niamh101, with E2E Encryption
 Sent: Hello from Niamh101, with E2E Encryption

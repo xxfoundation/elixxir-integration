@@ -457,7 +457,7 @@ cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
-#sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
+sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
 # for C in $(ls -1 $CLIENTCLEAN); do
@@ -470,7 +470,7 @@ set -e
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
-diff -ruN clients.goldoutput $CLIENTCLEAN
+diff -aruN clients.goldoutput $CLIENTCLEAN
 
 if [ "$PERMISSIONING" == "" ]
 then
