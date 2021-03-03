@@ -34,9 +34,9 @@ DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 1"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 1"
-CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 1"
+CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 2"
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 2"
+CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 2"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -250,19 +250,20 @@ then
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL || true
-fi
 
-echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+    echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+    PIDVAL2=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+    wait $PIDVAL2
+
+fi
 
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
@@ -456,7 +457,7 @@ cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
-sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
+#sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
 # for C in $(ls -1 $CLIENTCLEAN); do
