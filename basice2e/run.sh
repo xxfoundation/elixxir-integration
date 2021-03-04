@@ -30,7 +30,6 @@ PERMISSIONING=$1
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
-DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
@@ -480,9 +479,6 @@ then
     cat $SERVERLOGS/server-*.log | grep -a "ERROR" | grep -a -v "context" | grep -av "metrics" | grep -av "database" > results/server-errors.txt || true
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
     diff -aruN results/server-errors.txt noerrors.txt
-    cat $DUMMYOUT | grep -a "ERROR" | grep -av "context" | grep -av "failed\ to\ read\ certificate" > results/dummy-errors.txt || true
-    cat $DUMMYOUT | grep -a "FATAL" | grep -av "context" >> results/dummy-errors.txt || true
-    diff -aruN results/dummy-errors.txt noerrors.txt
     IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
     cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
