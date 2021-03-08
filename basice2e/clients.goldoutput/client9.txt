@@ -1,5 +1,5 @@
 WARNING: unsafe channel creation enabled
-Adding a
+Adding 
 Sent: Hi 9->9, with E2E Encryption
 Sent: Hi 9->9, with E2E Encryption
 Message received: Hi 9->9, with E2E Encryption
@@ -11,7 +11,7 @@ Message received: Hi 9->9, with E2E Encryption
 Message received: Hi 9->9, with E2E Encryption
 Received 2
 WARNING: unsafe channel creation enabled
-Adding a
+Adding 
 Sent: Hi 9->18, with E2E Encryption
 Sent: Hi 9->18, with E2E Encryption
 Sent: Hi 9->18, with E2E Encryption

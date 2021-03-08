@@ -8,6 +8,7 @@
 registrationCode: "nahv"
 useGPU: false
 devMode: true
+logLevel: 1
 node:
     paths:
         idf:  "results/servers/nodeID-5.json"

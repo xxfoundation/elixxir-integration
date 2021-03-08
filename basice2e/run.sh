@@ -5,7 +5,7 @@
 set -e
 
 rm -fr results.bak || true
-mv results results.bak || true
+mv results results.bak || rm -fr results || true
 rm -fr blob* || true
 rm *-contact.json || true
 rm server-5.qdstrm || true
@@ -30,13 +30,12 @@ PERMISSIONING=$1
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
-DUMMYOUT=results/dummy-console.txt
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 1"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 1"
-CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 1"
+CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 2"
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 2"
+CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 2"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -250,19 +249,20 @@ then
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL || true
-fi
 
-echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+    echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+    PIDVAL2=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+    wait $PIDVAL2
+
+fi
 
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
@@ -370,7 +370,7 @@ wait $PIDVAL2
 echo "TESTING SINGLE-USE"
 
 # Generate contact file for client52
-CLIENTCMD="../bin/client init -s blob52 -l results/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
 eval $CLIENTCMD >> /dev/null 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -456,7 +456,7 @@ cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
-sed -i.bak 's/uthenticat.*$//g' $CLIENTCLEAN/client*.txt
+sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
 # for C in $(ls -1 $CLIENTCLEAN); do
@@ -469,7 +469,7 @@ set -e
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
-diff -ruN clients.goldoutput $CLIENTCLEAN
+diff -aruN clients.goldoutput $CLIENTCLEAN
 
 if [ "$PERMISSIONING" == "" ]
 then
@@ -479,9 +479,6 @@ then
     cat $SERVERLOGS/server-*.log | grep -a "ERROR" | grep -a -v "context" | grep -av "metrics" | grep -av "database" > results/server-errors.txt || true
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
     diff -aruN results/server-errors.txt noerrors.txt
-    cat $DUMMYOUT | grep -a "ERROR" | grep -av "context" | grep -av "failed\ to\ read\ certificate" > results/dummy-errors.txt || true
-    cat $DUMMYOUT | grep -a "FATAL" | grep -av "context" >> results/dummy-errors.txt || true
-    diff -aruN results/dummy-errors.txt noerrors.txt
     IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
     cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
