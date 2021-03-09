@@ -21,7 +21,7 @@ minimumNodes: 5
 
 minGatewayVersion: "1.1.0"
 minServerVersion:  "1.0.0"
-clientVersion: "1.0.0"
+minClientVersion: "1.4.0"
 nodeMetricInterval: 3
 
 disableGatewayPing: true
