@@ -370,7 +370,7 @@ wait $PIDVAL2
 echo "TESTING SINGLE-USE"
 
 # Generate contact file for client52
-CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
 eval $CLIENTCMD >> /dev/null 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
