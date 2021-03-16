@@ -19,12 +19,16 @@ dbAddress: "0.0.0.0:6969"
 
 minimumNodes: 5
 
-minGatewayVersion: "1.1.0"
-minServerVersion:  "1.0.0"
-minClientVersion: "1.0.0"
+minGatewayVersion: "2.0.0"
+minServerVersion:  "2.0.0"
+minClientVersion: "2.0.0"
 nodeMetricInterval: 3
 
 disableGatewayPing: true
+
+# Disable pruning of NDF for offline nodes
+# if set to false, network will sleep for five minutes on start
+disableNDFPruning: true
 
 # "Location of the user discovery contact file.
 udContactPath: "results/udContact.bin"
