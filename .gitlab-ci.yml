@@ -17,7 +17,7 @@ cache:
 variables:
   REPO_DIR: gitlab.com/elixxir
   REPO_NAME: server
-  DOCKER_IMAGE: elixxirlabs/cuda-go:latest
+  DOCKER_IMAGE: elixxirlabs/cuda-go:go1.13-cuda11.1
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
   SERVER_URL: ""
@@ -49,10 +49,12 @@ stages:
 installbinaries:
   stage: installbinaries
   image: $DOCKER_IMAGE
+  tags:
+    - gpu
   script:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
-    - ./download_cmix_binaries.sh
+    - ./download_cmix_binaries.sh l d
     - mkdir -p /opt/xxnetwork/lib
     - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
     - "chmod +x *"
@@ -82,6 +84,7 @@ basice2e:
     - ls -lha
     - ./run.sh
     - mv results results-cpu
+    - sleep 60
     - mkdir -p /opt/xxnetwork/lib
     - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh

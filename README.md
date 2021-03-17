@@ -39,6 +39,9 @@ into the `benchmark` branch so that the benchmarks will continue to function.
 `build.sh` generates version information for all repositories under test and
 builds binaries for them in the `bin/` directory.
 
+`download_cmix_binaries` downloads binaries from certain branches into the `bin/` directory.
+The targeted operating system for the binaries can be specified via command line arguments.
+
 `update.sh` runs `git pull` for each repo under test, and by uncommenting the
 relevant code, checks out the `master` branch of each repo before pulling. This 
 is the most useful if you're trying to fix an integration breakage in 

@@ -7,6 +7,8 @@
 # registration code used for first time registration. Unique. Provided by xx network
 registrationCode: "gwxs"
 useGPU: false
+devMode: true
+logLevel: 1
 node:
     paths:
         idf:  "results/servers/nodeID-4.json"
@@ -14,8 +16,9 @@ node:
         key:  "../keys/cmix.rip.key"
         log:  "results/servers/server-4.log"
         errOutput: "results/servers/server-4.err"
+        ipListOutput: "results/servers/iplist-4.txt"
     port: 50003
-    listeningAddress: "127.0.0.1"
+    overridePublicIP: "127.0.0.1"
 database:
     name: "node4"
     username: "cmix_server"

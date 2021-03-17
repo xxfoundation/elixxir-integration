@@ -7,15 +7,17 @@
 # registration code used for first time registration. Unique. Provided by xx network
 registrationCode: "yiiq"
 useGPU: false
+devMode: true
 node:
     paths:
         idf:  "nodeID-2.json"
         cert: "../keys/cmix.rip.crt"
         key:  "../keys/cmix.rip.key"
         log:  "results/server-2.log"
+        ipListOutput: "results/ipList-2.txt"
         errOutput: "results/server-2.err"
     port: 60001
-    listeningAddress: "127.0.0.1"
+    overridePublicIP: "127.0.0.1"
 database:
     name: "node2"
     username: "cmix_server"

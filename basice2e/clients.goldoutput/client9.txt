@@ -1,2 +1,21 @@
-Message from 9, Niamh Received: Hi
-Sending Message to 9, Niamh: Hi
+WARNING: unsafe channel creation enabled
+Adding 
+Sent: Hi 9->9, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Received 2
+Sent: Hi 9->9, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Received 2
+WARNING: unsafe channel creation enabled
+Adding 
+Sent: Hi 9->18, with E2E Encryption
+Sent: Hi 9->18, with E2E Encryption
+Sent: Hi 9->18, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Received 3

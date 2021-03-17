@@ -22,7 +22,7 @@ echo "STARTING SERVERS..."
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --config server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --logLevel 2 --config server-$SERVERID.yaml"
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
