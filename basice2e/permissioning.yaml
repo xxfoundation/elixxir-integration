@@ -29,6 +29,8 @@ disableGatewayPing: true
 # Disable pruning of NDF for offline nodes
 # if set to false, network will sleep for five minutes on start
 disableNDFPruning: true
+permissiveIPChecking: true
+
 
 # "Location of the user discovery contact file.
 udContactPath: "results/udContact.bin"
