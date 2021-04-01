@@ -328,7 +328,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --sendCount 0 --receiveCount 0 -m \"Hello from Niamh101, with E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -339,6 +339,22 @@ echo "JAKE ID: $JAKEID"
 TMPID=$(cat $CLIENTOUT/client101.log | grep "User\:" | awk -F' ' '{print $5}')
 NIAMHID=${TMPID}
 echo "NIAMH ID: $NIAMHID"
+
+# Client 100 will now wait for client 101's E2E Auth channel request and not do
+# anything else.
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0 --unsafe"
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# Client 101 will now wait for the confirmation.
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 0 --unsafe"
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
 
 echo "RUNNING REKEY TEST..."
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
