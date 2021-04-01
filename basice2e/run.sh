@@ -22,6 +22,7 @@ fi
 
 PERMISSIONING=$1
 
+DEBUGLEVEL=${DEBUGLEVEL-0}
 
 
 #export GRPC_GO_LOG_VERBOSITY_LEVEL=99
@@ -33,9 +34,9 @@ CLIENTOUT=results/clients
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v 2"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json -v 2"
-CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v 2"
+CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -46,11 +47,11 @@ if [ "$PERMISSIONING" == "" ]
 then
     echo "STARTING SERVERS..."
 
-    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json --writeContact results/udContact.bin)
+    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json --writeContact results/udContact.bin -v $DEBUGLEVEL)
     echo "GENERATED UDB ID: $UDBID"
 
 
-    PERMCMD="../bin/permissioning --logLevel 2 -c permissioning.yaml "
+    PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
     PIDVAL=$!
     echo "$PERMCMD -- $PIDVAL"
@@ -58,7 +59,7 @@ then
     for SERVERID in $(seq 5 -1 1)
     do
         IDX=$(($SERVERID - 1))
-        SERVERCMD="../bin/server --config server-$SERVERID.yaml"
+        SERVERCMD="../bin/server --logLevel $DEBUGLEVEL --config server-$SERVERID.yaml"
         if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
         then
             SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
@@ -72,7 +73,7 @@ then
     for GWID in $(seq 5 -1 1)
     do
         IDX=$(($GWID - 1))
-        GATEWAYCMD="../bin/gateway --logLevel 2 --config gateway-$GWID.yaml"
+        GATEWAYCMD="../bin/gateway --logLevel $DEBUGLEVEL --config gateway-$GWID.yaml"
         $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
         PIDVAL=$!
         echo "$GATEWAYCMD -- $PIDVAL"
@@ -123,7 +124,7 @@ then
 
     # Start a user discovery bot server
     echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1"
+    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --config udb.yaml -l 1"
     $UDBCMD >> $UDBOUT 2>&1 &
     PIDVAL=$!
     echo $PIDVAL >> results/serverpids
