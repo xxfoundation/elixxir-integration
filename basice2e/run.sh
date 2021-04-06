@@ -441,7 +441,7 @@ then
     echo "$CLIENTCMD -- $PIDVAL2"
 
     # Approve request and confirm
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh31.bin --sendCount 0 --receiveCount 0"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0"
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL2"
