@@ -57,6 +57,7 @@ installbinaries:
     - ./download_cmix_binaries.sh l d
     - mkdir -p /opt/xxnetwork/lib
     - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
+    - cp bin/libpow.fatbin /opt/xxnetwork/lib/
     - "chmod +x *"
     - bin/server version
     - bin/server-cuda version
@@ -87,6 +88,7 @@ basice2e:
     # - sleep 60
     - mkdir -p /opt/xxnetwork/lib
     - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
+    - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
     - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
     - NSYSENABLED=TRUE ./run.sh

@@ -84,6 +84,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
         SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
         GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
+        GPULIB2_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
     else
         UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
@@ -128,6 +129,10 @@ if [[ $2 == "d" ]]; then
     # Silently download the GPU Library to the provisioning directory
     if [ ! -f $download_path/libpowmosm75.so ] && [[ "$GPULIB_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/libpowmosm75.so" ${GPULIB_URL}
+    fi
+    # Silently download the GPU Library to the provisioning directory
+    if [ ! -f $download_path/libpow.fatbin ] && [[ "$GPULIB2_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/libpow.fatbin" ${GPULIB2_URL}
     fi
 fi
 
