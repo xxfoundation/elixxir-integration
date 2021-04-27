@@ -84,7 +84,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
         SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
         GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
-        GPULIB2_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
+        GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
     else
         UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
