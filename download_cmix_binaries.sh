@@ -147,6 +147,7 @@ fi
     unset CLIENT_URL
     unset SERVER_GPU_URL
     unset GPULIB_URL
+    unset GPULIB2_URL
 done
 
 # Make binaries executable
