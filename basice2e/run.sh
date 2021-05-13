@@ -37,6 +37,7 @@ CLIENTCLEAN=results/clients-cleaned
 CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTGROUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -203,74 +204,132 @@ runclients() {
 }
 
 echo "TESTING GROUP CHAT..."
-# Generate contact file for client80
-CLIENTCMD="../bin/client init -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/group80-contact.bin"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-# Generate contact file for client81
-CLIENTCMD="../bin/client init -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/group81-contact.bin"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-# Generate contact file for client82
-CLIENTCMD="../bin/client init -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/group82-contact.bin"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL3=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1 $PIDVAL2 $PIDVAL3
-
-
-# Get User IDs:
-GUSR1ID=$(cat $CLIENTOUT/client80.log | grep "User\:" | awk -F' ' '{print $5}')
-GUSR2ID=$(cat $CLIENTOUT/client81.log | grep "User\:" | awk -F' ' '{print $5}')
-GUSR3ID=$(cat $CLIENTOUT/client82.log | grep "User\:" | awk -F' ' '{print $5}')
-echo "Group User IDs: $GUSR1ID $GUSR2ID $GUSR3ID"
-
-
-# User 1 Creates Group
-echo $GUSR1ID > $CLIENTOUT/groupmembers
-echo $GUSR2ID >> $CLIENTOUT/groupmembers
-echo $GUSR3ID >> $CLIENTOUT/groupmembers
-CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --create $CLIENTOUT/groupmembers"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+# Create authenticated channel between client 80 and 81
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --writeContact $CLIENTOUT/client80-contact.bin --unsafe -m \"Hello from contact 80 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 wait $PIDVAL1
-
-# Extract group ID -- Note to Jono this probably needs to be fixed!
-GROUPID=$(cat $CLIENTOUT/client80.log | grep "Group\:" | awk -F' ' '{print $5}')
-
-# Print the group list from user 1
-CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --list"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
-
-# Now have user 2 and 3 accept by waiting for a bit (default wait period is fine)
-CLIENTCMD="../bin/client -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client81.log -s blob81 --writeContact $CLIENTOUT/client81-contact.bin --destfile $CLIENTOUT/client80-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+
+while [ ! -s $CLIENTOUT/client81-contact.bin ]; do
+    sleep 1
+    echo -n "."
+done
+echo
+
+TMPID=$(cat $CLIENTOUT/client80.log | grep "User\:" | awk -F' ' '{print $5}')
+CLIENT80ID=${TMPID}
+echo "CLIENT 80 ID: $CLIENT80ID"
+TMPID=$(cat $CLIENTOUT/client81.log | grep "User\:" | awk -F' ' '{print $5}')
+CLIENT81ID=${TMPID}
+echo "CLIENT 81 ID: $CLIENT81ID"
+
+# Client 81 will now wait for client 81's E2E Auth channel request and confirm
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client81-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+wait $PIDVAL1
+wait $PIDVAL2
+
+
+# Create authenticated channel between client 80 and 82
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client82.log -s blob82 --writeContact $CLIENTOUT/client82-contact.bin --destfile $CLIENTOUT/client80-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt || true &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
+
+while [ ! -s $CLIENTOUT/client82-contact.bin ]; do
+    sleep 1
+    echo -n "."
+done
+echo
+
+TMPID=$(cat $CLIENTOUT/client82.log | grep "User\:" | awk -F' ' '{print $5}')
+CLIENT82ID=${TMPID}
+echo "CLIENT 82 ID: $CLIENT82ID"
+
+# Client 82 will now wait for client 82's E2E Auth channel request and confirm
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client82-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+wait $PIDVAL1
+wait $PIDVAL3
+
+# User 1 Creates Group
+echo "Group User IDs: $CLIENT80ID $CLIENT81ID $CLIENT82ID"
+echo "b64:$CLIENT81ID" > $CLIENTOUT/groupParticipants
+echo "b64:$CLIENT82ID" >> $CLIENTOUT/groupParticipants
+CLIENTCMD="timeout 60s ../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --create $CLIENTOUT/groupParticipants --message \"80 inviting 81 and 82 to new group\""
+eval $CLIENTCMD > $CLIENTOUT/client80.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --join"
+eval $CLIENTCMD > $CLIENTOUT/client81.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --join"
+eval $CLIENTCMD > $CLIENTOUT/client82.txt 2>&1 || true &
+PIDVAL3=$!
+echo "$CLIENTCMD -- $PIDVAL3"
+wait $PIDVAL1
+wait $PIDVAL2
+wait $PIDVAL3
+
+# Extract group ID -- Note to Jono this probably needs to be fixed!
+GROUPID=$(cat $CLIENTOUT/client80.log | grep -a "NewGroupID\:" | awk -F' ' '{print $5}')
+echo "Group ID: $GROUPID"
+
+# Print the group list from all users
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --list"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --list"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --list"
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
+PIDVAL3=$!
+echo "$CLIENTCMD -- $PIDVAL3"
+wait $PIDVAL1
+wait $PIDVAL2
+wait $PIDVAL3
+
+# Print group from all users
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --show $GROUPID"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --show $GROUPID"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --show $GROUPID"
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
+PIDVAL3=$!
+echo "$CLIENTCMD -- $PIDVAL3"
+wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
 
 # Now everyone sends their message
-CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello from 80\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --sendMessage $GROUPID --message \"Hello from 80\""
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello from 81\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --sendMessage $GROUPID --message \"Hello from 81\""
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello from 82\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --sendMessage $GROUPID --message \"Hello from 82\""
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 wait $PIDVAL1
@@ -278,76 +337,62 @@ wait $PIDVAL2
 wait $PIDVAL3
 
 # Everyone waits for their message
-CLIENTCMD="../bin/client -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --wait 2"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="../bin/client -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --wait 2"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --wait 2"
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
-
 
 # Member 2 leaves the group
-CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --leave $GROUPID"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --leave $GROUPID"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-# -- do we need this wait?
-CLIENTCMD="../bin/client -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL3=$!
-echo "$CLIENTCMD -- $PIDVAL3"
-
-wait $PIDVAL1
 wait $PIDVAL2
-wait $PIDVAL3
 
 # 1 and 3 send a message successfully now, 2 does not
-CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello 2 from 80\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --sendMessage $GROUPID --message \"Hello 2 from 80\""
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello 2 from 81 - this should fail\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
-PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --send $GROUPID --message \"Hello 2 from 82\" "
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --sendMessage $GROUPID --message \"Hello 2 from 82\""
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
-
 
 # All 3 wait again
-CLIENTCMD="../bin/client -s blob80 -l $CLIENTOUT/client80.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --wait 1"
+eval $CLIENTCMD >> $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="../bin/client -s blob81 -l $CLIENTOUT/client81.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob81 -l $CLIENTOUT/client81.log $CLIENTGROUPOPTS --wait 1"
+eval $CLIENTCMD >> $CLIENTOUT/client81.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log --password hello --ndf results/ndf.json --sendCount 0 --receiveCount 1"
-eval $CLIENTCMD >> /dev/null 2>&1 || true &
+CLIENTCMD="../bin/client group -s blob82 -l $CLIENTOUT/client82.log $CLIENTGROUPOPTS --wait 1"
+eval $CLIENTCMD >> $CLIENTOUT/client82.txt 2>&1 || true &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
+
+sort -b -o "$CLIENTOUT/client80.txt" "$CLIENTOUT/client80.txt"
+sort -b -o "$CLIENTOUT/client81.txt" "$CLIENTOUT/client81.txt"
+sort -b -o "$CLIENTOUT/client82.txt" "$CLIENTOUT/client82.txt"
 
 echo "GROUP CHAT FINISHED!"
 
