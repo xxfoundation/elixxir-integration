@@ -226,8 +226,8 @@ then
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client91.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob91/blob91 --slowPolling --sendid 91 --destid 91 -m \"Hi 91->91, with E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client91.txt 2>&1 &
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client19.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob19/blob19 --slowPolling --sendid 19 --destid 19 -m \"Hi 19->19, with E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client19.txt 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
