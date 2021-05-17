@@ -226,6 +226,10 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
     CLIENTCMD="timeout 240s ../bin/client  --slowPolling $CLIENTOPTS -l $CLIENTOUT/client91.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob91/blob91 --sendid 91 --destid 91 -m \"Hi 91->91, with E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
 
 
     # Send E2E messages between two users
