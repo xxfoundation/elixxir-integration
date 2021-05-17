@@ -214,6 +214,7 @@ then
     # Send E2E messages between a single user
     mkdir -p blob9
     mkdir -p blob18
+    mkdir -p blob91
     echo "TEST E2E WITH PRECANNED USERS..."
     CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
@@ -225,8 +226,8 @@ then
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client  --slowPolling $CLIENTOPTS -l $CLIENTOUT/client91.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob91/blob91 --sendid 91 --destid 91 -m \"Hi 91->91, with E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client91.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob91/blob91 --slowPolling --sendid 91 --destid 91 -m \"Hi 91->91, with E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client91.txt 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
