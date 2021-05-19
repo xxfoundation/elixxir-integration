@@ -22,8 +22,8 @@ fi
 
 PERMISSIONING=$1
 
-# todo revert this
 DEBUGLEVEL=${DEBUGLEVEL-0}
+
 
 #export GRPC_GO_LOG_VERBOSITY_LEVEL=99
 #export GRPC_GO_LOG_SEVERITY_LEVEL=info
