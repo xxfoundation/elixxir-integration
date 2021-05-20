@@ -271,7 +271,7 @@ then
     wait $PIDVAL2
 
     echo "FORCING CLIENT ERROR... (NON-E2E, PRECAN)"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=127.0.0.1:50000 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=0.0.0.0:8440 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client14.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -401,7 +401,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "FORCING CLIENT ERROR... "
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=127.0.0.1:50000 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=0.0.0.0:8440 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client14.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
