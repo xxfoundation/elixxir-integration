@@ -270,6 +270,18 @@ then
     wait $PIDVAL
     wait $PIDVAL2
 
+    echo "FORCING CLIENT ERROR... (NON-E2E, PRECAN)"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=127.0.0.1:50000 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client14.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --unsafe -l $CLIENTOUT/client15.log -s blob15 --sendid 2 --destid 1 --sendCount 20 --receiveCount 20 -m \"Hello from 2, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client15.txt || true &
+    PIDVAL2=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+    wait $PIDVAL2
+
 fi
 
 # Non-precanned E2E user messaging
@@ -388,6 +400,17 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+echo "FORCING CLIENT ERROR... "
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceClientErrors=127.0.0.1:50000 --unsafe -l $CLIENTOUT/client14.log -s blob14 --sendid 1 --destid 2 --sendCount 20 --receiveCount 20 -m \"Hello from 1, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client14.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --unsafe -l $CLIENTOUT/client15.log -s blob15 --sendid 2 --destid 1 --sendCount 20 --receiveCount 20 -m \"Hello from 2, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client15.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 # Single-use test: client53 sends message to client52; client52 responds with
 # the same message in the set number of message parts
