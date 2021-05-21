@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 # This script is used for building reports on dropped E2E integration tests
-import logging
-
 import re
 import glob
 import os
 import logging as log
+import datetime
 
 resultsDir = "./results/clients"
 
@@ -65,6 +64,12 @@ def main():
                         log.debug("Located sent message: {}".format(sent_message))
                         messages_sent[sent_message] = {"sender": os.path.basename(path)}
 
+                        # Capture message timestamp
+                        sent_timestamp_str = re.findall('INFO (.{19})', line)[0]
+                        sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        log.debug("Located sent timestamp: {}".format(sent_timestamp))
+                        messages_sent[sent_message]["sent"] = sent_timestamp
+
                         # Capture rounds messages were sent in
                         sent_round = re.findall('\) in round ([0-9]+)', line)[0]
                         log.debug("Located sent round: {}".format(sent_round))
@@ -74,10 +79,15 @@ def main():
 
                     elif "Received message of type" in line:
                         # Capture message receiving
-                        received_messages = re.findall(' msgDigest: (.{20})', line)
-                        for received_message in received_messages:
-                            log.debug("Located received message: {}".format(received_message))
-                            messages_received[received_message] = os.path.basename(path)
+                        received_message = re.findall(' msgDigest: (.{20})', line)[0]
+                        log.debug("Located received message: {}".format(received_message))
+                        messages_received[received_message] = {"receiver": os.path.basename(path)}
+
+                        # Capture message timestamp
+                        received_timestamp_str = re.findall('INFO (.{19})', line)[0]
+                        received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        log.debug("Located received timestamp: {}".format(received_timestamp))
+                        messages_received[received_message]["received"] = received_timestamp
 
                     elif "Round(s)" in line:
                         # Capture round success
@@ -88,12 +98,16 @@ def main():
 
     # Print results
     num_successful = 0
+    total_latency = datetime.timedelta()
     for msgDigest, senderDict in messages_sent.items():
         if msgDigest in messages_received:
-            log.debug("Message {} sent by {} on round {} was received".format(msgDigest,
-                                                                              senderDict["sender"],
-                                                                              senderDict["round"]))
             num_successful += 1
+            message_latency = messages_received[msgDigest]["received"] - messages_sent[msgDigest]["sent"]
+            total_latency += message_latency
+            log.info("Message {} sent by {} on round {} was received after {}".format(msgDigest,
+                                                                                       senderDict["sender"],
+                                                                                       senderDict["round"],
+                                                                                       message_latency))
         else:
             log.error("Message {} sent by {} on round {} was NOT received".format(msgDigest,
                                                                                   senderDict["sender"],
@@ -104,7 +118,9 @@ def main():
         else:
             log.warning("Round {} was NOT confirmed successful, messages may have been dropped".format(round_id))
 
-    log.info("{}/{} messages received successfully!".format(num_successful, len(messages_sent)))
+    log.info("{}/{} messages received successfully after an average of {}!".format(num_successful,
+                                                                                   len(messages_sent),
+                                                                                   total_latency / num_successful))
 
 
 if __name__ == "__main__":
