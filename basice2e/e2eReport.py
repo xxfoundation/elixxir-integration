@@ -27,19 +27,6 @@ def find_files():
     return glob.glob('{}/client*.log'.format(resultsDir))
 
 
-def read_file(path, phrases):
-    """Reads the lines of a file."""
-    while 1:
-        with open(path, 'r') as file:
-            line = file.readline()
-            if not line:
-                break
-            else:
-                for phrase in phrases:
-                    if phrase in line:
-                        yield line
-
-
 def main():
     log.basicConfig(format='[%(levelname)s] %(asctime)s: %(message)s',
                     level=log.INFO, datefmt='%d-%b-%y %H:%M:%S')
