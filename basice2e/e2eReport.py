@@ -98,13 +98,19 @@ def main():
     for msgDigest, senderDict in messages_sent.items():
         if msgDigest in messages_received:
             num_successful += 1
-            message_latency = messages_received[msgDigest]["received"] - messages_sent[msgDigest]["sent"]
+            time_sent = messages_sent[msgDigest]["sent"]
+            time_received = messages_received[msgDigest]["received"]
+            message_latency = time_received - time_sent
             latencies.append(message_latency)
             total_latency += message_latency
-            log.info("Message {} sent by {} on round {} was received after {}".format(msgDigest,
-                                                                                      senderDict["sender"],
-                                                                                      senderDict["round"],
-                                                                                      message_latency))
+            log.info(
+                ("Message {} sent by {} on round {} was received after {}" +
+                 "\n\t\t\t\t\t\t\tSent: {}, Received: {}").format(msgDigest,
+                                                                  senderDict["sender"],
+                                                                  senderDict["round"],
+                                                                  message_latency,
+                                                                  time_sent,
+                                                                  time_received))
         else:
             log.error("Message {} sent by {} on round {} was NOT received".format(msgDigest,
                                                                                   senderDict["sender"],
