@@ -74,8 +74,11 @@ def main():
                         messages_received[received_message] = {"receiver": os.path.basename(path)}
 
                         # Capture message timestamp
-                        received_timestamp_str = re.findall('INFO (.{19})', line)[0]
-                        received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        received_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        try:
+                            received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S.%f')
+                        except ValueError:
+                            received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S')
                         log.debug("Located received timestamp: {}".format(received_timestamp))
                         messages_received[received_message]["received"] = received_timestamp
 
