@@ -52,8 +52,11 @@ def main():
                         messages_sent[sent_message] = {"sender": os.path.basename(path)}
 
                         # Capture message timestamp
-                        sent_timestamp_str = re.findall('INFO (.{19})', line)[0]
-                        sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        sent_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        try:
+                            sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S.%f')
+                        except ValueError:
+                            sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S')
                         log.debug("Located sent timestamp: {}".format(sent_timestamp))
                         messages_sent[sent_message]["sent"] = sent_timestamp
 
@@ -92,9 +95,9 @@ def main():
             message_latency = messages_received[msgDigest]["received"] - messages_sent[msgDigest]["sent"]
             total_latency += message_latency
             log.info("Message {} sent by {} on round {} was received after {}".format(msgDigest,
-                                                                                       senderDict["sender"],
-                                                                                       senderDict["round"],
-                                                                                       message_latency))
+                                                                                      senderDict["sender"],
+                                                                                      senderDict["round"],
+                                                                                      message_latency))
         else:
             log.error("Message {} sent by {} on round {} was NOT received".format(msgDigest,
                                                                                   senderDict["sender"],
