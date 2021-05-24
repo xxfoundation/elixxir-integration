@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This script is used for building reports on dropped E2E integration tests
+# This script is used for building reports on message sending for E2E integration tests
 import re
 import glob
 import os
@@ -115,10 +115,10 @@ def main():
         else:
             log.warning("Round {} was NOT confirmed successful, messages may have been dropped".format(round_id))
 
-    log.info("{}/{} messages received successfully! Average: {}, Median: {}".format(num_successful,
-                                                                                    len(messages_sent),
-                                                                                    total_latency / num_successful,
-                                                                                    statistics.median(latencies)))
+    log.info("{}/{} messages received successfully! Mean: {}, Median: {}".format(num_successful,
+                                                                                 len(messages_sent),
+                                                                                 total_latency / num_successful,
+                                                                                 statistics.median(latencies)))
 
 
 if __name__ == "__main__":
