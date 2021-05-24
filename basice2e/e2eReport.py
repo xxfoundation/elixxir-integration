@@ -92,7 +92,7 @@ def main():
                             rounds_sent[successful_round] = True
 
     # Print results
-    num_successful = 0
+    num_successful = 0  # Keep track of how many messages were received successfully
     total_latency = datetime.timedelta()  # Keep track of the total message latencies to calculate a mean
     latencies = []  # Keep track of each message's latency in order to calculate a median
     for msgDigest, senderDict in messages_sent.items():
