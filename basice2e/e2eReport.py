@@ -68,7 +68,7 @@ def main():
                         if sent_round not in rounds_sent:
                             rounds_sent[sent_round] = False
 
-                    elif "Received message of type" in line:
+                    elif "Received message of type" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
                         # Capture message receiving
                         received_message = re.findall(' msgDigest: (.{20})', line)[0]
                         log.debug("Located received message: {}".format(received_message))
@@ -103,14 +103,11 @@ def main():
             message_latency = time_received - time_sent
             latencies.append(message_latency)
             total_latency += message_latency
-            log.info(
-                ("Message {} sent by {} on round {} was received after {}" +
-                 "\n\t\t\t\t\t\t\tSent: {}, Received: {}").format(msgDigest,
-                                                                  senderDict["sender"],
-                                                                  senderDict["round"],
-                                                                  message_latency,
-                                                                  time_sent,
-                                                                  time_received))
+            log.info("Message {} sent by {} on round {} was received after {}".format(msgDigest,
+                                                                                      senderDict["sender"],
+                                                                                      senderDict["round"],
+                                                                                      message_latency))
+            log.info("\tSent: {}, Received: {}".format(time_sent, time_received))
         else:
             log.error("Message {} sent by {} on round {} was NOT received".format(msgDigest,
                                                                                   senderDict["sender"],
@@ -121,10 +118,8 @@ def main():
         else:
             log.warning("Round {} was NOT confirmed successful, messages may have been dropped".format(round_id))
 
-    log.info("{}/{} messages received successfully! Mean: {}, Median: {}".format(num_successful,
-                                                                                 len(messages_sent),
-                                                                                 total_latency / num_successful,
-                                                                                 statistics.median(latencies)))
+    log.info("{}/{} messages received successfully!".format(num_successful, len(messages_sent)))
+    log.info("\tMean: {}, Median: {}".format(total_latency / num_successful, statistics.median(latencies)))
 
 
 if __name__ == "__main__":
