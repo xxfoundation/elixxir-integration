@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-# This script is used for building reports on dropped E2E integration tests
-import logging
-
+# This script is used for building reports on message sending for E2E integration tests
 import re
 import glob
 import os
 import logging as log
+import datetime
+import statistics
 
 resultsDir = "./results/clients"
 
@@ -26,19 +26,6 @@ def find_files():
     if not os.path.isdir(resultsDir):
         err("Directory {} does not exist!".format(resultsDir))
     return glob.glob('{}/client*.log'.format(resultsDir))
-
-
-def read_file(path, phrases):
-    """Reads the lines of a file."""
-    while 1:
-        with open(path, 'r') as file:
-            line = file.readline()
-            if not line:
-                break
-            else:
-                for phrase in phrases:
-                    if phrase in line:
-                        yield line
 
 
 def main():
@@ -65,6 +52,15 @@ def main():
                         log.debug("Located sent message: {}".format(sent_message))
                         messages_sent[sent_message] = {"sender": os.path.basename(path)}
 
+                        # Capture message timestamp
+                        sent_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        try:
+                            sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S.%f')
+                        except ValueError:
+                            sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        log.debug("Located sent timestamp: {}".format(sent_timestamp))
+                        messages_sent[sent_message]["sent"] = sent_timestamp
+
                         # Capture rounds messages were sent in
                         sent_round = re.findall('\) in round ([0-9]+)', line)[0]
                         log.debug("Located sent round: {}".format(sent_round))
@@ -72,12 +68,21 @@ def main():
                         if sent_round not in rounds_sent:
                             rounds_sent[sent_round] = False
 
-                    elif "Received message of type" in line:
+                    elif "Received message of type" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
                         # Capture message receiving
-                        received_messages = re.findall(' msgDigest: (.{20})', line)
-                        for received_message in received_messages:
-                            log.debug("Located received message: {}".format(received_message))
-                            messages_received[received_message] = os.path.basename(path)
+                        received_message = re.findall(' msgDigest: (.{20})', line)[0]
+                        log.debug("Located received message: {}".format(received_message))
+                        messages_received[received_message] = {"receiver": os.path.basename(path)}
+
+                        # Capture message timestamp
+                        received_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        try:
+                            received_timestamp = datetime.datetime.strptime(received_timestamp_str,
+                                                                            '%Y/%m/%d %H:%M:%S.%f')
+                        except ValueError:
+                            received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S')
+                        log.debug("Located received timestamp: {}".format(received_timestamp))
+                        messages_received[received_message]["received"] = received_timestamp
 
                     elif "Round(s)" in line:
                         # Capture round success
@@ -87,13 +92,22 @@ def main():
                             rounds_sent[successful_round] = True
 
     # Print results
-    num_successful = 0
+    num_successful = 0  # Keep track of how many messages were received successfully
+    total_latency = datetime.timedelta()  # Keep track of the total message latencies to calculate a mean
+    latencies = []  # Keep track of each message's latency in order to calculate a median
     for msgDigest, senderDict in messages_sent.items():
         if msgDigest in messages_received:
-            log.debug("Message {} sent by {} on round {} was received".format(msgDigest,
-                                                                              senderDict["sender"],
-                                                                              senderDict["round"]))
             num_successful += 1
+            time_sent = messages_sent[msgDigest]["sent"]
+            time_received = messages_received[msgDigest]["received"]
+            message_latency = time_received - time_sent
+            latencies.append(message_latency)
+            total_latency += message_latency
+            log.info("Message {} sent by {} on round {} was received after {}".format(msgDigest,
+                                                                                      senderDict["sender"],
+                                                                                      senderDict["round"],
+                                                                                      message_latency))
+            log.info("\tSent: {}, Received: {}".format(time_sent, time_received))
         else:
             log.error("Message {} sent by {} on round {} was NOT received".format(msgDigest,
                                                                                   senderDict["sender"],
@@ -105,6 +119,7 @@ def main():
             log.warning("Round {} was NOT confirmed successful, messages may have been dropped".format(round_id))
 
     log.info("{}/{} messages received successfully!".format(num_successful, len(messages_sent)))
+    log.info("\tMean: {}, Median: {}".format(total_latency / num_successful, statistics.median(latencies)))
 
 
 if __name__ == "__main__":
