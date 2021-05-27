@@ -419,11 +419,6 @@ CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s 
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact $CLIENTOUT/ben43-contact.bin --destfile $CLIENTOUT/ben43-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 
 if [ "$PERMISSIONING" == "" ]
 then
