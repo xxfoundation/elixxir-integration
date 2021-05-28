@@ -422,6 +422,8 @@ CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s 
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
 
 if [ "$PERMISSIONING" == "" ]
 then
