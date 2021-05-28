@@ -327,6 +327,18 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+echo "DELETING CONTACT FROM CLIENT..."
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+echo "$CLIENTCMD -- $PIDVAL"
+PIDVAL1=$!
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL1
+wait $PIDVAL2
+
 # echo "CREATING USERS for REKEY TEST..."
 # JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
 # NIAMHID=$(../bin/client init -s blob101 -l $CLIENTOUT/client101.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Niamh101-contact.bin -v $DEBUGLEVEL)
@@ -414,16 +426,6 @@ echo "$CLIENTCMD -- $PIDVAL1"
 wait $PIDVAL1
 wait $PIDVAL2
 
-echo "DELETING CONTACT FROM CLIENT..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
-PIDVAL2=$!
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL1
-wait $PIDVAL2
 
 if [ "$PERMISSIONING" == "" ]
 then
