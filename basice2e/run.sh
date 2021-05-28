@@ -332,11 +332,11 @@ CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s 
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 echo "$CLIENTCMD -- $PIDVAL"
 PIDVAL1=$!
+wait $PIDVAL1
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL1
 wait $PIDVAL2
 
 # echo "CREATING USERS for REKEY TEST..."
