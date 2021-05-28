@@ -270,6 +270,19 @@ then
     wait $PIDVAL
     wait $PIDVAL2
 
+    echo "FORCING MESSAGE PICKUP RETRY... (NON-E2E, PRECAN)"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 10 --receiveCount 10 -m \"Hello from 20, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 10 --receiveCount 10 -m \"Hello from 21, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
+    PIDVAL2=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+    wait $PIDVAL2
+
+
 fi
 
 # Non-precanned E2E user messaging
@@ -398,6 +411,18 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+echo "FORCING MESSAGE PICKUP RETRY... "
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 10 --receiveCount 10 -m \"Hello from 20, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 10 --receiveCount 10 -m \"Hello from 21, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
