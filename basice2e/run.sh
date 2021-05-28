@@ -333,6 +333,9 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 echo "$CLIENTCMD -- $PIDVAL"
 PIDVAL1=$!
 wait $PIDVAL1
+# FIXME: causes the following EXPECTED error:
+# panic: Could not confirm authentication channel for HTAmEeBhbLi6aFqcWsi3OZNDE/642GAchpATjhYFTHwD, waited 120 seconds.
+# Need a way to inteligently check that this error exists on this test only, but not counting false positives in other tests (ie actual unexpected errors)
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL2=$!
@@ -499,6 +502,7 @@ set -e
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -aruN clients.goldoutput $CLIENTCLEAN
+cat $CLIENTOUT/client42.log | grep -c "Could not confirm authentication channel for" > results/deleteContact.txt || true
 
 if [ "$PERMISSIONING" == "" ]
 then
