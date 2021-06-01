@@ -402,6 +402,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "FORCING MESSAGE PICKUP RETRY... "
+# Higher timeouts for this test to allow message pickup retry to function
 CLIENTCMD="timeout 300s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 8 --receiveCount 8 -m \"Hello from 20, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
 PIDVAL=$!
