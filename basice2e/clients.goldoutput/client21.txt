@@ -6,8 +6,6 @@ Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
-Sent: Hello from 21, without E2E Encryption
-Sent: Hello from 21, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
@@ -16,9 +14,7 @@ Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
-Message received: Hello from 20, without E2E Encryption
-Message received: Hello from 20, without E2E Encryption
-Received 10
+Received 8
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
@@ -27,8 +23,6 @@ Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
 Sent: Hello from 21, without E2E Encryption
-Sent: Hello from 21, without E2E Encryption
-Sent: Hello from 21, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
@@ -37,6 +31,4 @@ Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
 Message received: Hello from 20, without E2E Encryption
-Message received: Hello from 20, without E2E Encryption
-Message received: Hello from 20, without E2E Encryption
-Received 10
+Received 8
