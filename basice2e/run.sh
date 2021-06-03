@@ -272,11 +272,12 @@ then
     wait $PIDVAL2
 
     echo "FORCING MESSAGE PICKUP RETRY... (NON-E2E, PRECAN)"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 10 --receiveCount 10 -m \"Hello from 20, without E2E Encryption\""
+    # Higher timeouts for this test to allow message pickup retry to function
+    CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 10 --receiveCount 10 -m \"Hello from 21, without E2E Encryption\""
+    CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry --unsafe -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -403,11 +404,12 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "FORCING MESSAGE PICKUP RETRY... "
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 10 --receiveCount 10 -m \"Hello from 20, without E2E Encryption\""
+# Higher timeouts for this test to allow message pickup retry to function
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 10 --receiveCount 10 -m \"Hello from 21, without E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
