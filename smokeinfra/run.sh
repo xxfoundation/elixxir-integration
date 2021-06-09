@@ -12,7 +12,7 @@ GATEWAYLOGS=results/
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 
-PERMCMD="../bin/permissioning -c permissioning.yaml"
+PERMCMD="../bin/permissioning  --randomGeoBinning -c permissioning.yaml"
 $PERMCMD > $SERVERLOGS/permissioning.log 2>&1 &
 PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
