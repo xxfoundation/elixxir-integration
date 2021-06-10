@@ -52,7 +52,7 @@ then
     echo "GENERATED UDB ID: $UDBID"
 
 
-    PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL --randomGeoBinning -c permissioning.yaml "
+    PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
     PIDVAL=$!
     echo "$PERMCMD -- $PIDVAL"

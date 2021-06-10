@@ -91,3 +91,5 @@ schedulingConfigPath: "registration.json"
 # Path to JSON file with list of Node registration codes (in order of network
 # placement)
 RegCodesFilePath: "regCodes.json"
+
+randomGeoBinning: true
