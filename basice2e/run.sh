@@ -726,13 +726,14 @@ set -e
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -aruN clients.goldoutput $CLIENTCLEAN
-cat $CLIENTOUT/client42.log | grep -c "Could not confirm authentication channel for" > results/deleteContact.txt || true
+cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel for" > results/deleteContact.txt || true
 
 if [ "$PERMISSIONING" == "" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
     #diff -ruN results/client-errors.txt noerrors.txt
+    diff -ruN results/results/deleteContact.txt deleteContact.gold
     cat $SERVERLOGS/server-*.log | grep -a "ERROR" | grep -a -v "context" | grep -av "metrics" | grep -av "database" > results/server-errors.txt || true
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
     diff -aruN results/server-errors.txt noerrors.txt
