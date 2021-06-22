@@ -342,6 +342,21 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+echo "DELETING CONTACT FROM CLIENT..."
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+echo "$CLIENTCMD -- $PIDVAL"
+PIDVAL1=$!
+wait $PIDVAL1
+# NOTE the command below causes the following EXPECTED error:
+# panic: Could not confirm authentication channel for HTAmEeBhbLi6aFqcWsi3OZNDE/642GAchpATjhYFTHwD, waited 120 seconds.
+# Note that the above is example, client IDs will vary
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
+
 # echo "CREATING USERS for REKEY TEST..."
 # JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
 # NIAMHID=$(../bin/client init -s blob101 -l $CLIENTOUT/client101.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Niamh101-contact.bin -v $DEBUGLEVEL)
@@ -711,6 +726,15 @@ set -e
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -aruN clients.goldoutput $CLIENTCLEAN
+cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
+echo "CHECKING FOR SUCCESSFUL CONTACT DELETION"
+if [ -s results/deleteContact.txt ]
+then
+    echo "CONTACT DELETION SUCCESSFUL"
+else
+    echo "CONTACT DELETION FAILED"
+    [ -s results/deleteContact.txt ]
+fi
 
 if [ "$PERMISSIONING" == "" ]
 then
