@@ -732,6 +732,7 @@ if [ -s results/deleteContact.txt ]
 then
     echo "CONTACT DELETION SUCCESSFUL"
 else
+    echo "CONTACT DELETION FAILED"
     [ -s results/deleteContact.txt ]
 fi
 
