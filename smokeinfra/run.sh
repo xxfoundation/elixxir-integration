@@ -72,13 +72,6 @@ while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
     echo -n "."
 done
 
-# Kill the last server
-echo "KILLING SERVER 0"
-echo $PID_SERVER_KILLED
-kill -2 $PID_SERVER_KILLED
-# Wait for node to handle kill signal
-sleep 30
-
 echo "CHECKING OUTPUT FOR ERRORS"
 set +x
 
@@ -101,6 +94,14 @@ if [ ! -s rid.txt ]; then
     echo "FAILURE!"
     exit 42
 fi
+
+# Kill the last server
+echo "KILLING SERVER 0"
+echo $PID_SERVER_KILLED
+kill -2 $PID_SERVER_KILLED
+# Wait for node to handle kill signal
+sleep 30
+
 
 echo "CHECKING THAT SERVER 0 WAS KILLED PROPERLY"
 cat $SERVERLOGS/server-0.log | grep "Round completed, closing!" > serverClose.txt || true
