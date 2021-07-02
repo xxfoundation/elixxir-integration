@@ -96,15 +96,14 @@ if [ ! -s rid.txt ]; then
 fi
 
 # Kill the last server
-echo "KILLING SERVER 0"
-echo $PID_SERVER_KILLED
+echo "KILLING SERVER 0 EARLY"
 kill -2 $PID_SERVER_KILLED
 # Wait for node to handle kill signal
 sleep 30
 
 
 echo "CHECKING THAT SERVER 0 WAS KILLED PROPERLY"
-cat $SERVERLOGS/server-0.log | grep "Round completed, closing!" > serverClose.txt || true
+cat results/server-1.log | grep "Round completed, closing!" > serverClose.txt || true
 if [ -s serverClose.txt  ]; then
     echo "SERVER 0 CLOSED SUCCESSFULLY"
 else
