@@ -18,7 +18,7 @@ PIDVAL=$!
 echo "$PERMCMD -- $PIDVAL"
 
 echo "STARTING SERVERS..."
-
+PID_SERVER_KILLED=$!
 for SERVERID in $(seq 3 -1 1)
 do
     IDX=$(($SERVERID - 1))
@@ -26,6 +26,9 @@ do
     $SERVERCMD > $SERVERLOGS/server-$SERVERID.console 2>&1 &
     PIDVAL=$!
     echo "$SERVERCMD -- $PIDVAL"
+    if [ $SERVERID -eq 1 ]; then
+      PID_SERVER_KILLED=$PIDVAL
+    fi
     if [ $SERVERID -eq 2 ]; then
         sleep 10 # This will force a CDE timeout
     fi
@@ -82,10 +85,29 @@ diff -ruN results/gateway-errors.txt noerrors.txt
 
 echo "NO OUTPUT ERRORS"
 
+
+
+
 echo "CHECKING THAT AT LEAST 2 ROUNDS RAN"
 cat results/server-3.log | grep "RID 1 ReceiveFinishRealtime END" > rid.txt || true
 if [ ! -s rid.txt ]; then
     echo "FAILURE!"
+    exit 42
+fi
+
+# Kill the last server
+echo "KILLING SERVER 0 EARLY"
+kill -15 $PID_SERVER_KILLED
+# Wait for node to handle kill signal
+sleep 30
+
+
+echo "CHECKING THAT SERVER 0 WAS KILLED PROPERLY"
+cat results/server-1.log | grep "Round completed, closing!" > serverClose.txt || true
+if [ -s serverClose.txt  ]; then
+    echo "SERVER 0 CLOSED SUCCESSFULLY"
+else
+    echo "SERVER 0 WAS NOT CLOSED PROPERLY"
     exit 42
 fi
 
