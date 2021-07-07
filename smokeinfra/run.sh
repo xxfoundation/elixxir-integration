@@ -97,7 +97,7 @@ fi
 
 # Kill the last server
 echo "KILLING SERVER 0 EARLY"
-kill -2 $PID_SERVER_KILLED
+kill -15 $PID_SERVER_KILLED
 # Wait for node to handle kill signal
 sleep 30
 
