@@ -50,7 +50,8 @@ then
 elif [ "$NETWORKENTRYPOINT" == "release" ]
 then
     NETWORKENTRYPOINT=$(sort -R release.txt | head -1)
-else
+elif [ "$NETWORKENTRYPOINT" == "" ]
+then
     NETWORKENTRYPOINT=$(head -1 network.config)
 fi
 
