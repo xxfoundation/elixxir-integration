@@ -44,7 +44,15 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
-NETWORKENTRYPOINT=$(head -1 network.config)
+if [ "$NETWORKENTRYPOINT" == "betanet" ]
+then
+    NETWORKENTRYPOINT=$(sort -R betanet.txt | head -1)
+elif [ "$NETWORKENTRYPOINT" == "release" ]
+then
+    NETWORKENTRYPOINT=$(sort -R release.txt | head -1)
+else
+    NETWORKENTRYPOINT=$(head -1 network.config)
+fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
