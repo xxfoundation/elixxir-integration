@@ -8,7 +8,7 @@
 registrationCode: "qpol"
 useGPU: false
 devMode: true
-cmix:
+node:
     paths:
         idf:  "nodeID-1.json"
         cert: "../keys/cmix.rip.crt"
@@ -26,7 +26,7 @@ database:
 gateway:
     paths:
         cert: "../keys/cmix.rip.crt"
-scheduling:
+permissioning:
   paths:
     cert: "../keys/cmix.rip.crt"
   address: "127.0.0.1:18000"
