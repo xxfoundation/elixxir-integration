@@ -12,7 +12,7 @@ log: "results/gateways/gateway-2.log"
 logLevel: 1
 
 # The public IP address and port of the node associated with this gateway
-cmixAddress: "127.0.0.1:50001"
+nodeAddress: "127.0.0.1:50001"
 
 # Port for Gateway to listen on. Gateway must be the only listener on this port.
 # Required field.
@@ -36,9 +36,9 @@ keyPath: "../keys/cmix.rip.key"
 # Path to the certificate file
 certPath: "../keys/cmix.rip.crt"
 # Path to the permissioning certificate
-schedulingCertPath: "../keys/cmix.rip.crt"
+permissioningCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
-cmixCertPath: "../keys/cmix.rip.crt"
+serverCertPath: "../keys/cmix.rip.crt"
 
 devMode: true
 
