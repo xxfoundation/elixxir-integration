@@ -19,7 +19,7 @@ variables:
   REPO_NAME: server
   DOCKER_IMAGE: elixxirlabs/cuda-go:go1.16-cuda11.1
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
-  REPOS_API: https://gitlab.com/api/v4/projects/elixxir%2F
+  REPOS_API: https://$GITLAB_SERBER/api/v4/projects/elixxir%2F
   SERVER_URL: ""
   SERVER_GPU_URL: ""
   GPULIB_URL: ""
