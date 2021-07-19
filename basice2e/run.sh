@@ -15,12 +15,12 @@ mkdir -p .elixxir
 
 if [ $# -gt 1 ]
 then
-    echo "usage: $0 [permsip:port]"
+    echo "usage: $0 [gatewayip:port]"
     exit
 fi
 
 
-PERMISSIONING=$1
+NETWORKENTRYPOINT=$1
 
 DEBUGLEVEL=${DEBUGLEVEL-0}
 
@@ -44,7 +44,20 @@ mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
-if [ "$PERMISSIONING" == "" ]
+if [ "$NETWORKENTRYPOINT" == "betanet" ]
+then
+    NETWORKENTRYPOINT=$(sort -R betanet.txt | head -1)
+elif [ "$NETWORKENTRYPOINT" == "release" ]
+then
+    NETWORKENTRYPOINT=$(sort -R release.txt | head -1)
+elif [ "$NETWORKENTRYPOINT" == "" ]
+then
+    NETWORKENTRYPOINT=$(head -1 network.config)
+fi
+
+echo "NETWORK: $NETWORKENTRYPOINT"
+
+if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     echo "STARTING SERVERS..."
 
@@ -138,19 +151,19 @@ then
         echo -n "."
     done
 
-    echo "localhost:18000" > results/permserver.txt
+    echo "localhost:8440" > results/startgwserver.txt
 
     echo "DONE LETS DO STUFF"
 
 else
-    echo "Connecting to network defined at $PERMISSIONING"
-    echo $PERMISSIONING > results/permserver.txt
+    echo "Connecting to network defined at $NETWORKENTRYPOINT"
+    echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
 echo "DOWNLOADING TLS Cert..."
-openssl s_client -showcerts -connect $(cat results/permserver.txt) < /dev/null 2>&1 | openssl x509 -outform PEM > results/permcert.pem
+openssl s_client -showcerts -connect $(cat results/startgwserver.txt) < /dev/null 2>&1 | openssl x509 -outform PEM > results/startgwcert.pem
 echo "DOWNLOADING NDF..."
-CLIENTCMD="../bin/client getndf --permhost $(cat results/permserver.txt) --cert results/permcert.pem"
+CLIENTCMD="../bin/client getndf --gwhost $(cat results/startgwserver.txt) --cert results/startgwcert.pem"
 eval $CLIENTCMD >> results/ndf.json 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -204,7 +217,7 @@ runclients() {
 }
 
 
-if [ "$PERMISSIONING" == "" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
 
     echo "RUNNING BASIC CLIENTS..."
@@ -458,7 +471,7 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 
-if [ "$PERMISSIONING" == "" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     # UD Test
     echo "TESTING USER DISCOVERY..."
@@ -736,7 +749,7 @@ else
     [ -s results/deleteContact.txt ]
 fi
 
-if [ "$PERMISSIONING" == "" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
