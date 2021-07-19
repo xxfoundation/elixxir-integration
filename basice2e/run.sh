@@ -25,9 +25,6 @@ NETWORKENTRYPOINT=$1
 DEBUGLEVEL=${DEBUGLEVEL-0}
 
 
-#export GRPC_GO_LOG_VERBOSITY_LEVEL=99
-#export GRPC_GO_LOG_SEVERITY_LEVEL=info
-
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 CLIENTOUT=results/clients
@@ -178,6 +175,10 @@ then
     echo "results/ndf.json is empty, cannot proceed"
     exit -1
 fi
+
+
+export GRPC_GO_LOG_VERBOSITY_LEVEL=99
+export GRPC_GO_LOG_SEVERITY_LEVEL=info
 
 
 echo "RUNNING CLIENTS..."
