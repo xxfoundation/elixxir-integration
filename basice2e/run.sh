@@ -177,8 +177,8 @@ then
 fi
 
 
-export GRPC_GO_LOG_VERBOSITY_LEVEL=99
-export GRPC_GO_LOG_SEVERITY_LEVEL=info
+#export GRPC_GO_LOG_VERBOSITY_LEVEL=99
+#export GRPC_GO_LOG_SEVERITY_LEVEL=info
 
 
 echo "RUNNING CLIENTS..."
@@ -319,10 +319,10 @@ while [ ! -s $CLIENTOUT/ben43-contact.bin ]; do
 done
 
 
-TMPID=$(cat $CLIENTOUT/client42.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client42.log | grep -a "User\:" | awk -F' ' '{print $5}')
 RICKID=${TMPID}
 echo "RICK ID: $RICKID"
-TMPID=$(cat $CLIENTOUT/client43.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client43.log | grep -a "User\:" | awk -F' ' '{print $5}')
 BENID=${TMPID}
 echo "BEN ID: $BENID"
 
@@ -545,10 +545,10 @@ while [ ! -s $CLIENTOUT/client81-contact.bin ]; do
 done
 echo
 
-TMPID=$(cat $CLIENTOUT/client80.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client80.log | grep -a "User\:" | awk -F' ' '{print $5}')
 CLIENT80ID=${TMPID}
 echo "CLIENT 80 ID: $CLIENT80ID"
-TMPID=$(cat $CLIENTOUT/client81.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client81.log | grep -a "User\:" | awk -F' ' '{print $5}')
 CLIENT81ID=${TMPID}
 echo "CLIENT 81 ID: $CLIENT81ID"
 
@@ -573,7 +573,7 @@ while [ ! -s $CLIENTOUT/client82-contact.bin ]; do
 done
 echo
 
-TMPID=$(cat $CLIENTOUT/client82.log | grep "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client82.log | grep -a "User\:" | awk -F' ' '{print $5}')
 CLIENT82ID=${TMPID}
 echo "CLIENT 82 ID: $CLIENT82ID"
 
@@ -753,7 +753,7 @@ fi
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
 
-    #cat $CLIENTOUT/* | strings | grep -e "ERROR" -e "FATAL" > results/client-errors || true
+    #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true
     #diff -ruN results/client-errors.txt noerrors.txt
     cat $SERVERLOGS/server-*.log | grep -a "ERROR" | grep -a -v "context" | grep -av "metrics" | grep -av "database" > results/server-errors.txt || true
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
