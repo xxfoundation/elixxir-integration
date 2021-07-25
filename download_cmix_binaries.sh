@@ -49,7 +49,7 @@ fi
 # Set up the URL for downloading the binaries
 DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
-    REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
+    REPOS_API=${REPOS_API:="https://gitlab.com/api/v4/projects/elixxir%2F"}
 else
     REPOS_API=${REPOS_API:="https://elixxir-bins.s3-us-west-1.amazonaws.com"}
 fi
