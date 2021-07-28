@@ -12,7 +12,7 @@ log: "results/gatway-2.log"
 logLevel: 2
 
 # The public IP address and port of the node associated with this gateway
-nodeAddress: "127.0.0.1:60001"
+cmixAddress: "127.0.0.1:60001"
 
 # The public IPv4 address of the Gateway, as reported to the network, to use
 # instead of dynamically looking up Gateway's own IP address. If a port is not
@@ -36,9 +36,9 @@ keyPath: "../keys/cmix.rip.key"
 # Path to the certificate file
 certPath: "../keys/cmix.rip.crt"
 # Path to the permissioning certificate
-permissioningCertPath: "../keys/cmix.rip.crt"
+schedulingCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
-serverCertPath: "../keys/cmix.rip.crt"
+cmixCertPath: "../keys/cmix.rip.crt"
 
 knownRoundsPath: "results/gateways/knownrounds-2.json"
 lastUpdateIdPath: "results/gateways/lastupdateid-2.txt"
