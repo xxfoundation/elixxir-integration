@@ -67,6 +67,14 @@ then
     PIDVAL=$!
     echo "$PERMCMD -- $PIDVAL"
 
+
+    # Run Client Registrar
+    CLIENT_REG_CMD="../bin/client-registrar \
+    -l 2 -c client-registrar.yaml"
+    $CLIENT_REG_CMD > results/client-registrat-console.txt 2>&1 &
+    PIDVAL=$!
+    echo "$CLIENT_REG_CMD -- $PIDVAL"
+
     for SERVERID in $(seq 5 -1 1)
     do
         IDX=$(($SERVERID - 1))
