@@ -54,7 +54,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
+if true
 then
     echo "STARTING SERVERS..."
 
