@@ -92,4 +92,4 @@ schedulingConfigPath: "registration.json"
 # placement)
 RegCodesFilePath: "regCodes.json"
 
-randomGeoBinning: true
+disableGeoBinning: true
