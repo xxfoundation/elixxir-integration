@@ -8,6 +8,7 @@
 registrationCode: "vydz"
 useGPU: false
 devMode: true
+rawPermAddr: true
 cmix:
     paths:
         idf:  "nodeID-3.json"

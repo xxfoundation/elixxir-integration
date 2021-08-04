@@ -8,6 +8,7 @@
 registrationCode: "qpol"
 useGPU: false
 devMode: true
+rawPermAddr: true
 cmix:
     paths:
         idf:  "nodeID-1.json"

@@ -8,6 +8,7 @@
 registrationCode: "yiiq"
 useGPU: false
 devMode: true
+rawPermAddr: true
 cmix:
     paths:
         idf:  "nodeID-2.json"
