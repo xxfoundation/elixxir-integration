@@ -47,6 +47,9 @@ then
 elif [ "$NETWORKENTRYPOINT" == "release" ]
 then
     NETWORKENTRYPOINT=$(sort -R release.txt | head -1)
+elif [ "$NETWORKENTRYPOINT" == "devnet" ]
+then
+    NETWORKENTRYPOINT=$(sort -R devnet.txt | head -1)
 elif [ "$NETWORKENTRYPOINT" == "" ]
 then
     NETWORKENTRYPOINT=$(head -1 network.config)
