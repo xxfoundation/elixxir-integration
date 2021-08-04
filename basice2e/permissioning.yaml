@@ -25,6 +25,7 @@ minClientVersion: "2.0.0"
 nodeMetricInterval: 3
 
 disableGatewayPing: true
+disableNodePing: true
 
 # Disable pruning of NDF for offline nodes
 # if set to false, network will sleep for five minutes on start
