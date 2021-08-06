@@ -21,8 +21,8 @@ dbAddress: "0.0.0.0:6969"
 
 minimumNodes: 3
 
-minGatewayVersion: "2.0.0"
-minServerVersion:  "2.0.0"
+minGatewayVersion: "3.0.0"
+minServerVersion:  "3.0.0"
 minClientVersion: "2.0.0"
 nodeMetricInterval: 3
 
