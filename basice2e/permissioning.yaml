@@ -94,5 +94,7 @@ addressSpace: 32
 
 disableGeoBinning: true
 
+geoIPDBFile: "GeoBinDb.ico"
+
 # Public address used in NDF to give to client
 registrationAddress: "0.0.0.0:11421"

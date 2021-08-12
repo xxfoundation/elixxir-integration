@@ -93,4 +93,6 @@ schedulingConfigPath: "registration.json"
 # placement)
 RegCodesFilePath: "regCodes.json"
 
-disableGeoBinning: true
+disableGeoBinning: false
+
+geoIPDBFile: "GeoBinDb.ico"
