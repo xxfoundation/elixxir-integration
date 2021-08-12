@@ -24,9 +24,11 @@ minServerVersion:  "3.0.0"
 minClientVersion: "2.0.0"
 nodeMetricInterval: 3
 
-disableGatewayPing: true
-disableNodePing: true
+# For testing, use the sequence as the country code. Do not use the geobinning database
+disableGeoBinning: true
 
+# For testing, do not exclude node or gateway IPs which are local to the machine
+allowLocalIPs: true
 # Disable pruning of NDF for offline nodes
 # if set to false, network will sleep for five minutes on start
 disableNDFPruning: true
@@ -91,8 +93,6 @@ RegCodesFilePath: "regCodes.json"
 
 # Set address space size for ephemeral IDs
 addressSpace: 32
-
-disableGeoBinning: true
 
 # Public address used in NDF to give to client
 registrationAddress: "0.0.0.0:11421"
