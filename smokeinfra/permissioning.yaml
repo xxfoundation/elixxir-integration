@@ -95,4 +95,3 @@ RegCodesFilePath: "regCodes.json"
 
 disableGeoBinning: false
 
-geoIPDBFile: "GeoBinDb.ico"

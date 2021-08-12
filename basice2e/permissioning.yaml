@@ -92,9 +92,8 @@ RegCodesFilePath: "regCodes.json"
 # Set address space size for ephemeral IDs
 addressSpace: 32
 
-disableGeoBinning: true
+disableGeoBinning: false
 
-geoIPDBFile: "GeoBinDb.ico"
 
 # Public address used in NDF to give to client
 registrationAddress: "0.0.0.0:11421"
