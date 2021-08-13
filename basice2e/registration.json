@@ -1,12 +1,12 @@
 {
-  "TeamSize": 5,
+  "TeamSize": 3,
   "BatchSize": 32,
-  "RandomOrdering": true,
-  "MinimumDelay": 1000,
-  "RealtimeDelay": 5000,
+  "MinimumDelay": 60,
+  "RealtimeDelay": 120,
+  "SemiOptimalOrdering": true,
   "Threshold":     3,
   "NodeCleanUpInterval": 3,
-  "ResourceQueueTimeout": 300000,
-  "Secure": 		     false
+  "ResourceQueueTimeout": 300000
 
- }
+
+}
