@@ -1,5 +1,5 @@
 {
-  "TeamSize": 3,
+  "TeamSize": 5,
   "BatchSize": 32,
   "MinimumDelay": 1000,
   "RealtimeDelay": 5000,
