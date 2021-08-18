@@ -1,7 +1,7 @@
 {
   "TeamSize": 5,
   "BatchSize": 32,
-  "MinimumDelay": 1000,
+  "MinimumDelay": 3000,
   "RealtimeDelay": 5000,
   "SemiOptimalOrdering": true,
   "Threshold":     3,
