@@ -12,3 +12,4 @@ Message received: Hello from Josh31, with E2E Encryption
 Message received: Hello from Josh31, with E2E Encryption
 Message received: Hello from Josh31, with E2E Encryption
 Received 5
+Removed user from discovery: josh13
