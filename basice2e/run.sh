@@ -534,6 +534,18 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
     wait $PIDVAL2
+
+    # Test Remove User
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --remove josh13"
+    eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13-2.log -s blob13-2 --register josh13"
+    eval $CLIENTCMD >> $CLIENTOUT/client13-2.txt || true &
+    PIDVAL=$!
+    echo "$CLIENTCMD -- $PIDVAL"
+    wait $PIDVAL
 fi
 
 
