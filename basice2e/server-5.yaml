@@ -8,8 +8,9 @@
 registrationCode: "nahv"
 useGPU: false
 devMode: true
+rawPermAddr: true
 logLevel: 1
-node:
+cmix:
     paths:
         idf:  "results/servers/nodeID-5.json"
         cert: "../keys/cmix.rip.crt"
@@ -27,7 +28,7 @@ database:
 gateway:
     paths:
         cert: "../keys/cmix.rip.crt"
-permissioning:
+scheduling:
   paths:
     cert: "../keys/cmix.rip.crt"
   address: "127.0.0.1:18000"
