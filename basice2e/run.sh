@@ -172,7 +172,11 @@ else
 fi
 
 echo "DOWNLOADING TLS Cert..."
-openssl s_client -showcerts -connect $(cat results/startgwserver.txt) < /dev/null 2>&1 | openssl x509 -outform PEM > results/startgwcert.pem
+CMD="openssl s_client -showcerts -connect $(cat results/startgwserver.txt) < /dev/null 2>&1 | openssl x509 -outform PEM"
+echo $CMD
+eval $CMD > "results/startgwcert.pem"
+head "results/startgwcert.pem"
+
 echo "DOWNLOADING NDF..."
 CLIENTCMD="../bin/client getndf --gwhost $(cat results/startgwserver.txt) --cert results/startgwcert.pem"
 eval $CLIENTCMD >> results/ndf.json 2>&1 &
