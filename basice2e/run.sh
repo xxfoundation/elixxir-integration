@@ -172,7 +172,10 @@ else
 fi
 
 echo "DOWNLOADING TLS Cert..."
-CMD="openssl s_client -showcerts -connect $(cat results/startgwserver.txt) < /dev/null 2>&1 | openssl x509 -outform PEM"
+CMD="openssl s_client -showcerts -connect $(cat results/startgwserver.txt)"
+echo $CMD
+eval $CMD < /dev/null 2>&1 > "results/startgwcert.bin"
+CMD="cat results/startgwcert.bin | openssl x509 -outform PEM"
 echo $CMD
 eval $CMD > "results/startgwcert.pem"
 head "results/startgwcert.pem"
