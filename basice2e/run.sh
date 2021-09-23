@@ -31,7 +31,7 @@ CLIENTOUT=results/clients
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 90 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTOPTS="--password hello --ndf results/ndf.json --waitTimeout 240 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
