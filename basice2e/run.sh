@@ -622,7 +622,7 @@ wait $PIDVAL3
 echo "Group User IDs: $CLIENT80ID $CLIENT81ID $CLIENT82ID"
 echo "b64:$CLIENT81ID" > $CLIENTOUT/groupParticipants
 echo "b64:$CLIENT82ID" >> $CLIENTOUT/groupParticipants
-CLIENTCMD="timeout 60s ../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --create $CLIENTOUT/groupParticipants --message \"80 inviting 81 and 82 to new group\""
+CLIENTCMD="timeout 360s ../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --create $CLIENTOUT/groupParticipants --message \"80 inviting 81 and 82 to new group\""
 eval $CLIENTCMD > $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
