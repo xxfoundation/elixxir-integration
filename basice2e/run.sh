@@ -441,30 +441,30 @@ wait $PIDVAL2
 # wait $PIDVAL2
 
 
-echo "FORCING HISTORICAL ROUNDS..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+# echo "FORCING HISTORICAL ROUNDS..."
+# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+# eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+# eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+# PIDVAL2=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# wait $PIDVAL2
 
-echo "FORCING MESSAGE PICKUP RETRY... "
-# Higher timeouts for this test to allow message pickup retry to function
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
+# echo "FORCING MESSAGE PICKUP RETRY... "
+# # Higher timeouts for this test to allow message pickup retry to function
+# CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
+# eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
+# PIDVAL=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
+# eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
+# PIDVAL2=$!
+# echo "$CLIENTCMD -- $PIDVAL"
+# wait $PIDVAL
+# wait $PIDVAL2
 
 
 # Single-use test: client53 sends message to client52; client52 responds with
@@ -769,10 +769,30 @@ rm $CLIENTCLEAN/client*.txt.bak
 
 set -e
 
+GOLDOUTPUT=clients.goldoutput
+if [ "$NETWORKENTRYPOINT" != "localhost:8440" ]
+then
+    rm -fr clients.net_goldoutput || true
+    GOLDOUTPUT=clients.net_goldoutput
+    cp -ra clients.goldoutput clients.net_goldoutput
+    # Delete the localhost only files
+    rm $GOLDOUTPUT/client13* || true
+    rm $GOLDOUTPUT/client18* || true
+    rm $GOLDOUTPUT/client19* || true
+    rm $GOLDOUTPUT/client2[01]* || true
+    rm $GOLDOUTPUT/client31* || true
+    rm $GOLDOUTPUT/client3[56]* || true
+    rm $GOLDOUTPUT/client45* || true
+    rm $GOLDOUTPUT/client56* || true
+    rm $GOLDOUTPUT/client67* || true
+    rm $GOLDOUTPUT/client74* || true
+    rm $GOLDOUTPUT/client9* || true
+fi
+
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
-diff -aruN clients.goldoutput $CLIENTCLEAN
+diff -aruN $GOLDOUTPUT $CLIENTCLEAN
 cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
 echo "CHECKING FOR SUCCESSFUL CONTACT DELETION"
 if [ -s results/deleteContact.txt ]
