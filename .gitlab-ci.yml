@@ -117,6 +117,8 @@ basice2e_protonet:
     paths:
      - basice2e/
      - bin/
+  only:
+    - release
 
 # basice2e_betanet:
 #   stage: tests
