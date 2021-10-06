@@ -118,7 +118,11 @@ basice2e_protonet:
      - basice2e/
      - bin/
   only:
-    - release
+    #  When merging in projects that need to be deployed, this field will have to
+    #  be TEMPORARILY changed to master until deployment is completed. BE SURE TO REVERT
+    #  ONCE DEPLOYMENT IS COMPLETE.
+    - master
+
 
 # basice2e_betanet:
 #   stage: tests
