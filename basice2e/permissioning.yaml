@@ -52,6 +52,9 @@ roundIdPath: "results/roundId.txt"
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 
+# Path to whitelisted IPs for client ratelimiting
+whitelistedIpAddressesPath: "whitelist.txt"
+
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
 keyPath: "../keys/cmix.rip.key"
