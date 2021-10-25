@@ -476,25 +476,25 @@ wait $PIDVAL2
 # Generate contact and proto user file for client25
 echo "TESTING PROTO USER FILE..."
 
-CLIENTCMD="../bin/client proto -l $CLIENTOUT/client25.log -s blob11420 --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/josh25-contact.bin --protoUserOut $CLIENTOUT/client25Proto.json "
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client25.log -s blob11420 --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/josh25-contact.bin --protoUserOut $CLIENTOUT/client25Proto.json "
 eval $CLIENTCMD >> $CLIENTOUT/client25.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Generate contact and proto user file for client 26
-CLIENTCMD="../bin/client proto -l $CLIENTOUT/client26.log -s blob11421 --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jonah26-contact.bin --protoUserOut $CLIENTOUT/client26Proto.json"
-eval $CLIENTCMD >> $CLIENTOUT/client25.txt || true &
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client26.log -s blob11421 --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jonah26-contact.bin --protoUserOut $CLIENTOUT/client26Proto.json"
+eval $CLIENTCMD >> $CLIENTOUT/client26.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Clients will now load from the protoUser file and write to session
-CLIENTCMD="timeout 240s ../bin/client proto $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25  --protoUserPath $CLIENTOUT/client25Proto.json"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25  --protoUserPath $CLIENTOUT/client25Proto.json"
 eval $CLIENTCMD >> $CLIENTOUT/client25.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client proto $CLIENTOPTS -l $CLIENTOUT/client26.log -s blob26  --protoUserPath $CLIENTOUT/client26Proto.json"
+CLIENTCMD="timeout 60s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client26.log -s blob26  --protoUserPath $CLIENTOUT/client26Proto.json"
 eval $CLIENTCMD >> $CLIENTOUT/client26.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -502,7 +502,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Continue with E2E testing with session files loaded from proto
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25 --writeContact $CLIENTOUT/josh25-contact.bin --unsafe -m \"Hello from Josh25 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25 --writeContact $CLIENTOUT/josh25-contact.bin --unsafe -m \"Hello from Josh25 to myself, without E2E Encryption\" "
 eval $CLIENTCMD >> $CLIENTOUT/client25.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -518,10 +518,10 @@ while [ ! -s $CLIENTOUT/jonah26-contact.bin ]; do
 done
 
 # Print IDs to console
-TMPID=$(cat $CLIENTOUT/client25.log | grep -a "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client25.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
 JOSHID=${TMPID}
 echo "JOSH ID: $JOSHID"
-TMPID=$(cat $CLIENTOUT/client26.log | grep -a "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client26.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
 JONAHID=${TMPID}
 echo "JONAH ID: $JONAHID"
 
