@@ -34,6 +34,10 @@ allowLocalIPs: true
 disableNDFPruning: true
 permissiveIPChecking: true
 
+# How long rounds will be tracked by gateways. Rounds (and messages as an extension)
+# prior to this period are not guaranteed to be delivered to clients.
+# Expects duration in"h". (Defaults to 1 weeks (168 hours)
+messageRetentionLimit: "168h"
 
 # "Location of the user discovery contact file.
 udContactPath: "results/udContact.bin"
