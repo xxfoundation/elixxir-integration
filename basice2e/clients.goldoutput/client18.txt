@@ -1,6 +1,11 @@
-Sent: Hi 18->9, with E2E Encryption
-Sent: Hi 18->9, with E2E Encryption
-Sent: Hi 18->9, with E2E Encryption
+Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->18, with E2E Encryption
+Sending to AAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->18, with E2E Encryption
+Message received: Hi 18->18, with E2E Encryption
+Message received: Hi 18->18, with E2E Encryption
+Received 2
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
+Sending to AAAAAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hi 18->9, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
 Message received: Hi 9->18, with E2E Encryption
