@@ -40,7 +40,7 @@ def main():
     # Scan each log file
     for path in log_files:
         log.info("Scanning {}".format(path))
-        with open(path, 'r') as file:
+        with open(path, 'r', errors='ignore') as file:
             while True:
                 line = file.readline()
                 if not line:
