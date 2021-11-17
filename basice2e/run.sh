@@ -44,9 +44,9 @@ mkdir -p $CLIENTCLEAN
 if [ "$NETWORKENTRYPOINT" == "betanet" ]
 then
     NETWORKENTRYPOINT=$(sort -R betanet.txt | head -1)
-elif [ "$NETWORKENTRYPOINT" == "protonet" ]
+elif [ "$NETWORKENTRYPOINT" == "mainnet" ]
 then
-    NETWORKENTRYPOINT=$(sort -R protonet.txt | head -1)
+    NETWORKENTRYPOINT=$(sort -R mainnet.txt | head -1)
 elif [ "$NETWORKENTRYPOINT" == "release" ]
 then
     NETWORKENTRYPOINT=$(sort -R release.txt | head -1)
