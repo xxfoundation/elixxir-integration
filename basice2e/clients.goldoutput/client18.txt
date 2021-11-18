@@ -1,3 +1,8 @@
+Sent: Hi 18->18, with E2E Encryption
+Sent: Hi 18->18, with E2E Encryption
+Message received: Hi 18->18, with E2E Encryption
+Message received: Hi 18->18, with E2E Encryption
+Received 2
 Sent: Hi 18->9, with E2E Encryption
 Sent: Hi 18->9, with E2E Encryption
 Sent: Hi 18->9, with E2E Encryption

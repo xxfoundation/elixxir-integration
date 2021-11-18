@@ -1,24 +1,24 @@
-Sending to sCvJTLxvVZKglcBfTcQu0830+OhbF5MS8uOGw7v8ewsD: Hello from Josh25 to myself, without E2E Encryption
+Sent: Hello from Josh25 to myself, without E2E Encryption
 Message received: Hello from Josh25 to myself, without E2E Encryption
 Received 1
-Authentication channel request from: AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD
+
 Received 0
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Received 5
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
-Sending to AtBThtTr7VCMJkY5BjfCjrQ/RhuQ3KOpsmNAWH55zIgD: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
 Message received: Hello from Jonah26, with E2E Encryption
