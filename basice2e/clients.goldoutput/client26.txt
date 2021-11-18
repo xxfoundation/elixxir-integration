@@ -1,5 +1,5 @@
 WARNING: unsafe channel creation enabled
-Adding authenticated channel for: sCvJTLxvVZKglcBfTcQu0830+OhbF5MS8uOGw7v8ewsD
+Adding
 Received 0
 Sent: Hello from Jonah26, with E2E Encryption
 Sent: Hello from Jonah26, with E2E Encryption
