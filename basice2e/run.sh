@@ -588,22 +588,22 @@ if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     # UD Test
     echo "TESTING USER DISCOVERY..."
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client31.log -s blob31 --register josh31 --addemail josh31@elixxir.io --addphone 6178675310US"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --register josh31 --addemail josh31@elixxir.io --addphone 6178675310US"
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
     eval $CLIENTCMD > $CLIENTOUT/josh31.bin|| true &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL1"
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
     eval $CLIENTCMD > $CLIENTOUT/josh13.bin || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL2"
@@ -611,13 +611,13 @@ then
     wait $PIDVAL2
 
     # Send auth chan request
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --send-auth-request --sendCount 0 --receiveCount 0"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --send-auth-request --sendCount 0 --receiveCount 0"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL2"
 
     # Approve request and confirm
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0"
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL2"
@@ -625,11 +625,11 @@ then
     wait $PIDVAL2
 
     # now test
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh31, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh31, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -637,12 +637,12 @@ then
     wait $PIDVAL2
 
     # Test Remove User
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client13.log -s blob13 --remove josh13"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --remove josh13"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS --verify-sends -l $CLIENTOUT/client13-2.log -s blob13-2 --register josh13"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13-2.log -s blob13-2 --register josh13"
     eval $CLIENTCMD >> $CLIENTOUT/client13-2.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
