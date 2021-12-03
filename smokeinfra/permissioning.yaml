@@ -48,6 +48,8 @@ roundIdPath: "results/roundId.txt"
 # Path to UDB public key PEM file
 udbPubKeyPemPath: "../keys/cmix.rip.crt"
 
+nsCertPath: "../keys/cmix.rip.crt"
+
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 

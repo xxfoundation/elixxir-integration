@@ -73,6 +73,9 @@ udbCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 serverCertPath: "../keys/cmix.rip.crt"
 
+nsCertPath: "../keys/cmix.rip.crt"
+
+
 # Time interval (in minutes) in which the database is
 # checked for banned nodes
 BanTrackerInterval: "3"
