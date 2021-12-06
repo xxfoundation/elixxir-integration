@@ -379,7 +379,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "DELETING CONTACT FROM CLIENT..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 echo "$CLIENTCMD -- $PIDVAL"
 PIDVAL1=$!
@@ -387,7 +387,7 @@ wait $PIDVAL1
 # NOTE the command below causes the following EXPECTED error:
 # panic: Could not confirm authentication channel for HTAmEeBhbLi6aFqcWsi3OZNDE/642GAchpATjhYFTHwD, waited 120 seconds.
 # Note that the above is example, client IDs will vary
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --verify-sends -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -563,20 +563,20 @@ wait $PIDVAL2
 echo "TESTING SINGLE-USE"
 
 # Generate contact file for client52
-CLIENTCMD="../bin/client init -s blob52 --verify-sends -l $CLIENTOUT/client52.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
 eval $CLIENTCMD >> /dev/null 2>&1 || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Start client53, which sends a message and then waits for a response
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS --verify-sends -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
 eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 
 # Start client52, which waits for a message and then responds
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS --verify-sends -l $CLIENTOUT/client52.log -s blob52 --reply --timeout 90s"
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --reply --timeout 90s"
 eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
