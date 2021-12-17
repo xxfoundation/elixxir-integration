@@ -407,7 +407,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 # Client 100 will now wait for client 101's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -416,11 +416,11 @@ wait $PIDVAL2
 
 echo "RUNNING REKEY TEST..."
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
+CLIENTCMD="timeout 340s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
+CLIENTCMD="timeout 340s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
