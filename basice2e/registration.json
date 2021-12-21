@@ -1,12 +1,14 @@
 {
-  "TeamSize": 5,
-  "BatchSize": 32,
-  "MinimumDelay": 3000,
-  "RealtimeDelay": 5000,
-  "SemiOptimalOrdering": true,
-  "Threshold":     0.3,
-  "NodeCleanUpInterval": 3,
-  "ResourceQueueTimeout": 300000
-
-
+    "TeamSize": 5,
+    "PrecomputationTimeout": 30000,
+    "RealtimeTimeout": 15000,
+    "DebugTrackRounds": true,
+    "BatchSize": 32,
+    "MinimumDelay": 3000,
+    "RealtimeDelay": 5000,
+    "SemiOptimalOrdering": true,
+    "Secure": true,
+    "Threshold":     0.3,
+    "NodeCleanUpInterval": 3,
+    "ResourceQueueTimeout": 300000
 }
