@@ -868,7 +868,7 @@ CLIENT111ID=${TMPID}
 echo "CLIENT 111 ID: $CLIENT111ID"
 
 # Client 110 will now wait for client 111's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client110.txt || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -876,11 +876,11 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 # Client 111 sends a file to client 110
-CLIENTCMD="timeout 160s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/client110.log $CLIENTFILETRANSFEROPTS"
+CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/client110.log $CLIENTFILETRANSFEROPTS"
 eval $CLIENTCMD > $CLIENTOUT/client110.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="timeout 160s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 5000 --retry 0"
+CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 5000 --retry 0"
 eval $CLIENTCMD > $CLIENTOUT/client111.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
