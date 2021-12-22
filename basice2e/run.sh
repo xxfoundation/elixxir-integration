@@ -888,6 +888,7 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 echo "FILE TRANSFER FINISHED..."
+echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
@@ -927,7 +928,6 @@ then
 fi
 
 
-echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -aruN $GOLDOUTPUT $CLIENTCLEAN
 cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
