@@ -1,27 +1,27 @@
-Sent: Hello from Josh25 to myself, without E2E Encryption
-Message received: Hello from Josh25 to myself, without E2E Encryption
-Received 1
 
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Jonah26, with E2E Encryption
+Message received: Hello from Josh25 to myself, without E2E Encryption
 Received 0
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
+Received 1
 Received 5
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Sent: Hello from Josh25, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
-Message received: Hello from Jonah26, with E2E Encryption
 Received 5
+Sent: Hello from Josh25 to myself, without E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption
+Sent: Hello from Josh25, with E2E Encryption

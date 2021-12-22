@@ -1,6 +1,17 @@
-Message received: Hello, 7
-Message received: Hello, 7
-Received 1
-Received 1
-Sending to AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 4
-Sending to AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD: Hello, 4
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 18->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Message received: Hi 9->9, with E2E Encryption
+Received 2
+Received 2
+Received 3
+Sent: Hi 9->18, with E2E Encryption
+Sent: Hi 9->18, with E2E Encryption
+Sent: Hi 9->18, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
+Sent: Hi 9->9, with E2E Encryption
