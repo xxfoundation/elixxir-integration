@@ -899,7 +899,7 @@ sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
-for C in $(ls -1 $CLIENTCLEAN); do
+for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
     sort -o tmp $CLIENTCLEAN/$C  || true
     cp tmp $CLIENTCLEAN/$C
     # uniq tmp $CLIENTCLEAN/$C || true
