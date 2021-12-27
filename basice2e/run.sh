@@ -31,11 +31,11 @@ CLIENTOUT=results/clients
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 240 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 360 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTSINGLEOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTGROUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTFILETRANSFEROPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTGROUPOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -325,12 +325,12 @@ fi
 
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact $CLIENTOUT/ben43-contact.bin --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --writeContact $CLIENTOUT/ben43-contact.bin --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -349,7 +349,7 @@ BENID=${TMPID}
 echo "BEN ID: $BENID"
 
 # Client 42 will now wait for client 43's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -357,21 +357,21 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick42, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -393,83 +393,79 @@ PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL2
 
-
-########### KEEP COMMENTED OUT, UNTIL TESTS ARE FIXED ################################
-# echo "CREATING USERS for REKEY TEST..."
-# JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
-# NIAMHID=$(../bin/client init -s blob101 -l $CLIENTOUT/client101.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Niamh101-contact.bin -v $DEBUGLEVEL)
-# echo "JAKE ID: $JAKEID"
-# echo "NIAMH ID: $NIAMHID"
+echo "CREATING USERS for REKEY TEST..."
+JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
+NIAMHID=$(../bin/client init -s blob101 -l $CLIENTOUT/client101.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Niamh101-contact.bin -v $DEBUGLEVEL)
+echo "JAKE ID: $JAKEID"
+echo "NIAMH ID: $NIAMHID"
 
 
-# REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5"
-# # Client 101 will now send auth request
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
-# eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# # Client 100 will now wait for client 101's E2E Auth channel request and confirm
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0"
-# eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5"
+# Client 101 will now send auth request
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+# Client 100 will now wait for client 101's E2E Auth channel request and confirm
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
-# echo "RUNNING REKEY TEST..."
-# # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+echo "RUNNING REKEY TEST..."
+# Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
-# # Now we are just going to exhaust all the keys we have and see if we
-# # use the unconfirmed channels
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# # And receive those messages sent to us
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
-# eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL2
+# Now we are just going to exhaust all the keys we have and see if we
+# use the unconfirmed channels
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+# And receive those messages sent to us
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
+eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
 
 
-# echo "FORCING HISTORICAL ROUNDS..."
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
+echo "FORCING HISTORICAL ROUNDS..."
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
-# echo "FORCING MESSAGE PICKUP RETRY... "
-# # Higher timeouts for this test to allow message pickup retry to function
-# CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
-# PIDVAL=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
-# eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL"
-# wait $PIDVAL
-# wait $PIDVAL2
-
-################### Do not uncomment above, it was meant to be commented out
+echo "FORCING MESSAGE PICKUP RETRY... "
+# Higher timeouts for this test to allow message pickup retry to function
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 # Proto user test: client25 and client26 generate a proto user JSON file and close.
 # Both clients are restarted and load from their respective proto user files and attempt to send.
@@ -872,7 +868,7 @@ CLIENT111ID=${TMPID}
 echo "CLIENT 111 ID: $CLIENT111ID"
 
 # Client 110 will now wait for client 111's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client110.txt || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -880,11 +876,11 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 # Client 111 sends a file to client 110
-CLIENTCMD="timeout 160s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/client110.log $CLIENTFILETRANSFEROPTS"
+CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/client110.log $CLIENTFILETRANSFEROPTS"
 eval $CLIENTCMD > $CLIENTOUT/client110.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="timeout 160s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 5000 --retry 0"
+CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 5000 --retry 0"
 eval $CLIENTCMD > $CLIENTOUT/client111.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -892,6 +888,7 @@ wait $PIDVAL1
 wait $PIDVAL2
 
 echo "FILE TRANSFER FINISHED..."
+echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
@@ -902,10 +899,11 @@ sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
-# for C in $(ls -1 $CLIENTCLEAN); do
-#     sort -o tmp $CLIENTCLEAN/$C  || true
-#     uniq tmp $CLIENTCLEAN/$C || true
-# done
+for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
+    sort -o tmp $CLIENTCLEAN/$C  || true
+    cp tmp $CLIENTCLEAN/$C
+    # uniq tmp $CLIENTCLEAN/$C || true
+done
 
 set -e
 
@@ -930,7 +928,6 @@ then
 fi
 
 
-echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 set +x
 diff -aruN $GOLDOUTPUT $CLIENTCLEAN
 cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
