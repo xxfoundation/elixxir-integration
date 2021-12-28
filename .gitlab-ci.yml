@@ -90,7 +90,7 @@ basice2e:
     - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
     - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
-    - NSYSENABLED=TRUE ./run.sh
+    - NSYSENABLED=TRUE DEBUGLEVEL=2 ./run.sh
     - mv results results-gpu
     - cd ..
   artifacts:
