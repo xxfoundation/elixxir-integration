@@ -4,11 +4,9 @@
     "RealtimeTimeout": 15000,
     "DebugTrackRounds": true,
     "BatchSize": 32,
-    "MinimumDelay": 3000,
-    "RealtimeDelay": 5000,
-    "SemiOptimalOrdering": true,
-    "Secure": true,
+    "MinimumDelay": 1000,
+    "RealtimeDelay": 2000,
     "Threshold":     0.3,
-    "NodeCleanUpInterval": 3,
+    "NodeCleanUpInterval": 180000,
     "ResourceQueueTimeout": 300000
 }

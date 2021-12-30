@@ -75,9 +75,9 @@ def main():
                         if sent_round not in rounds_sent:
                             rounds_sent[sent_round] = False
 
-                    elif "Received message of type" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
+                    elif "Received message of" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
                         # Capture message receiving
-                        received_message = re.findall(' msgDigest: (.{20})', line)[0]
+                        received_message = re.findall('msgDigest: (.{20})', line)[0]
                         log.debug("Located received message: {}".format(received_message))
 
                         # Capture message timestamp
