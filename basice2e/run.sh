@@ -3,7 +3,7 @@
 # NOTE: This is verbose on purpose.
 
 set -e
-
+cp udbContact.bin results/udbContact.bin
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
 rm -fr blob* || true
