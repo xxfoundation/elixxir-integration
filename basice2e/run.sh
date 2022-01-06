@@ -389,6 +389,7 @@ CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s 
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
 wait $PIDVAL2
 
 echo "CREATING USERS for REKEY TEST..."
