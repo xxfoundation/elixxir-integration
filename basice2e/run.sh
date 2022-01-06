@@ -911,7 +911,7 @@ if [ "$NETWORKENTRYPOINT" != "localhost:8440" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
-    cp -ra clients.goldoutput clients.net_goldoutput
+    cp -r clients.goldoutput clients.net_goldoutput
     # Delete the localhost only files
     rm $GOLDOUTPUT/client13* || true
     rm $GOLDOUTPUT/client18* || true
