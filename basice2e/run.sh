@@ -3,7 +3,6 @@
 # NOTE: This is verbose on purpose.
 
 set -e
-cp udbContact.bin results/udbContact.bin
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
 rm -fr blob* || true
@@ -64,6 +63,9 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     echo "STARTING SERVERS..."
+
+    # Copy udbContact into place when running locally.
+    cp udbContact.bin results/udbContact.bin
 
     PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
