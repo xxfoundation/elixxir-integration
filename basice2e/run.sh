@@ -3,7 +3,7 @@
 # NOTE: This is verbose on purpose.
 
 set -e
-
+cp udbContact.bin results/udbContact.bin
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
 rm -fr blob* || true
@@ -64,10 +64,6 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     echo "STARTING SERVERS..."
-
-    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json --writeContact results/udContact.bin -v $DEBUGLEVEL)
-    echo "GENERATED UDB ID: $UDBID"
-
 
     PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
@@ -150,7 +146,7 @@ then
 
     # Start a user discovery bot server
     echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --config udb.yaml -l 1"
+    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --protoUserPath	udbProto.json --config udb.yaml -l 1"
     $UDBCMD >> $UDBOUT 2>&1 &
     PIDVAL=$!
     echo $PIDVAL >> results/serverpids
@@ -400,7 +396,7 @@ echo "JAKE ID: $JAKEID"
 echo "NIAMH ID: $NIAMHID"
 
 
-REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5"
+REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5 --e2eRekeyThreshold 0.75"
 # Client 101 will now send auth request
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
