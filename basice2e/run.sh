@@ -65,10 +65,6 @@ if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
     echo "STARTING SERVERS..."
 
-    UDBID=$(../bin/client init -s results/udbsession -l results/udbidgen.log --password hello --ndf ndf.json --writeContact results/udContact.bin -v $DEBUGLEVEL)
-    echo "GENERATED UDB ID: $UDBID"
-
-
     PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
     $PERMCMD > results/permissioning-console.txt 2>&1 &
     PIDVAL=$!
@@ -150,7 +146,7 @@ then
 
     # Start a user discovery bot server
     echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --config udb.yaml -l 1"
+    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --protoUserPath	udbProto.json --config udb.yaml -l 1"
     $UDBCMD >> $UDBOUT 2>&1 &
     PIDVAL=$!
     echo $PIDVAL >> results/serverpids

@@ -8,7 +8,7 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
-# The listening port of this server
+# The listening pofrt of this server
 port: 18000
 
 # Database connection information
@@ -40,7 +40,7 @@ permissiveIPChecking: true
 messageRetentionLimit: "168h"
 
 # "Location of the user discovery contact file.
-udContactPath: "results/udContact.bin"
+udContactPath: "udbContact.bin"
 udbAddress: "127.0.0.1:18001"
 # Path to UDB public key PEM file
 udbPubKeyPemPath: "../keys/cmix.rip.crt"
