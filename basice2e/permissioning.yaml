@@ -21,7 +21,7 @@ minimumNodes: 5
 
 minGatewayVersion: "3.0.0"
 minServerVersion:  "3.0.0"
-minClientVersion: "3.0.0"
+minClientVersion: "4.0.0"
 nodeMetricInterval: 3
 
 # For testing, use the sequence as the country code. Do not use the geobinning database
