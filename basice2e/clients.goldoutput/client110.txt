@@ -1,5 +1,5 @@
 Received new file transfer "LoremIpsum.txt" of size 100332 bytes with preview: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-Received progress callback {completed: true, received: 110, total: 110, err: <nil>}
+Received progress callback {completed: true, received: 109, total: 109, err: <nil>}
 Completed receiving file:
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at efficitur urna, et ultrices leo. Sed lacinia vestibulum tortor eu convallis. Proin imperdiet accumsan magna, sed volutpat tortor consectetur at. Mauris sed dolor sed sapien porta consectetur in eu sem. Maecenas vestibulum varius erat, eget porta eros vehicula mattis. Phasellus tempor odio at tortor maximus convallis. Nullam ut lorem laoreet, tincidunt ex sollicitudin, aliquam urna. Mauris vel enim consequat, sodales nibh quis, sollicitudin ipsum. Quisque lacinia, sapien a tempor eleifend, dolor nibh posuere neque, sit amet tempus dolor ante non nunc. Proin tempor blandit mollis. Mauris nunc sem, egestas eget velit ut, luctus molestie ipsum. Pellentesque sed eleifend dolor. Nullam pulvinar dignissim ante, eget luctus quam hendrerit vel. Proin ornare non tortor vitae rhoncus. Etiam tellus sem, condimentum id bibendum sed, blandit ac lorem. Maecenas gravida, neque quis blandit ultrices, nisl elit pretium nulla, ac volutpat massa odio sed arcu.
 
