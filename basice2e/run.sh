@@ -294,12 +294,12 @@ then
     wait $PIDVAL || true
 
     echo "FORCING HISTORICAL ROUNDS... (NON-E2E, PRECAN)"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client33.log -s blob33 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client33.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client34.log -s blob34 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+    eval $CLIENTCMD >> $CLIENTOUT/client34.txt || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
@@ -442,11 +442,13 @@ wait $PIDVAL2
 
 
 echo "FORCING HISTORICAL ROUNDS..."
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --sendid 1 --destid 2 --sendCount 5 --receiveCount 5 -m \"Hello from 1, without E2E Encryption\""
+FH1ID=$(../bin/client init -s blob35 -l $CLIENTOUT/client35.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FH1-contact.bin -v $DEBUGLEVEL)
+FH2ID=$(../bin/client init -s blob36 -l $CLIENTOUT/client36.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FH2-contact.bin -v $DEBUGLEVEL)
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blob35 --destid b64:$FH2ID --sendCount 5 --receiveCount 5 -m \"Hello from 35, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client35.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --sendid 2 --destid 1 --sendCount 5 --receiveCount 5 -m \"Hello from 2, without E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blob36 --destid b64:$FH1ID --sendCount 5 --receiveCount 5 -m \"Hello from 36, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client36.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -454,13 +456,15 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "FORCING MESSAGE PICKUP RETRY... "
+FM1ID=$(../bin/client init -s blob22 -l $CLIENTOUT/client22.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FM1-contact.bin -v $DEBUGLEVEL)
+FM2ID=$(../bin/client init -s blob23 -l $CLIENTOUT/client23.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FM2-contact.bin -v $DEBUGLEVEL)
 # Higher timeouts for this test to allow message pickup retry to function
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client20.log -s blob20 --sendid 20 --destid 21 --sendCount 5 --receiveCount 5 -m \"Hello from 20, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client20.txt || true &
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client22.log -s blob22 --destid b64:$FM2ID --sendCount 5 --receiveCount 5 -m \"Hello from 22, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client22.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client21.log -s blob21 --sendid 21 --destid 20 --sendCount 5 --receiveCount 5 -m \"Hello from 21, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client21.txt || true &
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client23.log -s blob23  --destid b64:$FM1ID --sendCount 5 --receiveCount 5 -m \"Hello from 23, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client23.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
