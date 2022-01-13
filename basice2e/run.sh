@@ -30,7 +30,7 @@ CLIENTOUT=results/clients
 UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 360 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
@@ -251,17 +251,17 @@ then
     mkdir -p blob18
     mkdir -p blob91
     echo "TEST E2E WITH PRECANNED USERS..."
-    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendDelay 1000 --sendCount 2 --receiveCount 2 -s blob18/blob18 --slowPolling --sendid 18 --destid 18 -m \"Hi 18->18, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 2 --receiveCount 2 -s blob18/blob18 --slowPolling --sendid 18 --destid 18 -m \"Hi 18->18, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
@@ -269,11 +269,11 @@ then
 
 
     # Send E2E messages between two users
-    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendDelay 1000 --sendCount 3 --receiveCount 3 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 3 --receiveCount 3 -s blob9/blob9 --sendid 9 --destid 18 -m \"Hi 9->18, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendDelay 1000  --sendCount 3 --receiveCount 3 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client18.log --sendCount 3 --receiveCount 3 -s blob18/blob18 --sendid 18 --destid 9 -m \"Hi 18->9, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client18.txt 2>&1 &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL"
