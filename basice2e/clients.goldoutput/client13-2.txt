@@ -1,1 +1,1 @@
-Failed to register user josh13: rpc error: code = Unknown desc = Username josh13 is already taken. Please try again
+Failed to register user josh13: rpc error: code = Unknown desc = Username "josh13" is already taken. Please try again
