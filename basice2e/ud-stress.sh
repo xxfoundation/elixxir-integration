@@ -96,7 +96,7 @@ fi
 # Test forever
 while [ true ]; do
     echo "SEARCHING..."
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s $CLIENTOUT/blob13 --searchusername Jake"
+    CLIENTCMD="time timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s $CLIENTOUT/blob13 --searchusername Jake"
     eval $CLIENTCMD > $CLIENTOUT/josh31.bin &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL1"
