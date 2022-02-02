@@ -393,6 +393,35 @@ echo "$CLIENTCMD -- $PIDVAL"
 echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
 wait $PIDVAL2
 
+echo "DELETING REQUESTS FROM CLIENT.."
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client44.log -s blob44 --writeContact $CLIENTOUT/david44-contact.bin --unsafe -m \"Hello from David44 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client44.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client45.log -s blob45 --writeContact $CLIENTOUT/matt45-contact.bin --destfile $CLIENTOUT/matt45-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client45.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+
+TMPID=$(cat $CLIENTOUT/client44.log | grep -a "User\:" | awk -F' ' '{print $5}')
+DAVIDID=${TMPID}
+echo "BEN ID: $DAVIDID"
+
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client45.log -s blob45 --delete-sent-requests --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client45.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42  --destid b64:$DAVIDID --sendCount 5 --receiveCount 5 -m \"Hello from David, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
+wait $PIDVAL2
+
+
+
 echo "CREATING USERS for REKEY TEST..."
 JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
 NIAMHID=$(../bin/client init -s blob101 -l $CLIENTOUT/client101.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Niamh101-contact.bin -v $DEBUGLEVEL)
