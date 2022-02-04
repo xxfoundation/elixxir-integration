@@ -421,6 +421,40 @@ echo "NOTE: The command above causes an EXPECTED failure to confirm authenticati
 wait $PIDVAL2
 
 
+echo "CREATING USERS for SIMULTANEOUSAUTH TEST..."
+JONOID=$(../bin/client init -s blob85 -l $CLIENTOUT/client85.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono85-contact.bin -v $DEBUGLEVEL)
+SYDNEYID=$(../bin/client init -s blob86 -l $CLIENTOUT/client86.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/sydney86-contact.bin -v $DEBUGLEVEL)
+echo "JONO ID: $JONOID"
+echo "SYDNEY ID: $SYDNEYID"
+
+# Attempt to send an auth request at the same time. It's not guaranteed that
+# one side won't send and the other won't receive before sending their request
+# but this method has proven to be reasonably reliable.
+echo "STARTING SIMULTANEOUSAUTH TEST..."
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client85.log -s blob85 --destfile $CLIENTOUT/sydney86-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client85.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client86.log -s blob86 --destfile $CLIENTOUT/jono85-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client86.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
+
+# Send a couple messages
+echo "TESTING SIMULTANEOUSAUTH MESSAGE SEND..."
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client85.log -s blob85 --destfile $CLIENTOUT/sydney86-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello Sydney from Jono, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client85.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client86.log -s blob86 --destfile $CLIENTOUT/jono85-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello Jono from Sydney, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client86.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
+
 
 echo "CREATING USERS for REKEY TEST..."
 JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
