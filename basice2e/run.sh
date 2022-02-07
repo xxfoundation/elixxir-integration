@@ -534,6 +534,20 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+echo "CREATING USERS FOR BACKUP..."
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client120.log -s blob120 --password hello --ndf results/ndf.json --backupOut $CLIENTOUT/client120.backup  --backupPass hello --backupJsonOut $CLIENTOUT/client120.backup.json"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client121.log -s blob121 --password hello --ndf results/ndf.json --backupIn $CLIENTOUT/client120.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121.backup.json"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+
 # Proto user test: client25 and client26 generate a proto user JSON file and close.
 # Both clients are restarted and load from their respective proto user files and attempt to send.
 
@@ -1019,6 +1033,9 @@ then
     cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
+    echo "Checking backup files for equality..."
+    diff -aruN $CLIENTOUT/client121.backup.json $CLIENTOUT/client120.backup.json > backupDiff.txt
+    diff -aruN  backupDiff.txt noerrors.txt
 fi
 
 echo "NO OUTPUT ERRORS, SUCCESS!"
