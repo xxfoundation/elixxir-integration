@@ -397,17 +397,19 @@ echo "$CLIENTCMD -- $PIDVAL"
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
+echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL
 wait $PIDVAL2
+
+echo "SWITCHING RENEGOTIATION TEST..."
 # Switch places, 42 renegotiates with 43
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 # Client 43 will now wait, for client 42's renegotiated E2E Auth channel request and confirm
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL1
@@ -420,9 +422,10 @@ echo "$CLIENTCMD -- $PIDVAL"
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben43, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
+echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL
 wait $PIDVAL2
+echo "END RENEGOTIATION"
 
 echo "DELETING CONTACT FROM CLIENT..."
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
