@@ -26,6 +26,7 @@ Received 5
 Received 5
 Received 5
 Received 5
+Resetting 
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
@@ -46,4 +47,5 @@ Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
 Sent: Hello from Ben43, with E2E Encryption
+WARNING: unsafe channel creation enabled
 WARNING: unsafe channel creation enabled
