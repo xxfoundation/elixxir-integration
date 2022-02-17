@@ -421,17 +421,19 @@ echo "NOTE: The command above causes an EXPECTED failure to confirm authenticati
 wait $PIDVAL2
 
 echo "DELETING INDIVIDUAL REQUEST FROM CLIENT.."
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --writeContact $CLIENTOUT/bruno46-contact.bin --unsafe -m \"Hello from Bruno46 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --writeContact $CLIENTOUT/bruno46-contact.bin --unsafe -m \"Hello from Bruno46 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client46.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client47.log -s blob47 --writeContact $CLIENTOUT/kam47-contact.bin --destfile $CLIENTOUT/kam47-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 120s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client47.log -s blob47 --writeContact $CLIENTOUT/kam47-contact.bin --destfile $CLIENTOUT/kam47-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client47.txt || true &
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL
+wait $PIDVAL2
 
-TMPID=$(cat $CLIENTOUT/client44.log | grep -a "User\:" | awk -F' ' '{print $5}')
+TMPID=$(cat $CLIENTOUT/client46.log | grep -a "User\:" | awk -F' ' '{print $5}')
 BRUNOID=${TMPID}
 echo "BRUNOID ID: $BRUNOID"
 
@@ -440,8 +442,8 @@ eval $CLIENTCMD >> $CLIENTOUT/client46.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client47.log -s blob47  --destid b64:$DAVIDID --sendCount 5 --receiveCount 5 -m \"Hello from Kam, with E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client47.log -s blob47  --destid b64:$BRUNOID --sendCount 5 --receiveCount 5 -m \"Hello from Kam, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client47.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
