@@ -585,17 +585,115 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "CREATING USERS FOR BACKUP..."
-CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client120.log -s blob120 --password hello --ndf results/ndf.json --backupOut $CLIENTOUT/client120.backup  --backupPass hello --backupJsonOut $CLIENTOUT/client120.backup.json"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120A --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121A --writeContact $CLIENTOUT/client121-contact.bin --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+
+while [ ! -s $CLIENTOUT/client121-contact.bin ]; do
+    sleep 1
+    echo -n "."
+done
+
+wait $PIDVAL2
+
+TMPID=$(cat $CLIENTOUT/client120.log | grep -a "User\:" | awk -F' ' '{print $5}')
+CLIENT120ID=${TMPID}
+echo "CLIENT 120 ID: $CLIENT120ID"
+TMPID=$(cat $CLIENTOUT/client121.log | grep -a "User\:" | awk -F' ' '{print $5}')
+CLIENT121ID=${TMPID}
+echo "BEN ID: $CLIENT121ID"
+
+# Client 120 will now wait for client 121's E2E Auth channel request and confirm
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120A --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+# Send messages
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120A  --destid b64:$CLIENT121ID --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121A  --destid b64:$CLIENT120ID --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+
+# Backup 120 and restore
+CLIENTCMD="timeout 20s ../bin/client -l $CLIENTOUT/client120.log -s blob120A --password hello --ndf results/ndf.json -v $DEBUGLEVEL --backupOut $CLIENTOUT/client120A.backup  --backupPass hello --backupJsonOut $CLIENTOUT/client120A.backup.json"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client121.log -s blob121 --password hello --ndf results/ndf.json --backupIn $CLIENTOUT/client120.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121.backup.json"
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client120.log -s blob120B --password hello --ndf results/ndf.json -v $DEBUGLEVEL --backupIn $CLIENTOUT/client120A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client120B.backup.json --backupIdList $CLIENTOUT/client120Partners.json"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client120.log -s blob120B --batchadd $CLIENTOUT/client120Partners.json"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+
+# Send messages
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B  --destid b64:$CLIENT121ID --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 120 restoring backup\""
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121A  --destid b64:$CLIENT120ID --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 120 restoring backup\""
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+
+# Backup 121 and restore
+CLIENTCMD="timeout 20s ../bin/client -l $CLIENTOUT/client121.log -s blob121A --password hello --ndf results/ndf.json -v $DEBUGLEVEL --backupOut $CLIENTOUT/client121A.backup  --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
+
+CLIENTCMD="timeout 20s ../bin/client  -l $CLIENTOUT/client121.log -s blob121B --password hello --ndf results/ndf.json -v $DEBUGLEVEL --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client121.log -s blob121B --batchadd $CLIENTOUT/client121Partners.json"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+
+# Send messages
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B  --destid b64:$CLIENT121ID --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\""
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121B  --destid b64:$CLIENT120ID --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 121 restoring backup\""
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 
 # Proto user test: client25 and client26 generate a proto user JSON file and close.
@@ -1084,8 +1182,10 @@ then
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
     echo "Checking backup files for equality..."
-    diff -aruN $CLIENTOUT/client121.backup.json $CLIENTOUT/client120.backup.json > backupDiff.txt
-    diff -aruN  backupDiff.txt noerrors.txt
+    diff -aruN $CLIENTOUT/client120A.backup.json $CLIENTOUT/client120B.backup.json > client120BackupDiff.txt
+    diff -aruN $CLIENTOUT/client121A.backup.json $CLIENTOUT/client121B.backup.json > client121BackupDiff.txt
+    diff -aruN  client120BackupDiff.txt noerrors.txt
+    diff -aruN  client121BackupDiff.txt noerrors.txt
 fi
 
 echo "NO OUTPUT ERRORS, SUCCESS!"
