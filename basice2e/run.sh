@@ -600,14 +600,12 @@ while [ ! -s $CLIENTOUT/client121-contact.bin ]; do
     echo -n "."
 done
 
-wait $PIDVAL2
-
 TMPID=$(cat $CLIENTOUT/client120.log | grep -a "User\:" | awk -F' ' '{print $5}')
 CLIENT120ID=${TMPID}
 echo "CLIENT 120 ID: $CLIENT120ID"
 TMPID=$(cat $CLIENTOUT/client121.log | grep -a "User\:" | awk -F' ' '{print $5}')
 CLIENT121ID=${TMPID}
-echo "BEN ID: $CLIENT121ID"
+echo "CLIENT 121 ID: $CLIENT121ID"
 
 # Client 120 will now wait for client 121's E2E Auth channel request and confirm
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120A --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
@@ -650,6 +648,20 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 
+# 120 renegotiates with 121
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B --destfile $CLIENTOUT/client121-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+# Client 121 will now wait, for client 120's renegotiated E2E Auth channel request and confirm
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121A --destfile $CLIENTOUT/client120-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
+
+
 # Send messages
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B  --destid b64:$CLIENT121ID --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 120 restoring backup\""
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
@@ -682,6 +694,19 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
+
+# 121 renegotiates with 120
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121B --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+# Client 120 will now wait, for client 121's renegotiated E2E Auth channel request and confirm
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
 
 # Send messages
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120B  --destid b64:$CLIENT121ID --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\""
