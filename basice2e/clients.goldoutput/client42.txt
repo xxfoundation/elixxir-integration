@@ -9,12 +9,27 @@ Message received: Hello from Ben43, with E2E Encryption
 Message received: Hello from Ben43, with E2E Encryption
 Message received: Hello from Ben43, with E2E Encryption
 Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
 Message received: Hello from Rick42 to myself, without E2E Encryption
+Received 0
+Received 0
 Received 0
 Received 0
 Received 1
 Received 5
 Received 5
+Received 5
+Received 5
+Resetting 
 Sent: Hello from Rick42 to myself, without E2E Encryption
 Sent: Hello from Rick42, with E2E Encryption
 Sent: Hello from Rick42, with E2E Encryption
@@ -26,3 +41,14 @@ Sent: Hello from Rick42, with E2E Encryption
 Sent: Hello from Rick42, with E2E Encryption
 Sent: Hello from Rick42, with E2E Encryption
 Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+WARNING: unsafe channel creation enabled
