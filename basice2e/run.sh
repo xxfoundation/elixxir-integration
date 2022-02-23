@@ -735,7 +735,6 @@ PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
-#
 
 # Send E2E messages with written sessions
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25 --destid b64:$JONAHID --sendCount 5 --receiveCount 5 -m \"Hello from Josh25, with E2E Encryption\""
@@ -812,6 +811,26 @@ then
     wait $PIDVAL1
     wait $PIDVAL2
 
+    # Print IDs to console
+    TMPID=$(cat $CLIENTOUT/client13.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
+    UDID1=${TMPID}
+    echo "UD ID 1: $UDID1"
+    TMPID=$(cat $CLIENTOUT/client31.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
+    UDID2=${TMPID}
+    echo "UD ID 2: $UDID2"
+
+    # Test lookup message
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --lookup b64:$UDID2"
+    eval $CLIENTCMD > $CLIENTOUT/josh31.bin|| true &
+    PIDVAL1=$!
+    echo "$CLIENTCMD -- $PIDVAL1"
+    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --lookup b64:$UDID1"
+    eval $CLIENTCMD > $CLIENTOUT/josh13.bin || true &
+    PIDVAL2=$!
+    echo "$CLIENTCMD -- $PIDVAL2"
+    wait $PIDVAL1
+    wait $PIDVAL2
+
     # Send auth chan request
     CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --send-auth-request --sendCount 0 --receiveCount 0"
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
@@ -850,8 +869,6 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 fi
-
-
 
 echo "TESTING GROUP CHAT..."
 # Create authenticated channel between client 80 and 81
