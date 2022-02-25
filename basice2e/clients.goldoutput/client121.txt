@@ -1,5 +1,4 @@
 Adding 
-Adding 
 Backup update received.
 Message received: Hello from Client120, with E2E Encryption
 Message received: Hello from Client120, with E2E Encryption
@@ -24,5 +23,4 @@ Sent: Hello from Client121, with E2E Encryption after 121 restoring backup
 Sent: Hello from Client121, with E2E Encryption after 121 restoring backup
 Sent: Hello from Client121, with E2E Encryption after 121 restoring backup
 Sent: Hello from Client121, with E2E Encryption after 121 restoring backup
-WARNING: unsafe channel creation enabled
 WARNING: unsafe channel creation enabled
