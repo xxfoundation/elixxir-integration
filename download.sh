@@ -1,5 +1,6 @@
 #!/bin/bash
 LOCALPATH=$(pwd)
+echo "Local path: $LOCALPATH"
 rm -rf gitlab.com/*
 rm -rf bin/*
 mkdir -p bin
