@@ -1,5 +1,7 @@
 #!/bin/bash
 LOCALPATH=$(pwd)
+rm -rf gitlab.com/*
+rm -rf bin/*
 mkdir -p bin
 git clone https://git.xx.network/elixxir/client gitlab.com/elixxir/client
 pushd gitlab.com/elixxir/client
