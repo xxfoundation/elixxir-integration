@@ -23,9 +23,11 @@ go build -mod vendor -o $LOCALPATH/bin/permissioning main.go
 popd
 echo "Downloading client registrar"
 git clone https://git.xx.network/elixxir/client-registrar.git gitlab.com/elixxir/client-registrar
+pushd gitlab.com/elixxir/client-registrar
 go mod vendor -v
 go mod tidy
 go build -mod vendor -o $LOCALPATH/bin/client-registrar gitlab.com/elixxir/client-registrar
+popd
 echo "Downloading cMix node..."
 git clone https://git.xx.network/elixxir/server gitlab.com/elixxir/server
 pushd gitlab.com/elixxir/server
