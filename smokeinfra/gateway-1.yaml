@@ -40,8 +40,6 @@ schedulingCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 cmixCertPath: "../keys/cmix.rip.crt"
 
-knownRoundsPath: "results/gateways/knownrounds-1.json"
-lastUpdateIdPath: "results/gateways/lastupdateid-1.txt"
 devMode: true
 
 

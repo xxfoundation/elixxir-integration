@@ -40,8 +40,6 @@ schedulingCertPath: "../keys/cmix.rip.crt"
 # Path to the certificate file
 cmixCertPath: "../keys/cmix.rip.crt"
 
-knownRoundsPath: "results/gateways/knownrounds-2.json"
-lastUpdateIdPath: "results/gateways/lastupdateid-2.txt"
 devMode: true
 
 # === END YAML

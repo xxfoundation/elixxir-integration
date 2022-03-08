@@ -39,17 +39,6 @@ permissiveIPChecking: true
 # Expects duration in"h". (Defaults to 1 weeks (168 hours)
 messageRetentionLimit: "168h"
 
-# "Location of the user discovery contact file.
-udContactPath: "results/udbContact.bin"
-udbAddress: "127.0.0.1:18001"
-# Path to UDB public key PEM file
-udbPubKeyPemPath: "../keys/cmix.rip.crt"
-
-
-clientRegCodes:
-  - "FFFF"
-  - "GGGG"
-
 # Path to the file containing the round ID
 roundIdPath: "results/roundId.txt"
 
@@ -70,8 +59,9 @@ ndfOutputPath: "results/permissions-ndfoutput.json"
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the UDB certificate file
 udbCertPath: "../keys/cmix.rip.crt"
-# Path to the certificate file
-serverCertPath: "../keys/cmix.rip.crt"
+# "Location of the user discovery contact file.
+udContactPath: "results/udbContact.bin"
+udbAddress: "127.0.0.1:18001"
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes
@@ -95,6 +85,3 @@ RegCodesFilePath: "regCodes.json"
 
 # Set address space size for ephemeral IDs
 addressSpace: 32
-
-# Public address used in NDF to give to client
-registrationAddress: "0.0.0.0:11421"
