@@ -1,0 +1,36 @@
+# ==================================
+# Client Registrar Configuration
+# ==================================
+
+# Log message level (0 = info, 1 = debug, >1 = trace)
+logLevel: 0
+# Path to log file
+logPath: "results/client-registrar.log"
+
+# Public address, used in NDF it gives to client
+publicAddress: "0.0.0.0:11421"
+# The listening port of this server
+port: 11421
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the permissioning server private key file
+keyPath: "configurations/permissioning.key"
+# Path to the permissioning server certificate file
+certPath: "configurations/permissioning.crt"
+
+# Maximum number of connections per period
+userRegCapacity: 1000
+# How often the number of connections is reset
+userRegLeakPeriod: "24h"
+
+# Database connection information
+dbUsername: "cmix"
+dbPassword: ""
+dbName: "cmix_server"
+dbAddress: ""
+
+# List of client codes to be added to the database (for testing)
+clientRegCodes:
+  - "AAAA"
+  - "BBBB"
+  - "CCCC"

@@ -1,0 +1,9 @@
+# UDB Config for E2E Integration test
+logPath: "results/udb.log"
+sessionPath: "results/udbsession"
+sessionPass: "hello"
+certPath: "configurations/cmix.rip.crt"
+ndfPath: "ndf.json"
+port: "18001"
+keyPath: "configurations/cmix.rip.key"
+permCertPath: "configurations/cmix.rip.crt"
