@@ -2,11 +2,35 @@
 
 ## Purpose
 This is to automatically test all the system's components and make sure they 
-work together correctly. If the integration test passes, it should guarantee
-that clients can send messages all the way through the system, including 
-mixing with multiple nodes and an anonymity set greater than 1. If the 
-integration test fails, look at the logs and narrow down the cause by adding
-more logging statements if necessary.
+work together correctly. There are 2 testing suite packages 
+(smokeinfra and basice2e) and a general long-running network package (localNetwork). 
+
+### Testing Suites
+These testing suites are used by the xx network team to ensure basic functionality
+of the network and its clients. It is a part of their CI/CD workflow. If the 
+integration tedigga#1
+st fails with an unknown or unhandled error, they look at the logs
+to narrow down and resolve the issue.
+
+[//]: # (link to the readme?)
+[SmokeInfra](./smokeinfra/) is a simple test of the xx network, ensuring that rounds are running. 
+Generally speaking, this is for the xx network team and developers that wish to 
+contribute to how the network operates.
+
+[BasicE2E](./basice2e) determines whether clients can send messages all the way through the system, including 
+mixing with multiple nodes and an anonymity set greater than 1. There are several
+tests of the client in this package, including features such as group messaging,
+file transfer, etc. Whenever a new feature is introduced to the client by the 
+xx network development team, a new test for this feature 
+is added to this testing suite via the run script (`run.sh`)
+
+## Local Network
+
+The [localNetwork package](./localNetwork) is a more general use network tool.
+This package will run a local version of the xx network on a single machine. 
+This can be done either via the `run.sh` script, which will run the network entirely
+locally with internal IP addresses, or the `runpublish.sh`, which runs the network
+with remotely accessible IP addresses.
 
 ## How to manually run locally
 
