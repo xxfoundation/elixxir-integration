@@ -59,13 +59,50 @@ So, if you make changes that break integration and merge the fixes to the
 `master` branch of integration, you ought to also merge the `master` branch
 into the `benchmark` branch so that the benchmarks will continue to function.
 
-## Automate running locally
+## Scripts
 
-`build.sh` generates version information for all repositories under test and
+### `build.sh`
+
+[`build.sh`](./build.sh) generates version information for all repositories under test and
 builds binaries for them in the `bin/` directory.
 
-`download_cmix_binaries` downloads binaries from certain branches into the `bin/` directory.
-The targeted operating system for the binaries can be specified via command line arguments.
+### `download_cmix_binaries.sh`
+
+The script [`download_cmix_binaries.sh`](./download_cmix_binaries.sh) accepts an optional flag that
+specifies which platform to download the binaries for. If no flag is specified,
+then the script defaults to the Linux binaries. Refer to the table below for
+details on the flags.
+
+|Long flag|Short flag|Effect|
+|---|---|---|
+|linux|l|downloads the Linux binaries|
+|mac|m|downloads the Mac binaries|
+
+A second argument can be provided which changes where the script downloads from.
+By default it downloads from a public bucket which includes release and master builds.
+
+|Flag name|Short flag|Effect|
+|---|---|---|
+|dev downloads|d|downloads from internal CI |
+
+This script will require additional set-up steps, see the [Additional Set-Up](#Additional-Set-Up) section for
+details.
+
+### My Multi Word Header
+
+### download.sh
+
+[`download.sh`](./download.sh) will download all network related repositories to the working
+directory. Each repository will be individually built, with the binary being moved
+to the `binaries/` directory, for the run script (`run.sh`) to initiate. This
+will not require additional steps like `download_cmix_binaries.sh`, it will use up more
+local storage. This will download binaries from release by default.
+
+If you want to build and run custom binaries off of custom branches, you may create a branch in
+local environment styled as `feature/[INSERT_PROJECT_BRANCH]` and run the download script
+checked out into that feature branch.
+
+### `update.sh`
 
 `update.sh` runs `git pull` for each repo under test, and by uncommenting the
 relevant code, checks out the `master` branch of each repo before pulling. This 
@@ -82,3 +119,23 @@ resulting logs, set the INTEGRATION\_EDITOR environment variable:
 If you need to make a lot of exploratory changes to get things integrated,
 using these utility scripts can speed up the process.
 
+### Additional Set Up
+
+You will need to add a personal access token to your environment vars to download binaries via the
+`download_cmix_binaries.sh`.  You can generate one [here](https://gitlab.com/-/profile/personal_access_tokens),
+giving it the "api" scope.
+Please add the following to your `~/.zshrc` or `~/.bash_profile` depending on your shell
+(You could most likely find out what shell you're using by running `echo $0` in the terminal).
+
+```
+export GITLAB_ACCESS_TOKEN=token_here
+```
+
+You could also invoke the script with the var, if you don't want to set it in your file or use
+a different token temporarily.
+
+```
+GITLAB_ACCESS_TOKEN=token_here ./download_cmix_binaries.sh [l/m] d
+```
+
+The script downloads from the CI when the second argument into it (the one after the platform flag) is `d`.
