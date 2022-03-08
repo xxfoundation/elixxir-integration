@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 # Clear out the previous run's logs
 rm gateway*-knownRound || true
 rm errServer-* || true
@@ -18,9 +21,9 @@ UDBOUT=results/udb-console.txt
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 
-# Allow for verbose gRPC logs
-export GRPC_GO_LOG_VERBOSITY_LEVEL=99
-export GRPC_GO_LOG_SEVERITY_LEVEL=info
+## Uncomment to allow for verbose gRPC logs
+#export GRPC_GO_LOG_VERBOSITY_LEVEL=99
+#export GRPC_GO_LOG_SEVERITY_LEVEL=info
 
 
 nodes=$(ls -1q ./server-*.yaml | wc -l | xargs)
@@ -86,6 +89,7 @@ finish() {
         echo "KILL -9 $job"
         kill -9 $job || true
     done
+    set +x
 }
 
 echo "You can't use the network until rounds run."
@@ -94,9 +98,11 @@ echo "and review logs for what went wrong."
 rm rid.txt || true
 touch rid.txt
 echo -n "Waiting for rounds to run..."
-while [ ! -s rid.txt ]; do
+cnt=0
+while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
     sleep 1
     grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-2.log > rid.txt || true
+    cnt=$(($cnt + 1))
     echo -n "."
 done
 
