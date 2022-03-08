@@ -13,10 +13,10 @@ publicAddress: "0.0.0.0:11421"
 port: 11421
 
 # === REQUIRED FOR ENABLING TLS ===
-# Path to the permissioning server private key file
-keyPath: "configurations/permissioning.key"
-# Path to the permissioning server certificate file
-certPath: "configurations/permissioning.crt"
+# Path to the registration server private key file
+keyPath: "../keys/cmix.rip.key"
+# Path to the registration server certificate file
+certPath: "../keys/cmix.rip.crt"
 
 # Maximum number of connections per period
 userRegCapacity: 1000
