@@ -1,6 +1,6 @@
 # START YAML ===
 # registration code used for first time registration. Unique. Provided by xx network
-registrationCode: "jgbg"
+registrationCode: "AAAA"
 useGPU: false
 devMode: true
 rawPermAddr: true
@@ -8,20 +8,20 @@ cmix:
   paths:
     # Path where the ID will be stored after the ID is created on first run
     # used by the wrapper script
-    idf: "results/servers/nodeID-1.json"
+    idf: "results/servers/nodeID-0.json"
     # Path to the self signed TLS cert that the node uses for identification
     cert: "../keys/cmix.rip.crt"
     # Path to the private key for the self signed TLS cert
     key:  "../keys/cmix.rip.key"
     # Path to where the log will be stored
-    log:  "results/servers/server-1.log"
+    log:  "results/servers/server-0.log"
     #
     ipListOutput: "results/servers/ipList-1.txt"
     # Path where an error file will be placed in the event of a fatal error
     # used by the wrapper script
-    errOutput: "results/servers/errServer-1.txt"
+    errOutput: "results/servers/errServer-0.txt"
   # port the node will communicate on
-  port: 11201
+  port: 11200
   overridePublicIP: "0.0.0.0"
 database:
   name: "cmix_server"
@@ -41,5 +41,5 @@ scheduling:
 metrics:
   # location of stored metrics data. Modification to set to permissioning
   # server instead of saving will be made at a later date
-  log:  "results/servers/metrics-server-1.log"
+  log:  "results/servers/metrics-server-0.log"
 # === END YAML

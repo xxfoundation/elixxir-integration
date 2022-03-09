@@ -28,7 +28,7 @@ listeningAddress: ""
 overridePublicIP: "0.0.0.0"
 
 # The public IP address of the Node associated with this Gateway.
-cmixAddress: "0.0.0.0:11200"
+cmixAddress: "{NODE_ADDR}"
 
 # Period in which the message cleanup function executes. Recommended period is on the order of a minute.
 messageTimeout: "1800s"

@@ -1,26 +1,25 @@
 # START YAML ===
 # registration code used for first time registration. Unique. Provided by xx network
-registrationCode: "vydz"
+registrationCode: "vflu"
 useGPU: false
-logLevel: 0
 devMode: true
 rawPermAddr: true
 cmix:
   paths:
-    # Path where an error file will be placed in the event of a fatal error
-    # used by the wrapper script
-    errOutput: "errServer-2.txt"
     # Path where the ID will be stored after the ID is created on first run
     # used by the wrapper script
-    idf:  "nodeID-2.json"
+    idf: "results/servers/nodeID-2.json"
     # Path to the self signed TLS cert that the node uses for identification
     cert: "../keys/cmix.rip.crt"
     # Path to the private key for the self signed TLS cert
     key:  "../keys/cmix.rip.key"
-    #
-    ipListOutput:  "ipList-1.txt"
     # Path to where the log will be stored
     log:  "results/servers/server-2.log"
+    #
+    ipListOutput: "results/servers/ipList-2.txt"
+    # Path where an error file will be placed in the event of a fatal error
+    # used by the wrapper script
+    errOutput: "results/servers/errServer-2.txt"
   # port the node will communicate on
   port: 11202
   overridePublicIP: "0.0.0.0"
@@ -38,7 +37,7 @@ scheduling:
     # Path to the self signed TLS cert used by the permissioning. Provided by xx network
     cert: "../keys/cmix.rip.crt"
   # IP Address of the permissioning server, provided by xx network
-  address: "0.0.0.0:11420"
+  address: "0.0.0.0:18000"
 metrics:
   # location of stored metrics data. Modification to set to permissioning
   # server instead of saving will be made at a later date

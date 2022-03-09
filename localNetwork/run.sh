@@ -101,7 +101,7 @@ echo -n "Waiting for rounds to run..."
 cnt=0
 while [ ! -s rid.txt ] && [ $cnt -lt 240 ]; do
     sleep 1
-    grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-2.log > rid.txt || true
+    grep -a "RID 1 ReceiveFinishRealtime END" results/servers/*.log > rid.txt || true
     cnt=$(($cnt + 1))
     echo -n "."
 done
@@ -109,9 +109,10 @@ done
 # Run UDB
 # Start a user discovery bot server
 echo "STARTING UDB..."
-UDBCMD="bin/udb --logLevel 3 --config udb.yaml -l 1  --protoUserPath	udbProto.json"
+UDBCMD="../bin/udb --logLevel 3 --config udb.yaml -l 1  --protoUserPath	udbProto.json"
 $UDBCMD >> $UDBOUT 2>&1 &
 echo "UDB: " $!
+echo $! >> results/serverpids
 
 echo "\nNetwork rounds have run. You may now attempt to connect."
 

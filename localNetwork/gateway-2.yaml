@@ -8,13 +8,14 @@
 # Gateway Configuration File
 ##
 
-# Used for debugging
+# Log message level
 loglevel: 0
 
 # Output log file
 log: "results/gateways/gateway-2.log"
 
-# The listening port of this gateway
+# Port for Gateway to listen on. Gateway must be the only listener on this port.
+# Required field.
 Port: 8202
 
 # Local IP address of the Gateway, used for internal listening. Expects an IPv4
@@ -30,7 +31,7 @@ overridePublicIP: "0.0.0.0"
 cmixAddress: "0.0.0.0:11202"
 
 # Period in which the message cleanup function executes. Recommended period is on the order of a minute.
-messageTimeout: "60s"
+messageTimeout: "1800s"
 
 # Path to where the IDF is saved. This is used by the wrapper management script.
 idfPath: "results/gateways/misc/gatewayIDF-2.json"
