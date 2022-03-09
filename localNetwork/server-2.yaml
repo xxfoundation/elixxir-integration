@@ -1,6 +1,6 @@
 # START YAML ===
 # registration code used for first time registration. Unique. Provided by xx network
-registrationCode: "vflu"
+registrationCode: "npdd"
 useGPU: false
 devMode: true
 rawPermAddr: true
