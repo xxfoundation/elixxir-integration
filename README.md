@@ -28,9 +28,8 @@ is added to this testing suite via the run script (`run.sh`)
 
 The [localNetwork package](./localNetwork) is a more general-use network tool.
 This package will run a local version of the xx network on a single machine until a 
-manually killed by the user. This can be done either via the `run.sh` script,
-which will run the network with internal IP addresses, or the `runpublish.sh`, which runs the network
-with remotely accessible IP addresses. With this network established, a developer may,
+manually killed by the user. This can be done using either the `run.sh`  or the `runpublish.sh` scripts.
+With this network established, a developer may,
 for example, test the xxDK. 
 
 ## How to manually run locally
