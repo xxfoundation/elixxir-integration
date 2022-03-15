@@ -16,19 +16,19 @@ node_ports = []
 node_regCodes = []
 
 server_template = ""
-with open("server.yaml") as f:
+with open("server_template.yaml") as f:
     server_template = f.read()
 
 gateway_template = ""
-with open("gateway.yaml") as f:
+with open("gateway_template.yaml") as f:
     gateway_template = f.read()
 
 reg_template = ""
-with open("permissioning.yaml") as f:
+with open("permissioning_template.yaml") as f:
     reg_template = f.read()
 
 reg_json_template = ""
-with open("registration.json") as f:
+with open("registration_template.json") as f:
     reg_json_template = f.read()
 
 # Generate a list of all ports servers and gateways occupy. Doing this as a 

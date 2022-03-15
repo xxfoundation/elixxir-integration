@@ -86,7 +86,7 @@ groups:
     generator: "2"
 
 # Path to file with config for scheduling algorithem within the user directory
-schedulingConfigPath: "registration.json"
+schedulingConfigPath: "registration_template.json"
 
 # Path to JSON file with list of Node registration codes (in order of network
 # placement)
