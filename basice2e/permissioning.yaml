@@ -45,6 +45,9 @@ roundIdPath: "results/roundId.txt"
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 
+# Public address used in NDF to give to client
+registrationAddress: "0.0.0.0:11421"
+
 # Path to whitelisted IPs for client ratelimiting
 whitelistedIpAddressesPath: "whitelist.txt"
 
