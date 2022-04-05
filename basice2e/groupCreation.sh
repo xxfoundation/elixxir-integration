@@ -2,6 +2,10 @@
 
 ouputFile=groupMembers
 
+if [  -f "$ouputFile" ]
+then
+    rm $ouputFile
+fi
 
 if [ $# -eq 0 ]; then
     echo "No arguments provided. Please provide the path to client logs.
@@ -11,8 +15,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-
-# This
 touch $ouputFile
 for file in "$@"
 do
