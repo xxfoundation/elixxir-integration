@@ -24,7 +24,7 @@ do
 
     TMPID=$(cat $file | grep -a "User\:" | awk -F' ' '{print $5}')
     echo "User ID for $file: $TMPID"
-    echo "b64:TMPID" >> $ouputFile
+    echo "b64:$TMPID" >> $ouputFile
 
 done
 
