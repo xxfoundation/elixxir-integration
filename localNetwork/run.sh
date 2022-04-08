@@ -120,6 +120,34 @@ echo "\nNetwork rounds have run. You may now attempt to connect."
 sleep 4
 
 
+echo "localhost:8200" > results/startgwserver.txt
+
+echo "Setting up NDF for clients..."
+CMD="openssl s_client -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
+echo $CMD
+eval $CMD < /dev/null 2>&1 > "results/startgwcert.bin"
+CMD="cat results/startgwcert.bin | openssl x509 -outform PEM"
+echo $CMD
+eval $CMD > "results/startgwcert.pem"
+head "results/startgwcert.pem"
+
+CLIENTCMD="../bin/client getndf --gwhost $(tr -d '[:space:]' < results/startgwserver.txt) --cert results/startgwcert.pem"
+eval $CLIENTCMD >> results/ndf.json 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+cat results/ndf.json | jq . | head -5
+
+file results/ndf.json
+
+if [ ! -s results/ndf.json ]
+then
+    echo "results/ndf.json is empty, cannot proceed"
+    exit -1
+fi
+
+
 
 
 
