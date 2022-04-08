@@ -95,3 +95,5 @@ RegCodesFilePath: "regCodes.json"
 # Set address space size for ephemeral IDs
 addressSpace: 32
 
+# Public address used in NDF to give to client
+registrationAddress: "0.0.0.0:11421"
