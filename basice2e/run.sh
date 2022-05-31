@@ -949,7 +949,7 @@ wait $PIDVAL2
 wait $PIDVAL3
 
 # Extract group ID -- Note to Jono this probably needs to be fixed!
-GROUPID=$(cat $CLIENTOUT/client80.log | grep -a "NewGroupID\:" | awk -F' ' '{print $5}')
+GROUPID=$(cat $CLIENTOUT/client80.log | grep -a "NewGroupID\:" | awk -F' ' '{print $6}')
 echo "Group ID: $GROUPID"
 
 # Print the group list from all users
