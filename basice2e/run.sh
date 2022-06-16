@@ -33,8 +33,8 @@ CLIENTCLEAN=results/clients-cleaned
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTGROUPOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 420 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 
@@ -932,7 +932,7 @@ wait $PIDVAL3
 echo "Group User IDs: $CLIENT80ID $CLIENT81ID $CLIENT82ID"
 echo "b64:$CLIENT81ID" > $CLIENTOUT/groupParticipants
 echo "b64:$CLIENT82ID" >> $CLIENTOUT/groupParticipants
-CLIENTCMD="timeout 360s ../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --create $CLIENTOUT/groupParticipants --message \"80 inviting 81 and 82 to new group\""
+CLIENTCMD="timeout 605s ../bin/client group -s blob80 -l $CLIENTOUT/client80.log $CLIENTGROUPOPTS --create $CLIENTOUT/groupParticipants --message \"80 inviting 81 and 82 to new group\""
 eval $CLIENTCMD > $CLIENTOUT/client80.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -949,7 +949,7 @@ wait $PIDVAL2
 wait $PIDVAL3
 
 # Extract group ID -- Note to Jono this probably needs to be fixed!
-GROUPID=$(cat $CLIENTOUT/client80.log | grep -a "NewGroupID\:" | awk -F' ' '{print $5}')
+GROUPID=$(cat $CLIENTOUT/client80.log | grep -a "NewGroupID\:" | awk -F' ' '{print $6}')
 echo "Group ID: $GROUPID"
 
 # Print the group list from all users
@@ -1057,10 +1057,6 @@ wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
 
-sort -b -o "$CLIENTOUT/client80.txt" "$CLIENTOUT/client80.txt"
-sort -b -o "$CLIENTOUT/client81.txt" "$CLIENTOUT/client81.txt"
-sort -b -o "$CLIENTOUT/client82.txt" "$CLIENTOUT/client82.txt"
-
 echo "GROUP CHAT FINISHED!"
 
 
@@ -1103,7 +1099,7 @@ CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/clie
 eval $CLIENTCMD > $CLIENTOUT/client110.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 1000 --retry 0"
+CLIENTCMD="timeout 700s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 500 --retry 0"
 eval $CLIENTCMD > $CLIENTOUT/client111.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -1121,6 +1117,10 @@ sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
+
+# sort -b -o "$CLIENTOUT/client80.txt" "$CLIENTCLEAN/client80.txt"
+# sort -b -o "$CLIENTOUT/client81.txt" "$CLIENTCLEAN/client81.txt"
+# sort -b -o "$CLIENTOUT/client82.txt" "$CLIENTCLEAN/client82.txt"
 
 for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
     sort -o tmp $CLIENTCLEAN/$C  || true
