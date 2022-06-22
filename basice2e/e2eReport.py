@@ -33,6 +33,10 @@ def main():
                     level=log.INFO, datefmt='%d-%b-%y %H:%M:%S')
     log_files = find_files()
 
+    udbLog = "./results/udb-console.txt"
+    if os.path.exists(udbLog):
+        log_files.append(udbLog)
+
     messages_sent = dict()
     messages_received = dict()
     rounds_sent = dict()
