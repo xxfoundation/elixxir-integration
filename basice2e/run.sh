@@ -37,7 +37,7 @@ CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $D
 CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 420 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CONNECTIONOPTS="--password hello --waitTimeout 90 --ndf results/ndf.json -v $DEBUGLEVEL"
+CONNECTIONOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -1109,13 +1109,12 @@ wait $PIDVAL2
 
 echo "FILE TRANSFER FINISHED..."
 
-
 ###############################################################################
 # Test  connections
 ###############################################################################
 echo "TESTING CONNECTIONS..."
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 1m15s"
+CLIENTCMD="timeout 240s ../bin/client connection -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 2m"
 eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -1143,7 +1142,7 @@ echo "CONNECTION TESTS FINISHED"
 ###############################################################################
 echo "TESTING AUTHENTICATED CONNECTIONS..."
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 1m15s"
+CLIENTCMD="timeout 240s ../bin/client connection -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 2m"
 eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
