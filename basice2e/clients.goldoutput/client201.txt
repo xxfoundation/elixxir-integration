@@ -1,0 +1,7 @@
+Sending connection request
+Established connection with partner
+Sent message "Hello 200 from 201, using connections" to connection partner.
+Sending connection request
+Established connection with partner
+Disconnecting from connection partner
+Disconnected from partner

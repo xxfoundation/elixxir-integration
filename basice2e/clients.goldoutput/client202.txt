@@ -1,0 +1,6 @@
+Established connection server, begin listening for authentication...
+Authenticated connection established
+Received authenticated connection from client
+Established connection with partner awaiting authentication...
+Received message: Hello 202 from 203, using connections
+Shutting down connection server
