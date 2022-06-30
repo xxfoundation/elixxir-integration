@@ -547,12 +547,12 @@ CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 # And receive those messages sent to us
 CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 wait $PIDVAL2
 
 
