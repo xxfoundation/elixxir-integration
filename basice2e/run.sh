@@ -150,7 +150,7 @@ then
 
     # Start a user discovery bot server
     echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --protoUserPath	udbProto.json --config udb.yaml -l 1"
+    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --skipVerification --protoUserPath	udbProto.json --config udb.yaml -l 1"
     $UDBCMD >> $UDBOUT 2>&1 &
     PIDVAL=$!
     echo $PIDVAL >> results/serverpids
