@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # NOTE: This is verbose on purpose.
+################################################################################
+## Initial Set Up & Clean Up of Past Runs
+################################################################################
 
 set -e
 rm -fr results.bak || true
@@ -43,6 +46,11 @@ mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
+
+################################################################################
+## Network Set Up
+################################################################################
+
 
 if [ "$NETWORKENTRYPOINT" == "betanet" ]
 then
@@ -240,6 +248,10 @@ runclients() {
     done
 }
 
+###############################################################################
+# Test  Basic Client
+###############################################################################
+
 
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
@@ -324,6 +336,10 @@ then
 
 fi
 
+###############################################################################
+# Test  Sending E2E
+###############################################################################
+
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
@@ -379,6 +395,10 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Renegotiation
+###############################################################################
+
 echo "TESTING RENEGOTIATION..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
@@ -429,6 +449,10 @@ wait $PIDVAL
 wait $PIDVAL2
 echo "END RENEGOTIATION"
 
+###############################################################################
+# Test  Deleting Contacts & Requests
+###############################################################################
+
 echo "DELETING CONTACT FROM CLIENT..."
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
@@ -472,6 +496,9 @@ echo "$CLIENTCMD -- $PIDVAL"
 echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
 wait $PIDVAL2
 
+###############################################################################
+# Test  Simultaneous Auth
+###############################################################################
 
 echo "CREATING USERS for SIMULTANEOUSAUTH TEST..."
 JONOID=$(../bin/client init -s blob85 -l $CLIENTOUT/client85.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono85-contact.bin -v $DEBUGLEVEL)
@@ -507,6 +534,9 @@ echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL1
 wait $PIDVAL2
 
+###############################################################################
+# Test  Rekey
+###############################################################################
 
 echo "CREATING USERS for REKEY TEST..."
 JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
@@ -556,6 +586,9 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Historical Rounds
+###############################################################################
 
 echo "FORCING HISTORICAL ROUNDS..."
 FH1ID=$(../bin/client init -s blob35 -l $CLIENTOUT/client35.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FH1-contact.bin -v $DEBUGLEVEL)
@@ -585,6 +618,10 @@ PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
+
+###############################################################################
+# Test  Back Up & Restore
+###############################################################################
 
 echo "START BACKUP AND RESTORE..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
@@ -673,6 +710,9 @@ wait $PIDVAL2
 
 echo "END BACKUP AND RESTORE..."
 
+###############################################################################
+# Test  Proto User
+###############################################################################
 
 # Proto user test: client25 and client26 generate a proto user JSON file and close.
 # Both clients are restarted and load from their respective proto user files and attempt to send.
@@ -759,6 +799,9 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Single Use
+###############################################################################
 
 # Single-use test: client53 sends message to client52; client52 responds with
 # the same message in the set number of message parts
@@ -785,6 +828,9 @@ echo "$CLIENTCMD -- $PIDVAL1"
 wait $PIDVAL1
 wait $PIDVAL2
 
+###############################################################################
+# Test  User Discovery
+###############################################################################
 
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
@@ -870,6 +916,10 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 fi
+
+###############################################################################
+# Test  Group Chat
+###############################################################################
 
 echo "TESTING GROUP CHAT..."
 # Create authenticated channel between client 80 and 81
@@ -1060,6 +1110,9 @@ wait $PIDVAL3
 
 echo "GROUP CHAT FINISHED!"
 
+###############################################################################
+# Test  File Transfer
+###############################################################################
 
 echo "TESTING FILE TRANSFER..."
 
@@ -1112,6 +1165,7 @@ echo "FILE TRANSFER FINISHED..."
 ###############################################################################
 # Test  connections
 ###############################################################################
+
 echo "TESTING CONNECTIONS..."
 # Initiate server
 CLIENTCMD="timeout 240s ../bin/client connection -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 2m"
