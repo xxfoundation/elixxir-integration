@@ -35,7 +35,7 @@ CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 420 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 600 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CONNECTIONOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 
@@ -151,7 +151,7 @@ then
 
     # Start a user discovery bot server
     echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --protoUserPath	udbProto.json --config udb.yaml -l 1"
+    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --skipVerification --protoUserPath	udbProto.json --config udb.yaml -l 1"
     $UDBCMD >> $UDBOUT 2>&1 &
     PIDVAL=$!
     echo $PIDVAL >> results/serverpids
@@ -531,11 +531,11 @@ wait $PIDVAL2
 
 echo "RUNNING REKEY TEST..."
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -544,16 +544,16 @@ wait $PIDVAL2
 
 # Now we are just going to exhaust all the keys we have and see if we
 # use the unconfirmed channels
-CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 # And receive those messages sent to us
-CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 wait $PIDVAL2
 
 
@@ -1212,7 +1212,7 @@ fi
 
 
 set +x
-diff -aruN $GOLDOUTPUT $CLIENTCLEAN
+diff -aru $GOLDOUTPUT $CLIENTCLEAN
 cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
 echo "CHECKING FOR SUCCESSFUL CONTACT DELETION"
 if [ -s results/deleteContact.txt ]
