@@ -897,7 +897,7 @@ then
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt || true &
     PIDVAL=$!
     echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfiledestfiledestfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
     eval $CLIENTCMD >> $CLIENTOUT/client13.txt || true &
     PIDVAL2=$!
     echo "$CLIENTCMD -- $PIDVAL"
