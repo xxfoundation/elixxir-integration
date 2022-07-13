@@ -586,12 +586,12 @@ wait $PIDVAL
 wait $PIDVAL2
 
 echo "START BACKUP AND RESTORE..."
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --writeContact $CLIENTOUT/client121-contact.bin --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --writeContact $CLIENTOUT/client121-contact.bin --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -602,7 +602,7 @@ while [ ! -s $CLIENTOUT/client121-contact.bin ]; do
 done
 
 # Client 120 will now wait for client 121's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -610,11 +610,11 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Send messages to each other
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -622,7 +622,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Register 120 with UD
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client120.log -s blob120 --register client120"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --register client120"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -630,7 +630,7 @@ wait $PIDVAL
 
 
 # Backup and restore 121
-CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -638,18 +638,18 @@ wait $PIDVAL
 
 rm -fr blob121
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client121.log -s blob121 --batchadd $CLIENTOUT/client121Partners.json --unsafe-channel-creation"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --batchadd $CLIENTOUT/client121Partners.json --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -657,11 +657,11 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Send messages to each other
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
