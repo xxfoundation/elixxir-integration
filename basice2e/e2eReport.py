@@ -33,6 +33,10 @@ def main():
                     level=log.INFO, datefmt='%d-%b-%y %H:%M:%S')
     log_files = find_files()
 
+    udbLog = "./results/udb-console.txt"
+    if os.path.exists(udbLog):
+        log_files.append(udbLog)
+
     messages_sent = dict()
     messages_received = dict()
     rounds_sent = dict()
@@ -40,7 +44,7 @@ def main():
     # Scan each log file
     for path in log_files:
         log.info("Scanning {}".format(path))
-        with open(path, 'r') as file:
+        with open(path, 'r', errors='ignore') as file:
             while True:
                 line = file.readline()
                 if not line:
@@ -48,17 +52,24 @@ def main():
                 else:
                     if "Successfully sent to EphID" in line:
                         # Capture message sending
-                        sent_message = re.findall('msgDigest: (.{20})\)', line)[0]
+                        sent_msg = re.findall('msgDigest: (.{20})\)', line)
+                        if len(sent_msg) == 0:
+                            continue
+                        sent_message = sent_msg[0]
                         log.debug("Located sent message: {}".format(sent_message))
-                        messages_sent[sent_message] = {"sender": os.path.basename(path)}
+
 
                         # Capture message timestamp
-                        sent_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        sent_ts = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)
+                        if len(sent_ts) == 0:
+                            continue
+                        sent_timestamp_str = sent_ts[0]
                         try:
                             sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S.%f')
                         except ValueError:
                             sent_timestamp = datetime.datetime.strptime(sent_timestamp_str, '%Y/%m/%d %H:%M:%S')
                         log.debug("Located sent timestamp: {}".format(sent_timestamp))
+                        messages_sent[sent_message] = {"sender": os.path.basename(path)}
                         messages_sent[sent_message]["sent"] = sent_timestamp
 
                         # Capture rounds messages were sent in
@@ -68,20 +79,23 @@ def main():
                         if sent_round not in rounds_sent:
                             rounds_sent[sent_round] = False
 
-                    elif "Received message of type" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
+                    elif "Received message of" in line or "Received AuthRequest from" in line or "Received AuthConfirm from" in line:
                         # Capture message receiving
-                        received_message = re.findall(' msgDigest: (.{20})', line)[0]
+                        received_message = re.findall('msgDigest: (.{20})', line)[0]
                         log.debug("Located received message: {}".format(received_message))
-                        messages_received[received_message] = {"receiver": os.path.basename(path)}
 
                         # Capture message timestamp
-                        received_timestamp_str = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)[0]
+                        receive_ts = re.findall('INFO (.{19}\.{0,1}\d{0,6})', line)
+                        if len(receive_ts) == 0:
+                            continue
+                        received_timestamp_str = receive_ts[0]
                         try:
                             received_timestamp = datetime.datetime.strptime(received_timestamp_str,
                                                                             '%Y/%m/%d %H:%M:%S.%f')
                         except ValueError:
                             received_timestamp = datetime.datetime.strptime(received_timestamp_str, '%Y/%m/%d %H:%M:%S')
                         log.debug("Located received timestamp: {}".format(received_timestamp))
+                        messages_received[received_message] = {"receiver": os.path.basename(path)}
                         messages_received[received_message]["received"] = received_timestamp
 
                     elif "Round(s)" in line:

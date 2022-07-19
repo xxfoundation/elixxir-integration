@@ -1,15 +1,15 @@
-WARNING: unsafe channel creation enabled
 Adding 
+Message received: Hello from Josh31, with E2E Encryption
+Message received: Hello from Josh31, with E2E Encryption
+Message received: Hello from Josh31, with E2E Encryption
+Message received: Hello from Josh31, with E2E Encryption
+Message received: Hello from Josh31, with E2E Encryption
 Received 0
-Sent: Hello from Josh13, with E2E Encryption
-Sent: Hello from Josh13, with E2E Encryption
-Sent: Hello from Josh13, with E2E Encryption
-Sent: Hello from Josh13, with E2E Encryption
-Sent: Hello from Josh13, with E2E Encryption
-Message received: Hello from Josh31, with E2E Encryption
-Message received: Hello from Josh31, with E2E Encryption
-Message received: Hello from Josh31, with E2E Encryption
-Message received: Hello from Josh31, with E2E Encryption
-Message received: Hello from Josh31, with E2E Encryption
 Received 5
 Removed user from discovery: josh13
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+Sent: Hello from Josh13, with E2E Encryption
+WARNING: unsafe channel creation enabled

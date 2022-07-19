@@ -1,0 +1,79 @@
+################################################################################
+## Copyright © 2018 Privategrity Corporation                                   #
+##                                                                             #
+## All rights reserved.                                                        #
+################################################################################
+
+##
+# Gateway Configuration File
+##
+
+# Log message level
+loglevel: 0
+
+# Output log file
+log: "results/gateways/gateway-2.log"
+
+# Port for Gateway to listen on. Gateway must be the only listener on this port.
+# Required field.
+Port: 8202
+
+# Local IP address of the Gateway, used for internal listening. Expects an IPv4
+# address without a port. (Default "0.0.0.0")
+listeningAddress: ""
+
+# The public IPv4 address of the Gateway, as reported to the network, to use
+# instead of dynamically looking up Gateway's own IP address. If a port is not
+# included, then the port flag is used instead.
+overridePublicIP: "0.0.0.0"
+
+# The public IP address of the Node associated with this Gateway.
+cmixAddress: "0.0.0.0:11202"
+
+# Period in which the message cleanup function executes. Recommended period is on the order of a minute.
+messageTimeout: "1800s"
+
+# Path to where the IDF is saved. This is used by the wrapper management script.
+idfPath: "results/gateways/misc/gatewayIDF-2.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the private key file
+keyPath: "../keys/cmix.rip.key"
+# Path to the certificate file
+certPath: "../keys/cmix.rip.crt"
+# Path to the permissioning certificate
+schedulingCertPath: "../keys/cmix.rip.crt"
+# Path to the certificate file
+cmixCertPath: "../keys/cmix.rip.crt"
+
+# How often the periodic storage tracker checks for items older than the
+# retention period value. Expects duration in "s", "m", "h". (Defaults to 5
+# minutes)
+cleanupInterval: 5m
+
+# How long a message record should last in the gossip buffer if it arrives
+# before the Gateway starts handling the gossip. (Default 300s)
+bufferExpiration: 300s
+
+# Frequency with which to check the gossip buffer. Should be long, since the
+# thread takes a lock each time it checks the buffer. (Default 150s)
+monitorThreadFrequency: 150s
+
+# Flags for rate limiting communications
+
+# The capacity of rate limiting buckets in the map. (Default 20)
+capacity: 20
+
+# The rate that the rate limiting bucket leaks tokens at [tokens/ns]. (Default 3)
+leakedTokens: 3
+
+# How often the number of leaked tokens is leaked from the bucket. (Default 1ms)
+leakDuration: 1ms
+
+# How often inactive buckets are removed. (Default 10s)
+pollDuration: 10s
+
+# The max age of a bucket without activity before it is removed. (Default 10s)
+bucketMaxAge: 10s
+
+devMode: true

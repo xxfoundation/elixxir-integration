@@ -5,9 +5,12 @@ bin/*
 *results*
 */.udb-cMix-session
 blob*
+junk*
+
 # Vim swap files
 *.swp
 *.swo
 *.elixxir*
 rid.txt
 nodeID-*.json
+gitlab.com
