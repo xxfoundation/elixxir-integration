@@ -1,9 +1,48 @@
+# Client Session Tests: this script will run the "old" `client` binary to init session files and setup the environment 
+# for the "new" `client-release` binary to run tests on the old session files.
+
 set -e
 #set -o xtrace
 
-rm -rf client*.log blob* rick*.bin ben*.bin
+# --- Define variables to use for the test & local network ---
 
-CLIENTOPTS="--password hello --ndf results/ndf.json --sendDelay 100 --waitTimeout 360 --unsafe-channel-creation -v 1"
+DEBUGLEVEL=${DEBUGLEVEL-1}
+CLIENTOPTS="--password hello --ndf results/ndf.json --sendDelay 100 --waitTimeout 360 --unsafe-channel-creation -v $DEBUGLEVEL"
+SERVERLOGS=results/servers
+GATEWAYLOGS=results/gateways
+UDBOUT=results/udb-console.txt
+
+# --- Setup a local network ---
+
+rm -rf client*.log blob* rick*.bin ben*.bin
+rm -rf results.bak results
+mkdir results
+
+mkdir -p $SERVERLOGS
+mkdir -p $GATEWAYLOGS
+
+# Start the network
+source network.sh
+
+echo "DOWNLOADING TLS Cert..."
+CMD="openssl s_client -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
+echo $CMD
+eval $CMD < /dev/null 2>&1 > "results/startgwcert.bin"
+CMD="cat results/startgwcert.bin | openssl x509 -outform PEM"
+echo $CMD
+eval $CMD > "results/startgwcert.pem"
+head "results/startgwcert.pem"
+
+echo "DOWNLOADING NDF..."
+CLIENTCMD="../bin/client getndf --gwhost $(tr -d '[:space:]' < results/startgwserver.txt) --cert results/startgwcert.pem"
+eval $CLIENTCMD >> results/ndf.json 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# ------------------------------------------------------------------------------
+# TESTS BEGIN BELOW
+# ------------------------------------------------------------------------------
 
 # --- Pre-canned messaging to self ---
 timeout 240s ../bin/client --password hello --ndf results/ndf.json --sendDelay 100 --waitTimeout 360 --unsafe-channel-creation -v 1 -l client9-master.log --sendCount 2 --receiveCount 2 -s blob9/blob9 --sendid 9 --destid 9 -m "Hi 9->9, with E2E Encryption"
