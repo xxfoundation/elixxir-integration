@@ -1,3 +1,10 @@
+# This script is used to start a basic 5 node network for running clients on. It is meant to be `source`'d into a script
+# which will run clients on the network, such as `client-session-tests.sh` or the main `run.sh`. 
+# 
+# You **must** source it, because otherwise the `trap finish EXIT` instruction will cause the network to stop when 
+# network.sh returns to your script or shell. Sourcing it will "import" the commands into your script instead, causing 
+# the trap instruction to stop the network when your script/shell exits.
+
 echo "STARTING SERVERS..."
 
 # Copy udbContact into place when running locally.
