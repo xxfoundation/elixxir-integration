@@ -1,6 +1,8 @@
+Loading ephemerally
 Sending connection request
 Established authenticated connection with server.
 Sent message "Hello 202 from 203, using connections" to connection partner.
+Loading ephemerally
 Sending connection request
 Established authenticated connection with server.
 Disconnected from partner
