@@ -1,0 +1,1 @@
+Sent symmetric broadcast message: Hello to symmetric channel from channel client 124!Sent asymmetric broadcast message: Hello to asymmetric channel from channel client 124!

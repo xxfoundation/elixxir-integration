@@ -1,0 +1,4 @@
+Asymmetric broadcast message 2/4 received: Hello to asymmetric channel from channel client 123!
+Asymmetric broadcast message 4/4 received: Hello to asymmetric channel from channel client 124!
+Symmetric broadcast message 1/4 received: Hello to symmetric channel from channel client 124!
+Symmetric broadcast message 3/4 received: Hello to symmetric channel from channel client 122!
