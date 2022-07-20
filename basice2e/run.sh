@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # NOTE: This is verbose on purpose.
+################################################################################
+## Initial Set Up & Clean Up of Past Runs
+################################################################################
 
 set -e
 rm -fr results.bak || true
@@ -35,13 +38,19 @@ CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 420 --unsafe-channel-creation -v $DEBUGLEVEL"
+CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 600 --unsafe-channel-creation -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CONNECTIONOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
+
+################################################################################
+## Network Set Up
+################################################################################
+
 
 if [ "$NETWORKENTRYPOINT" == "betanet" ]
 then
@@ -64,108 +73,7 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
-    echo "STARTING SERVERS..."
-
-    # Copy udbContact into place when running locally.
-    cp udbContact.bin results/udbContact.bin
-
-    PERMCMD="../bin/permissioning --logLevel $DEBUGLEVEL -c permissioning.yaml "
-    $PERMCMD > results/permissioning-console.txt 2>&1 &
-    PIDVAL=$!
-    echo "$PERMCMD -- $PIDVAL"
-
-
-    # Run Client Registrar
-    CLIENT_REG_CMD="../bin/client-registrar \
-    -l 2 -c client-registrar.yaml"
-    $CLIENT_REG_CMD > results/client-registrat-console.txt 2>&1 &
-    PIDVAL=$!
-    echo "$CLIENT_REG_CMD -- $PIDVAL"
-
-    for SERVERID in $(seq 5 -1 1)
-    do
-        IDX=$(($SERVERID - 1))
-        SERVERCMD="../bin/server --logLevel $DEBUGLEVEL --config server-$SERVERID.yaml"
-        if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
-        then
-            SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
-        fi
-        $SERVERCMD > $SERVERLOGS/server-$SERVERID-console.txt 2>&1 &
-        PIDVAL=$!
-        echo "$SERVERCMD -- $PIDVAL"
-    done
-
-    # Start gateways
-    for GWID in $(seq 5 -1 1)
-    do
-        IDX=$(($GWID - 1))
-        GATEWAYCMD="../bin/gateway --logLevel $DEBUGLEVEL --config gateway-$GWID.yaml"
-        $GATEWAYCMD > $GATEWAYLOGS/gateway-$GWID-console.txt 2>&1 &
-        PIDVAL=$!
-        echo "$GATEWAYCMD -- $PIDVAL"
-    done
-
-    jobs -p > results/serverpids
-
-    finish() {
-        echo "STOPPING SERVERS AND GATEWAYS..."
-        if [ -n "$NSYSENABLED" ]
-        then
-            nsys stop --session=gputest
-        fi
-        # NOTE: jobs -p doesn't work in a signal handler
-        for job in $(cat results/serverpids)
-        do
-            echo "KILLING $job"
-            kill $job || true
-        done
-
-        sleep 5
-
-        for job in $(cat results/serverpids)
-        do
-            echo "KILL -9 $job"
-            kill -9 $job || true
-        done
-        #tail $SERVERLOGS/*
-        #tail $CLIENTCLEAN/*
-        #diff -aruN clients.goldoutput $CLIENTCLEAN
-    }
-
-    trap finish EXIT
-    trap finish INT
-
-    # Sleeps can die in a fire on the sun, we wait for the servers to start running
-    # rounds
-    rm rid.txt || true
-    touch rid.txt
-    cnt=0
-    echo -n "Waiting for a round to run"
-    while [ ! -s rid.txt ] && [ $cnt -lt 120 ]; do
-        sleep 1
-        grep -a "RID 1 ReceiveFinishRealtime END" results/servers/server-* > rid.txt || true
-        cnt=$(($cnt + 1))
-        echo -n "."
-    done
-
-    # Start a user discovery bot server
-    echo "STARTING UDB..."
-    UDBCMD="../bin/udb --logLevel $DEBUGLEVEL --protoUserPath	udbProto.json --config udb.yaml -l 1"
-    $UDBCMD >> $UDBOUT 2>&1 &
-    PIDVAL=$!
-    echo $PIDVAL >> results/serverpids
-    echo "$UDBCMD -- $PIDVAL"
-    rm rid.txt || true
-    while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
-        sleep 1
-        grep -a "Sending Poll message" results/udb-console.txt > rid.txt || true
-        cnt=$(($cnt + 1))
-        echo -n "."
-    done
-
-    echo "localhost:8440" > results/startgwserver.txt
-
-    echo "DONE LETS DO STUFF"
+    source network.sh
 
 else
     echo "Connecting to network defined at $NETWORKENTRYPOINT"
@@ -238,6 +146,10 @@ runclients() {
         eval wait \${CLIENTS${i}}
     done
 }
+
+###############################################################################
+# Test  Basic Client
+###############################################################################
 
 
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
@@ -323,6 +235,10 @@ then
 
 fi
 
+###############################################################################
+# Test  Sending E2E
+###############################################################################
+
 # Non-precanned E2E user messaging
 echo "SENDING E2E MESSAGES TO NEW USERS..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
@@ -378,6 +294,10 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Renegotiation
+###############################################################################
+
 echo "TESTING RENEGOTIATION..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt || true &
@@ -428,6 +348,10 @@ wait $PIDVAL
 wait $PIDVAL2
 echo "END RENEGOTIATION"
 
+###############################################################################
+# Test  Deleting Contacts & Requests
+###############################################################################
+
 echo "DELETING CONTACT FROM CLIENT..."
 CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --delete-channel --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt || true &
@@ -471,6 +395,9 @@ echo "$CLIENTCMD -- $PIDVAL"
 echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
 wait $PIDVAL2
 
+###############################################################################
+# Test  Simultaneous Auth
+###############################################################################
 
 echo "CREATING USERS for SIMULTANEOUSAUTH TEST..."
 JONOID=$(../bin/client init -s blob85 -l $CLIENTOUT/client85.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono85-contact.bin -v $DEBUGLEVEL)
@@ -506,6 +433,9 @@ echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL1
 wait $PIDVAL2
 
+###############################################################################
+# Test  Rekey
+###############################################################################
 
 echo "CREATING USERS for REKEY TEST..."
 JAKEID=$(../bin/client init -s blob100 -l $CLIENTOUT/client100.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/Jake100-contact.bin -v $DEBUGLEVEL)
@@ -530,11 +460,11 @@ wait $PIDVAL2
 
 echo "RUNNING REKEY TEST..."
 # Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 20 -m \"Hello from Jake100, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 20 --receiveCount 20 -m \"Hello from Niamh101, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -543,18 +473,21 @@ wait $PIDVAL2
 
 # Now we are just going to exhaust all the keys we have and see if we
 # use the unconfirmed channels
-CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 20 --receiveCount 0 -m \"Hello from Jake100, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
 # And receive those messages sent to us
-CLIENTCMD="timeout 420s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
+CLIENTCMD="timeout 600s ../bin/client $CLIENTREKEYOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --destid b64:$JAKEID --sendCount 0 --receiveCount 20"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Historical Rounds
+###############################################################################
 
 echo "FORCING HISTORICAL ROUNDS..."
 FH1ID=$(../bin/client init -s blob35 -l $CLIENTOUT/client35.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/FH1-contact.bin -v $DEBUGLEVEL)
@@ -585,13 +518,17 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Back Up & Restore
+###############################################################################
+
 echo "START BACKUP AND RESTORE..."
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --writeContact $CLIENTOUT/client121-contact.bin --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --writeContact $CLIENTOUT/client121-contact.bin --destfile $CLIENTOUT/client120-contact.bin --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -602,7 +539,7 @@ while [ ! -s $CLIENTOUT/client121-contact.bin ]; do
 done
 
 # Client 120 will now wait for client 121's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -610,11 +547,11 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Send messages to each other
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -622,7 +559,7 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Register 120 with UD
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client120.log -s blob120 --register client120"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --register client120"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -630,7 +567,7 @@ wait $PIDVAL
 
 
 # Backup and restore 121
-CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -638,18 +575,18 @@ wait $PIDVAL
 
 rm -fr blob121
 
-CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client121.log -s blob121 --batchadd $CLIENTOUT/client121Partners.json --unsafe-channel-creation"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --batchadd $CLIENTOUT/client121Partners.json --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -657,11 +594,11 @@ wait $PIDVAL
 wait $PIDVAL2
 
 # Send messages to each other
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client120, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --destfile $CLIENTOUT/client120-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from Client121, with E2E Encryption after 121 restoring backup\" --unsafe-channel-creation"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -672,6 +609,9 @@ wait $PIDVAL2
 
 echo "END BACKUP AND RESTORE..."
 
+###############################################################################
+# Test  Proto User
+###############################################################################
 
 # Proto user test: client25 and client26 generate a proto user JSON file and close.
 # Both clients are restarted and load from their respective proto user files and attempt to send.
@@ -758,6 +698,9 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+###############################################################################
+# Test  Single Use
+###############################################################################
 
 # Single-use test: client53 sends message to client52; client52 responds with
 # the same message in the set number of message parts
@@ -784,6 +727,9 @@ echo "$CLIENTCMD -- $PIDVAL1"
 wait $PIDVAL1
 wait $PIDVAL2
 
+###############################################################################
+# Test  User Discovery
+###############################################################################
 
 if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
 then
@@ -869,6 +815,10 @@ then
     echo "$CLIENTCMD -- $PIDVAL"
     wait $PIDVAL
 fi
+
+###############################################################################
+# Test  Group Chat
+###############################################################################
 
 echo "TESTING GROUP CHAT..."
 # Create authenticated channel between client 80 and 81
@@ -1059,6 +1009,9 @@ wait $PIDVAL3
 
 echo "GROUP CHAT FINISHED!"
 
+###############################################################################
+# Test  File Transfer
+###############################################################################
 
 echo "TESTING FILE TRANSFER..."
 
@@ -1151,6 +1104,123 @@ wait $PIDVAL1
 echo "BROADCAST CHANNELS FINISHED..."
 
 
+
+###############################################################################
+# Test  connections
+###############################################################################
+
+echo "TESTING CONNECTIONS..."
+echo "Testing Ephemeral Initialization..."
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 2m"
+eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 --connect $CLIENTOUT/client200-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client201.log  -m \"Hello 200 from 201, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client201.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+
+# Disconnect
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 $CONNECTIONOPTS -l $CLIENTOUT/client201.log --connect $CLIENTOUT/client200-server.bin --disconnect"
+eval $CLIENTCMD >> $CLIENTOUT/client201.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "Ephemeral Test Complete."
+
+
+# TODO: TEST NON-EPHEMERAL CODE-PATH WHEN SUPPORTED
+#echo "Testing Non-Ephemeral Initialization..."
+## Initiate server
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 2m"
+#eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 || true &
+#PIDVAL1=$!
+#echo "$CLIENTCMD -- $PIDVAL1"
+#echo "Sleeping to ensure connection server instantiation"
+#sleep 5
+## Initiate client and send message to server
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob201 --connect $CLIENTOUT/client200-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client201.log  -m \"Hello 200 from 201, using connections\" --receiveCount 0"
+#eval $CLIENTCMD > $CLIENTOUT/client201.txt 2>&1 || true &
+#PIDVAL2=$!
+#echo "$CLIENTCMD -- $PIDVAL2"
+#wait $PIDVAL2
+#
+## Disconnect
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob201 $CONNECTIONOPTS -l $CLIENTOUT/client201.log --connect $CLIENTOUT/client200-server.bin --disconnect"
+#eval $CLIENTCMD >> $CLIENTOUT/client201.txt 2>&1 || true &
+#PIDVAL2=$!
+#echo "$CLIENTCMD -- $PIDVAL2"
+#wait $PIDVAL2
+#wait $PIDVAL1
+#echo "Non-Ephemeral Test Complete."
+#
+
+echo "CONNECTION TESTS FINISHED"
+
+###############################################################################
+# Test authenticated connections
+###############################################################################
+echo "TESTING AUTHENTICATED CONNECTIONS..."
+echo "Testing Ephemeral Initialization..."
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 2m"
+eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 || true &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob203 --authenticated --connect $CLIENTOUT/client202-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client203.log  -m \"Hello 202 from 203, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client203.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+
+# Disconnect
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob203 --authenticated $CONNECTIONOPTS -l $CLIENTOUT/client203.log --connect $CLIENTOUT/client202-server.bin --disconnect"
+eval $CLIENTCMD >> $CLIENTOUT/client203.txt 2>&1 || true &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "Ephemeral test complete."
+
+# TODO: TEST NON-EPHEMERAL CODE-PATH WHEN SUPPORTED
+#echo "Testing Non-Ephemeral Initialization..."
+## Initiate server
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 2m"
+#eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 || true &
+#PIDVAL1=$!
+#echo "$CLIENTCMD -- $PIDVAL1"
+#echo "Sleeping to ensure connection server instantiation"
+#sleep 5
+#
+## Initiate client and send message to server
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob203 --authenticated --connect $CLIENTOUT/client202-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client203.log  -m \"Hello 202 from 203, using connections\" --receiveCount 0"
+#eval $CLIENTCMD > $CLIENTOUT/client203.txt 2>&1 || true &
+#PIDVAL2=$!
+#echo "$CLIENTCMD -- $PIDVAL2"
+#wait $PIDVAL2
+#
+## Disconnect
+#CLIENTCMD="timeout 240s ../bin/client connection -s blob203 --authenticated $CONNECTIONOPTS -l $CLIENTOUT/client203.log --connect $CLIENTOUT/client202-server.bin --disconnect"
+#eval $CLIENTCMD >> $CLIENTOUT/client203.txt 2>&1 || true &
+#PIDVAL2=$!
+#echo "$CLIENTCMD -- $PIDVAL2"
+#wait $PIDVAL2
+#wait $PIDVAL1
+#echo "Non-Ephemeral Test Complete."
+
+echo "AUTHENTICATED CONNECTION TESTS FINISHED"
+
+
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 
 
@@ -1196,7 +1266,7 @@ fi
 
 
 set +x
-diff -aruN $GOLDOUTPUT $CLIENTCLEAN
+diff -aru $GOLDOUTPUT $CLIENTCLEAN
 cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
 echo "CHECKING FOR SUCCESSFUL CONTACT DELETION"
 if [ -s results/deleteContact.txt ]
