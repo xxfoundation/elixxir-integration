@@ -1,3 +1,5 @@
+ConnectionServer heard message "Hello 200 from 201, using connections"
 Established connection server, begin listening...
 Established connection with client
-ConnectionServer heard message "Hello 200 from 201, using connections"
+Established connection with client
+Shutting down connection server
