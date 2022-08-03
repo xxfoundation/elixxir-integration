@@ -1109,27 +1109,20 @@ echo "BROADCAST CHANNELS FINISHED..."
 
 echo "TESTING EPEHMERAL CONNECTIONS..."
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 2m"
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 1m30s"
 eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 echo "Sleeping to ensure connection server instantiation"
 sleep 5
+
 # Initiate client and send message to server
 CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 --connect $CLIENTOUT/client200-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client201.log  -m \"Hello 200 from 201, using connections\" --receiveCount 0"
 eval $CLIENTCMD > $CLIENTOUT/client201.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
-
-# Disconnect
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 $CONNECTIONOPTS -l $CLIENTOUT/client201.log --connect $CLIENTOUT/client200-server.bin --disconnect"
-eval $CLIENTCMD >> $CLIENTOUT/client201.txt 2>&1 || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
 wait $PIDVAL1
-
 echo "EPHEMERAL CONNECTION TESTS FINISHED"
 
 ###############################################################################
@@ -1137,7 +1130,7 @@ echo "EPHEMERAL CONNECTION TESTS FINISHED"
 ###############################################################################
 echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 2m"
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 1m30s"
 eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -1150,15 +1143,7 @@ eval $CLIENTCMD > $CLIENTOUT/client203.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
-
-# Disconnect
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob203 --authenticated $CONNECTIONOPTS -l $CLIENTOUT/client203.log --connect $CLIENTOUT/client202-server.bin --disconnect"
-eval $CLIENTCMD >> $CLIENTOUT/client203.txt 2>&1 || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
 wait $PIDVAL1
-
 echo "EPHEMERAL AUTHENTICATED CONNECTION TESTS FINISHED"
 
 ###############################################################################
@@ -1167,32 +1152,25 @@ echo "EPHEMERAL AUTHENTICATED CONNECTION TESTS FINISHED"
 
 echo "TESTING NON-EPHEMERAL CONNECTIONS"
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob204 $CONNECTIONOPTS --writeContact $CLIENTOUT/client204-server.bin -l $CLIENTOUT/client204.log --startServer --serverTimeout 2m"
+CLIENTCMD="timeout 240s ../bin/client connection -s blob204 $CONNECTIONOPTS --writeContact $CLIENTOUT/client204-server.bin -l $CLIENTOUT/client204.log --startServer --serverTimeout 1m30s"
 eval $CLIENTCMD > $CLIENTOUT/client204.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 echo "Sleeping to ensure connection server instantiation"
 sleep 5
+
 # Initiate client and send message to server
 CLIENTCMD="timeout 240s ../bin/client connection -s blob205 --connect $CLIENTOUT/client204-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client205.log  -m \"Hello 204 from 205, using connections\" --receiveCount 0"
 eval $CLIENTCMD > $CLIENTOUT/client205.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
-
-# Disconnect
-CLIENTCMD="timeout 240s ../bin/client connection -s blob205 $CONNECTIONOPTS -l $CLIENTOUT/client205.log --connect $CLIENTOUT/client204-server.bin --disconnect"
-eval $CLIENTCMD >> $CLIENTOUT/client205.txt 2>&1 || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
 wait $PIDVAL1
 echo "NON-EPHEMERAL CONNECTION TEST FINISHED."
 
-
 echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
 # Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob206 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client206-server.bin -l $CLIENTOUT/client206.log --startServer --serverTimeout 2m"
+CLIENTCMD="timeout 240s ../bin/client connection -s blob206 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client206-server.bin -l $CLIENTOUT/client206.log --startServer --serverTimeout 1m30s"
 eval $CLIENTCMD > $CLIENTOUT/client206.txt 2>&1 || true &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -1202,13 +1180,6 @@ sleep 5
 # Initiate client and send message to server
 CLIENTCMD="timeout 240s ../bin/client connection -s blob207 --authenticated --connect $CLIENTOUT/client206-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client207.log  -m \"Hello 206 from 207, using connections\" --receiveCount 0"
 eval $CLIENTCMD > $CLIENTOUT/client207.txt 2>&1 || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-
-# Disconnect
-CLIENTCMD="timeout 240s ../bin/client connection -s blob207 --authenticated $CONNECTIONOPTS -l $CLIENTOUT/client207.log --connect $CLIENTOUT/client206-server.bin --disconnect"
-eval $CLIENTCMD >> $CLIENTOUT/client207.txt 2>&1 || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
