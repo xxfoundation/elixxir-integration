@@ -1,5 +1,4 @@
 Established connection server, begin listening...
 Established authenticated connection with client
 AuthServer heard message "Hello 202 from 203, using connections"
-Established authenticated connection with client
-
+Shutting down connection server

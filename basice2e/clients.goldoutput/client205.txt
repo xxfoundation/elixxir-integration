@@ -1,8 +1,5 @@
-Loading ephemerally
+Loading non-ephemerally
 Sending connection request
 Established connection with server
-Sent message "Hello 200 from 201, using connections" to connection partner.
-Loading ephemerally
-Sending connection request
-Established connection with server
+Sent message "Hello 204 from 205, using connections" to connection partner.
 Disconnected from partner
