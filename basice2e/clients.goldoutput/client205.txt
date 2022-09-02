@@ -1,5 +1,5 @@
+Disconnected from partner
+Established connection with server
 Loading non-ephemerally
 Sending connection request
-Established connection with server
 Sent message "Hello 204 from 205, using connections" to connection partner.
-Disconnected from partner

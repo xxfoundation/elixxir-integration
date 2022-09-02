@@ -24,6 +24,7 @@ Message received: Hello from Rick42 to myself, without E2E Encryption
 Received 0
 Received 0
 Received 0
+Received 0
 Received 1
 Received 5
 Received 5
