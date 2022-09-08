@@ -575,7 +575,7 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Backup and restore 121
-CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json"
+CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupOut $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121A.backup.json --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client121.txt || true &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -584,7 +584,7 @@ wait $PIDVAL
 
 # rm -fr blob121
 
-# CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json"
+# CLIENTCMD="timeout 60s ../bin/client $CLIENTBACKUPOPTS -l $CLIENTOUT/client121.log -s blob121 --force-legacy --backupIn $CLIENTOUT/client121A.backup --backupPass hello --backupJsonOut $CLIENTOUT/client121B.backup.json --backupIdList $CLIENTOUT/client121Partners.json --sendCount 0 --receiveCount 0"
 # eval $CLIENTCMD >> $CLIENTOUT/client121.txt &
 # PIDVAL=$!
 # echo "$CLIENTCMD -- $PIDVAL"
