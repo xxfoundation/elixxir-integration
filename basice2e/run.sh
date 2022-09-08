@@ -376,33 +376,31 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # NOTE: client45 is a precan user (see runclients), so we skip to 46 here.
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --writeContact $CLIENTOUT/matt46-contact.bin --destfile $CLIENTOUT/matt46-contact.bin  --unsafe-channel-creation --send-auth-request --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --writeContact $CLIENTOUT/matt46-contact.bin --destfile $CLIENTOUT/david44-contact.bin  --unsafe-channel-creation --send-auth-request --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client46.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
 
-TMPID=$(cat $CLIENTOUT/client44.log | grep -a "User\:" | awk -F' ' '{print $5}')
-DAVIDID=${TMPID}
-echo "DAVID ID: $DAVIDID"
-
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --delete-sent-requests --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46 --delete-sent-requests --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client46.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL2
 
 # This is tricky -- we've deleted the request without having received the
 # confirmation, so now the receiver attempts to accept the channel while the
-# sender (without confirmation) sends to us without an auth channel.
+# sender (without confirmation) sends to them without an auth channel.
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client44.log -s blob44 --destfile $CLIENTOUT/matt46-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
 eval $CLIENTCMD >> $CLIENTOUT/client44.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46  --destid b64:$DAVIDID --sendCount 5 --receiveCount 5 -m \"Hello from David, with E2E Encryption\""
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client46.log -s blob46  --destfile $CLIENTOUT/david44-contact.bin --sendCount 5 --receiveCount 5 -m \"Hello from David, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client46.txt || true &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 echo "NOTE: The command above causes an EXPECTED failure to confirm authentication channel!"
+wait $PIDVAL
 wait $PIDVAL2
 
 ###############################################################################
@@ -1052,7 +1050,7 @@ CLIENT111ID=${TMPID}
 echo "CLIENT 111 ID: $CLIENT111ID"
 
 # Client 110 will now wait for client 111's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0 --accept-channel
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
 eval $CLIENTCMD >> $CLIENTOUT/client110.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"

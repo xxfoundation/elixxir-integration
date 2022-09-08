@@ -1,3 +1,5 @@
+
 Message received: Hello from David44 to myself, without E2E Encryption
+Received 0
 Received 1
 Sent: Hello from David44 to myself, without E2E Encryption
