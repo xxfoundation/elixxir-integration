@@ -21,10 +21,10 @@ mkdir -p bin
 CHECKOUTBRANCH=""
 setCheckoutBranch() {
   CHECKOUTBRANCH="release"
-  if [ -z "$FBRANCH"]; then
+  if [[ -z "$FBRANCH" ]]; then
     CHECKOUTBRANCH=$FBRANCH
   fi
-  if [ -z "$FBRANCH2"]; then
+  if [[ -z "$FBRANCH2" ]]; then
     CHECKOUTBRANCH=$FBRANCH2
   fi
 
