@@ -30,6 +30,8 @@ setCheckoutBranch() {
 
 }
 
+pushd bin
+
 # Download client
 git clone https://git.xx.network/elixxir/client gitlab.com/elixxir/client
 pushd gitlab.com/elixxir/client
@@ -94,4 +96,7 @@ go mod vendor -v
 go mod tidy
 make clean
 go build -mod vendor -o "$BINARYPATH/gateway" main.go
+popd
+
+
 popd
