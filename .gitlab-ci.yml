@@ -81,17 +81,17 @@ basice2e:
     - rm -fr results
     - rm -fr results-cpu
     - rm -fr results-gpu
-    - ls -lha
-    - ./run.sh
-    - mv results results-cpu
+    # - ls -lha
+    # - ./run.sh
+    # - mv results results-cpu
     # - sleep 60
-    # - mkdir -p /opt/xxnetwork/lib
-    # - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
-    # - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
-    # - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
-    # - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
-    # - NSYSENABLED=TRUE ./run.sh
-    # - mv results results-gpu
+    - mkdir -p /opt/xxnetwork/lib
+    - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
+    - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
+    - sed -i 's/bin\/server/bin\/server-cuda/g' network.sh
+    - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
+    - NSYSENABLED=TRUE ./run.sh
+    - mv results results-gpu
     - cd ..
   artifacts:
     when: always
