@@ -302,9 +302,11 @@ echo "TESTING RENEGOTIATION..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request  --unsafe-channel-creation --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL1=$!
+# Unlike before, we don't accept the channel (it's already been accepted, it'll
+# renegotiate), so instead we message ourselves to wait for the trigger
 echo "$CLIENTCMD -- $PIDVAL1"
 # Client 42 will now wait, again, for client 43's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/rick42-contact.bin --sendCount 10 --receiveCount 10 --unsafe -m \"Waiting on renegotiation\""
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
