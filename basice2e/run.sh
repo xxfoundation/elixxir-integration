@@ -331,7 +331,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 # Client 43 will now wait, for client 42's renegotiated E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/ben43-contact.bin -sendCount 10 --receiveCount 10 --unsafe -m \"Waiting on switching renegotiation\""
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 10 --receiveCount 10 --unsafe -m \"Waiting on switching renegotiation\""
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
