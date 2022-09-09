@@ -265,7 +265,7 @@ BENID=${TMPID}
 echo "BEN ID: $BENID"
 
 # Client 42 will now wait for client 43's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -304,7 +304,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 # Client 42 will now wait, again, for client 43's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blob42 --destfile $CLIENTOUT/ben43-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -329,7 +329,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 # Client 43 will now wait, for client 42's renegotiated E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blob43 --destfile $CLIENTOUT/rick42-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
@@ -391,7 +391,7 @@ wait $PIDVAL2
 # This is tricky -- we've deleted the request without having received the
 # confirmation, so now the receiver attempts to accept the channel while the
 # sender (without confirmation) sends to them without an auth channel.
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client44.log -s blob44 --destfile $CLIENTOUT/matt46-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client44.log -s blob44 --destfile $CLIENTOUT/matt46-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client44.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -459,7 +459,7 @@ eval $CLIENTCMD >> $CLIENTOUT/client101.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 # Client 100 will now wait for client 101's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -548,7 +548,7 @@ while [ ! -s $CLIENTOUT/client121-contact.bin ]; do
 done
 
 # Client 120 will now wait for client 121's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --destfile $CLIENTOUT/client121-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client120.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -679,7 +679,7 @@ JONAHID=${TMPID}
 echo "JONAH ID: $JONAHID"
 
 ## Client 25 will now wait for client 26's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25 --destfile $CLIENTOUT/jonah26-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client25.log -s blob25 --destfile $CLIENTOUT/jonah26-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client25.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -794,7 +794,7 @@ then
     echo "$CLIENTCMD -- $PIDVAL2"
 
     # Approve request and confirm
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0 --accept-channel"
+    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
     eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
     PIDVAL1=$!
     echo "$CLIENTCMD -- $PIDVAL2"
@@ -857,7 +857,7 @@ CLIENT81ID=${TMPID}
 echo "CLIENT 81 ID: $CLIENT81ID"
 
 # Client 81 will now wait for client 81's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client81-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client81-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client80.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -882,7 +882,7 @@ CLIENT82ID=${TMPID}
 echo "CLIENT 82 ID: $CLIENT82ID"
 
 # Client 82 will now wait for client 82's E2E Auth channel request and confirm
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client82-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client80.log -s blob80 --destfile $CLIENTOUT/client82-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client80.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
@@ -1051,7 +1051,7 @@ CLIENT111ID=${TMPID}
 echo "CLIENT 111 ID: $CLIENT111ID"
 
 # Client 110 will now wait for client 111's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0 --accept-channel"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client110.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
