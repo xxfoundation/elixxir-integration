@@ -668,6 +668,7 @@ while [ ! -s $CLIENTOUT/jonah26-contact.bin ]; do
     sleep 1
     echo -n "."
 done
+sleep 1
 
 # Print IDs to console
 TMPID=$(cat $CLIENTOUT/client25.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
