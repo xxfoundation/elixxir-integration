@@ -30,7 +30,7 @@ def find_files():
 
 def main():
     log.basicConfig(format='[%(levelname)s] %(asctime)s: %(message)s',
-                    level=log.INFO, datefmt='%d-%b-%y %H:%M:%S')
+                    level=log.DEBUG, datefmt='%d-%b-%y %H:%M:%S')
     log_files = find_files()
 
     udbLog = "./results/udb-console.txt"
