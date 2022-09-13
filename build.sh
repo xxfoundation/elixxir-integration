@@ -5,11 +5,28 @@
 # with Glide.
 
 set -x
+set -e
 mkdir -p bin
 pushd bin
-go build gitlab.com/elixxir/client
-go build -o udb gitlab.com/elixxir/user-discovery-bot
-go build -o permissioning gitlab.com/elixxir/registration
-go build gitlab.com/elixxir/gateway
-go build gitlab.com/elixxir/server
+OUT=$PWD
+
+pushd gitlab.com/elixxir/client
+go build -o $OUT/client main.go
+popd
+pushd gitlab.com/elixxir/user-discovery-bot
+go build -o $OUT/udb main.go
+popd
+pushd gitlab.com/elixxir/registration
+go build -o $OUT/permissioning main.go
+popd
+pushd gitlab.com/elixxir/client-registrar
+go build -o $OUT/client-registrar main.go
+popd
+pushd gitlab.com/elixxir/gateway
+go build -o $OUT/gateway main.go
+popd
+pushd gitlab.com/elixxir/server
+go build -o $OUT/server main.go
+popd
+
 popd

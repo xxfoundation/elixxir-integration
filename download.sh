@@ -21,14 +21,16 @@ mkdir -p bin
 CHECKOUTBRANCH=""
 setCheckoutBranch() {
   CHECKOUTBRANCH="release"
-  if [ -z "$FBRANCH"]; then
+  if [[ -z "$FBRANCH" ]]; then
     CHECKOUTBRANCH=$FBRANCH
   fi
-  if [ -z "$FBRANCH2"]; then
+  if [[ -z "$FBRANCH2" ]]; then
     CHECKOUTBRANCH=$FBRANCH2
   fi
 
 }
+
+pushd bin
 
 # Download client
 git clone https://git.xx.network/elixxir/client gitlab.com/elixxir/client
@@ -94,4 +96,7 @@ go mod vendor -v
 go mod tidy
 make clean
 go build -mod vendor -o "$BINARYPATH/gateway" main.go
+popd
+
+
 popd

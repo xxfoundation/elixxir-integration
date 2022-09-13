@@ -12,7 +12,7 @@
 
 # Default branch to use when no explicit project branch is set. If not set, then
 # it defaults to "master".
-default="${defaultBranch-"master"}"
+default="${defaultBranch-"release"}"
 
 # Array of project names.
 project_arr=(
@@ -21,6 +21,7 @@ project_arr=(
   gateway
   user-discovery-bot
   registration
+  client-registrar
 )
 
 # Array of each project's branch. If a branch is not explicitly set via an
@@ -38,12 +39,11 @@ update() {
     git clean -ffdx
     git checkout "$1"
     git pull
-    glide cache-clear && glide update
 }
 
 for ((i=0; i<${#project_arr[@]}; ++i)); do
     printf "\n%s\n" "${project_arr[i]}"
-    pushd "$GOPATH"/src/gitlab.com/elixxir/client || exit
+    pushd bin/gitlab.com/elixxir/client || exit
     update "${branch_arr[i]}"
     go test ./...
     popd || exit
