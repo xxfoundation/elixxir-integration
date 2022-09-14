@@ -86,13 +86,14 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
         GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
         CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
+        XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}xxdk-wasm/$BRANCH_URL/xxdk.wasm?job=build"}
     else
         UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
         GW_URL=${GW_URL:="${REPOS_API}/$BRANCH/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}/$BRANCH/registration.stateless$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}/$BRANCH/client$BIN"}
-        CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
+        XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}/$BRANCH/xxdk.wasm?job=build"}
     fi
 
     set -x
@@ -122,9 +123,14 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client" ${CLIENT_URL}
     fi
 
-        # Silently download the client registrar binary to the provisioning directory
+    # Silently download the client registrar binary to the provisioning directory
     if [ ! -f $download_path/client-registrar ] && [[ "$CLIENT_REG_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client-registrar" ${CLIENT_REG_URL}
+    fi
+
+    # Silently download the client registrar binary to the provisioning directory
+    if [ ! -f $download_path/xxdk.wasm ] && [[ "$XXDK_WASM_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/xxdk.wasm" ${XXDK_WASM_URL}
     fi
 
 if [[ $2 == "d" ]]; then
@@ -161,6 +167,7 @@ fi
     unset GPULIB_URL
     unset GPULIB2_URL
     unset CLIENT_REG_URL
+    unset XXDK_WASM_URL
 done
 
 # Make binaries executable

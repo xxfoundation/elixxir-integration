@@ -1,0 +1,79 @@
+<!--////////////////////////////////////////////////////////////////////////////
+// Copyright © 2022 xx foundation                                             //
+//                                                                            //
+// Use of this source code is governed by a license that can be found in the  //
+// LICENSE file.                                                              //
+/////////////////////////////////////////////////////////////////////////////-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Sender</title>
+
+	<link rel="stylesheet" type="text/css" href="../assets/styles.css">
+	<link rel="shortcut icon" type="image/x-icon" href="sender.ico"/>
+
+	<script type="text/javascript" src="sendE2ejs"></script>
+	<script type="text/javascript" src="../assets/utils.js"></script>
+	<script type="text/javascript" src="../assets/wasm_exec.js"></script>
+	<script>
+        const go = new Go();
+        const binPath = '../../../bin/xxdk.wasm'
+        WebAssembly.instantiateStreaming(fetch(binPath), go.importObject).then((result) => {
+            go.run(result.instance);
+
+            // Set log level
+            LogLevel(0);
+
+            // Output log to file that can be downloaded using a button
+            const logFile = LogToFile(0, "sender.log", 1000000);
+            document.getElementById('logFileDownload').addEventListener(
+                'click', () => download(logFile.Name(), logFile.GetFile()))
+
+            // Get element to print log messages to
+            const logOutput = document.getElementById("logOutput")
+            const htmlConsole = newHtmlConsole(logOutput)
+
+            // Get button that will stop the network follower
+            const stopNetworkFollowerBtn = document.getElementById("stopNetworkFollowerBtn")
+
+            // Client specific parameters
+            const recipientContactFile = '<xxc(2)8xlGWi5QO7ypchZrwF0HIZwNv7MhrwojO1Zw6Mjmsx4DrgZ7Ugdw/BAr6UIgauCEAsxLTzY9qk+fDN6Q4lLf5bOCRKRavadoNTRpbG6GWmps0e1aMs6VsGflG4i95G4zWEu3tkGptr65SPC5c5/V1V9aYvf1rLSl8UwtiANaHlDdxy4ZEZbiibg7EnVi3mKZ3h4orsflDiWSwwSsdFbv9SxNmhzaFD4qpR0bi4jRyinyR4Ty6j8tA+ozcVo+Lt+gPeiUQqCt8NORS3Kcoe54yi4Lf9ylKxBumioRNytdyvo93r/SAX44w8j2tFTa+zYLz/Y09hPz391GHa3MDbDliPQgzRyJrAQRVJV9YcGTgi6ESDOFG3IoJbaNioHles7+2y/hqOKh3kCkbRtNozqGsp91PGiatCLx3bpRJq7h+o4Zk0yjZLf6e92JtFN4IBkHVc9RsiQEH8hy6tY9XLfvMOfr8xhWJ1gvIDxsS/Ice/lYkOs3zPCXwQXTBCAmZGZtsGxjMcSElz0d6cIVFBNgaGh3clWiWzz9nb62ofz0FcQ1O5n13L1Ir/41DyJU6GdeE5/+zvfqIKqSlAAAAgA76aDSbZXRB/a463h2byeQMw==xxc>';
+            const myContactFileName = '';
+            const statePath = 'statePathSender';
+            const statePass = 'password';
+
+            document.getElementById('ndfInput').addEventListener('change', e => {
+                let reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        await SendE2e(htmlConsole, stopNetworkFollowerBtn,
+                            e.target.result, recipientContactFile,
+                            myContactFileName, statePath, statePass);
+                    } catch (e) {
+                        htmlConsole.error(e)
+                    }
+                };
+                reader.readAsText(e.target.files[0]);
+            }, false);
+        });
+	</script>
+</head>
+<body>
+<h1 style="margin-top: 0">SendE2E: Sender</h1>
+<div class="toolbar">
+	<input type="button" value="Clear localStorage" onclick="localStorage.clear();">
+	<input type="button" value="Download Log File" id="logFileDownload">
+	<input type="button" value="Stop Network Follower" id="stopNetworkFollowerBtn" style="display:none;" >
+</div>
+<p>Selecting an NDF will start the client.</p>
+<form id="startCmix">
+	<div>
+		<label for="ndfInput">Select NDF file to use <code>ndf</code> variable in JS:</label><br/>
+		<input type="file" id="ndfInput" required/>
+	</div>
+</form>
+<div id="logOutput"></div>
+</body>
+</html>
