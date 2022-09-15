@@ -14,12 +14,12 @@
 	<link rel="stylesheet" type="text/css" href="../assets/styles.css">
 	<link rel="shortcut icon" type="image/x-icon" href="sender.ico"/>
 
-	<script type="text/javascript" src="sendE2ejs"></script>
+	<script type="text/javascript" src="sendE2e.js"></script>
 	<script type="text/javascript" src="../assets/utils.js"></script>
 	<script type="text/javascript" src="../assets/wasm_exec.js"></script>
 	<script>
         const go = new Go();
-        const binPath = '../../../bin/xxdk.wasm'
+        const binPath = '../assets/xxdk.wasm'
         WebAssembly.instantiateStreaming(fetch(binPath), go.importObject).then((result) => {
             go.run(result.instance);
 
@@ -39,7 +39,7 @@
             const stopNetworkFollowerBtn = document.getElementById("stopNetworkFollowerBtn")
 
             // Client specific parameters
-            const recipientContactFile = '<xxc(2)8xlGWi5QO7ypchZrwF0HIZwNv7MhrwojO1Zw6Mjmsx4DrgZ7Ugdw/BAr6UIgauCEAsxLTzY9qk+fDN6Q4lLf5bOCRKRavadoNTRpbG6GWmps0e1aMs6VsGflG4i95G4zWEu3tkGptr65SPC5c5/V1V9aYvf1rLSl8UwtiANaHlDdxy4ZEZbiibg7EnVi3mKZ3h4orsflDiWSwwSsdFbv9SxNmhzaFD4qpR0bi4jRyinyR4Ty6j8tA+ozcVo+Lt+gPeiUQqCt8NORS3Kcoe54yi4Lf9ylKxBumioRNytdyvo93r/SAX44w8j2tFTa+zYLz/Y09hPz391GHa3MDbDliPQgzRyJrAQRVJV9YcGTgi6ESDOFG3IoJbaNioHles7+2y/hqOKh3kCkbRtNozqGsp91PGiatCLx3bpRJq7h+o4Zk0yjZLf6e92JtFN4IBkHVc9RsiQEH8hy6tY9XLfvMOfr8xhWJ1gvIDxsS/Ice/lYkOs3zPCXwQXTBCAmZGZtsGxjMcSElz0d6cIVFBNgaGh3clWiWzz9nb62ofz0FcQ1O5n13L1Ir/41DyJU6GdeE5/+zvfqIKqSlAAAAgA76aDSbZXRB/a463h2byeQMw==xxc>';
+            const recipientContactFile = '<xxc(2)bwLhF7GayqUb7ZpxbY2vh/tFAkhtEojNjFW7n4FZx8QDkAZiB9kZo+Dl3QlT8oBdNyBe+BKmgBt3FlVN9VngYcdl42kOmVztznMFM8KSLHa6NJyCv88jRTEiTq5rN/H884Vgg3/XcHbeezsefdfW48O24l6OeaZ+CQPA/ikYjsucrO2vhAi9BupWpfLR9IEWCPtK8wfgbo67T6QOyPlOKpsGqFt6WNfDuTjnnoPq6qJZhEnA251vJySV8ZAit6EHfQicTvCuscs5vCbIJoMOgEXkZBul3k3HTwxTCz4amQUuH7PtxGHe27RYxLiJaIyeLQFcjqlyReQV4t/jmoKK3m+N6LHGdyqSBFIlYGwzphGQySZ/zuCDqPGqXmoTHpB8V8rFs/jeabNiiNuw/1u67exFNdDcM6Fc7EdbZyDl80uPtrQIKUUda+HO+GVaoasMy2V4SY+UIOKFjtsBuX3gcmr9VKXenPhLCduLdMIjzCRZyuqNQ9SZ1hPLu4i8wyP8ZspOpKIJbRkpratdcrbnPd+Qg0wCQGu+iPEjbLS6ac56r4CKqGADH+kx9gAAAgA7xSs7dPeUgkCxcKBMKDrk9g==xxc>';
             const myContactFileName = '';
             const statePath = 'statePathSender';
             const statePass = 'password';

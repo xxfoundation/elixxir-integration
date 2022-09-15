@@ -1,26 +1,28 @@
-# Running WASM Tests
+# Running WebAssembly (WASM) Tests
 
 To run WASM tests, servers and gateways are run like normal, but the client is
 served by an HTTP server in the browser.
 
-The `testServer` directory contains a basic HTTP server (`clientServer.go`) and
-various directories each containing a different example. Each example contains
-one or more cMix clients running in javascript. The `assets` directory contains
-files used by all the examples.
+`clientServer.go` is a basic HTTP server used to serve the Javascript clients.
 
-To run the server, first ensure the compiled bindings are in the `bin`
-directory. Then run the server
+The `clients` directory contains various directories each containing a different
+example. Each example contains one or more cMix clients running in javascript.
+The `assets` directory contains files used by all the examples.
+
+To run the network and client server, use the provided `run.sh` script.
 
 ```shell
-$ GOOS=js GOARCH=wasm go build -o examples/xxdk.wasm
-$ cd testServer/
-$ go run clientServer.go
+$ ./run.sh
+```
+
+To run just the HTTP server, use the provided script.
+
+```shell
+$ ./runClientServer.sh
 ```
 
 Navigate to http://localhost:9090 to see a list of files in the server and
 navigate to a `.html` file in any of the examples to open a client.
-
-To start the network, run `run.sh` in the console.
 
 
 ## `wasm_exec.js`

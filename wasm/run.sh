@@ -22,6 +22,9 @@ mkdir -p $GATEWAYLOGS
 # Start the network
 source network.sh
 
+# Start the client HTTP server
+source runClientServer.sh
+
 # This remains commented out while using HTTP
 #echo "DOWNLOADING TLS Cert..."
 #CMD="openssl s_client -showcerts -connect $(tr -d '[:space:]' <results/startgwserver.txt)"

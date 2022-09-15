@@ -89,8 +89,12 @@ async function SendE2e(htmlConsole, stopNetworkFollowerBtn, ndf,
             htmlConsole.log("Calling confirm on contact " + dec.decode(contact))
             const rid = await e2eClient.Confirm(contact)
             htmlConsole.log("Called confirm on round " + rid)
+        },
+        Reset: function (contact, receptionId, ephemeralId, roundId) {
+            htmlConsole.log("Reset: from " + Uint8ArrayToBase64(receptionId) + " on round " + roundId)
         }
     }
+
 
     // Create an E2E client
     // Pass in auth object which controls auth callbacks for this client

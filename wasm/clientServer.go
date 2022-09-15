@@ -10,11 +10,20 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 )
 
 func main() {
 	port := "9090"
-	root := ""
+	root := "clients"
+
+	if len(os.Args) > 1 {
+		port = os.Args[1]
+	}
+	if len(os.Args) > 2 {
+		root = os.Args[2]
+	}
+
 	fmt.Printf("Starting server on port %s from %s\n", port, root)
 	fmt.Printf("\thttp://localhost:%s\n", port)
 

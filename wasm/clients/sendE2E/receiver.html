@@ -15,12 +15,12 @@
 	<link rel="shortcut icon" type="image/x-icon" href="receiver.ico"/>
 
 
-	<script type="text/javascript" src="sendE2ejs"></script>
+	<script type="text/javascript" src="sendE2e.js"></script>
 	<script type="text/javascript" src="../assets/utils.js"></script>
 	<script type="text/javascript" src="../assets/wasm_exec.js"></script>
 	<script>
         const go = new Go();
-        const binPath = '../../../bin/xxdk.wasm'
+        const binPath = '../assets/xxdk.wasm'
         WebAssembly.instantiateStreaming(fetch(binPath), go.importObject).then((result) => {
             go.run(result.instance);
 
