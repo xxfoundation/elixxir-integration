@@ -27,7 +27,7 @@
             LogLevel(0);
 
             // Output log to file that can be downloaded using a button
-            const logFile = LogToFile(0, "sender.log", 1000000);
+            const logFile = LogToFile(0, "sender.log", 5000000);
             document.getElementById('logFileDownload').addEventListener(
                 'click', () => download(logFile.Name(), logFile.GetFile()))
 
@@ -39,7 +39,7 @@
             const stopNetworkFollowerBtn = document.getElementById("stopNetworkFollowerBtn")
 
             // Client specific parameters
-            const recipientContactFile = '<xxc(2)bwLhF7GayqUb7ZpxbY2vh/tFAkhtEojNjFW7n4FZx8QDkAZiB9kZo+Dl3QlT8oBdNyBe+BKmgBt3FlVN9VngYcdl42kOmVztznMFM8KSLHa6NJyCv88jRTEiTq5rN/H884Vgg3/XcHbeezsefdfW48O24l6OeaZ+CQPA/ikYjsucrO2vhAi9BupWpfLR9IEWCPtK8wfgbo67T6QOyPlOKpsGqFt6WNfDuTjnnoPq6qJZhEnA251vJySV8ZAit6EHfQicTvCuscs5vCbIJoMOgEXkZBul3k3HTwxTCz4amQUuH7PtxGHe27RYxLiJaIyeLQFcjqlyReQV4t/jmoKK3m+N6LHGdyqSBFIlYGwzphGQySZ/zuCDqPGqXmoTHpB8V8rFs/jeabNiiNuw/1u67exFNdDcM6Fc7EdbZyDl80uPtrQIKUUda+HO+GVaoasMy2V4SY+UIOKFjtsBuX3gcmr9VKXenPhLCduLdMIjzCRZyuqNQ9SZ1hPLu4i8wyP8ZspOpKIJbRkpratdcrbnPd+Qg0wCQGu+iPEjbLS6ac56r4CKqGADH+kx9gAAAgA7xSs7dPeUgkCxcKBMKDrk9g==xxc>';
+            const recipientContactFile = '<xxc(2)koEeDIK9TadI5PmUbZxKA5SPwuH+6WdUNiy9q2z0hrADkAZiB9kZo+Dl3buUQeBSieIP645WSDWyzxqi5HgGawVEufOOU3sDCINTsNv7DS5IvwUly2IM2kZp2LufmAD/kvUQ5xILfwR6PR256OTMjEJNRyNxCXit/Mot5sCQMIUSZ3OUa6xDxMRAfVKNAK6Htv6/JUa/sGu2CFjl7GL7pr3agmpVE5w00bZoW1dKurlSubs6PVTFQv3VBwf7GxSIolbuF5+DlFVU6R2ficxTG8ejuijdEK2lmlCaEDm8kVURVywTH3sytyf2eJaIW1tU1pNPkdPvgyCobk/FVmzKPQdbpnEFShSsUDVRebVvuPooV62yCZlJ5sSKWJg1WmvLSAb7uwMXl4zPkltZbF442OsxiQqikmAsO9wNQ6SH22bfgO8+MGR3i3L3oH6P6Z5Zx+hnqkDGUj0KbLxVdlhpcYACf+Uf3XOiq8ZvymfES8SCE+RfxjuNRLxzzNpVqUFrC1tmYRTOAO+k2oKDU9nP5gxKSQI5cCEFtGRGjrdsqsIEh3mX/y7WDgU0bQAAAgA7cQUCKI3GajkCZv68aRVbOw==xxc>';
             const myContactFileName = '';
             const statePath = 'statePathSender';
             const statePass = 'password';
@@ -73,6 +73,12 @@
 		<label for="ndfInput">Select NDF file to use <code>ndf</code> variable in JS:</label><br/>
 		<input type="file" id="ndfInput" required/>
 	</div>
+	<div>
+		<label for="messageInput">Your Message</label><br/>
+		<input type="text" id="messageInput"/>
+		<input type="button" id="messageSend" value="send"/>
+	</div>
+
 </form>
 <div id="logOutput"></div>
 </body>

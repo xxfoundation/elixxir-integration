@@ -28,7 +28,7 @@
             LogLevel(0);
 
             // Output log to file that can be downloaded using a button
-            const logFile = LogToFile(0, "receiver.log", 1000000);
+            const logFile = LogToFile(0, "receiver.log", 5000000);
             document.getElementById('logFileDownload').addEventListener(
                 'click', () => download(logFile.Name(), logFile.GetFile()))
 
@@ -75,6 +75,7 @@
 		<input type="file" id="ndfInput" required/>
 	</div>
 </form>
+<div id="lastReceivedMessage">Messages will be here</div>
 <div id="logOutput"></div>
 </body>
 </html>

@@ -144,6 +144,8 @@ async function SendE2e(htmlConsole, stopNetworkFollowerBtn, ndf,
             htmlConsole.log("Listener heard: " + dec.decode(item))
             const message = JSON.parse(dec.decode(item))
             htmlConsole.log("Listener message: " + atob(message.Payload))
+
+            document.getElementById("lastReceivedMessage").innerHTML = atob(message.Payload)
         },
         Name: function () {
             return "Listener";
@@ -193,7 +195,7 @@ async function SendE2e(htmlConsole, stopNetworkFollowerBtn, ndf,
 
             htmlConsole.log("Waiting to receive confirmation.")
             try {
-                await sleepUntil(() => confirm === true, 35000);
+                await sleepUntil(() => confirm === true, 90000);
                 htmlConsole.log("Received confirmation: " + confirm)
             } catch {
                 htmlConsole.error("Timed out. Did not receive confirm: " + confirm)
@@ -220,12 +222,23 @@ async function SendE2e(htmlConsole, stopNetworkFollowerBtn, ndf,
         ////////////////////////////////////////////////////////////////////////////
 
         // Test message
-        const msgBody = "If this message is sent successfully, we'll have established contact with the recipient."
+        const msgBody = "Message: If this message is sent successfully, we'll have established contact with the recipient."
 
         htmlConsole.log("Sending E2E message: " + msgBody)
         const e2eSendReport = await e2eClient.SendE2E(2, recipientContactID, enc.encode(msgBody), params)
 
         htmlConsole.log("Send E2e message. Report: " + dec.decode(e2eSendReport))
+
+        document.getElementById("messageSend").addEventListener("click", async ev => {
+            let messageInput = document.getElementById("messageInput")
+            let msg = messageInput.value
+            messageInput.value = ""
+
+            htmlConsole.log("Sending E2E message: " + msg)
+            const e2eSendReport = await e2eClient.SendE2E(2, recipientContactID, enc.encode(msg), params)
+
+            htmlConsole.log("Send E2e message. Report: " + dec.decode(e2eSendReport))
+        })
     } else {
         htmlConsole.log("No recipient specified. Waiting for request")
     }
