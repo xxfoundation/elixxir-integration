@@ -68,6 +68,9 @@ body {
 }
 
 form {
+    border: 1px solid #ababab;
+    margin:1em 0;
+    padding:0.5em;
 }
 
 form div {
@@ -93,6 +96,15 @@ div.toolbar input {
     margin:2px;
 }
 
+form div {
+    display: inline-block;
+}
+
+input[type="text"] {
+    width:300px;
+    padding:0.25em;
+}
+
 /*========================================
   Headers
   ========================================*/
@@ -111,7 +123,7 @@ h1 {
   HTML Console
   ========================================*/
 
-div#logOutput {
+div.htmlOutput {
     font-family: "Roboto Mono", monaco, Consolas, "Lucida Console", monospace;
     display: block;
     font-size: 1em;

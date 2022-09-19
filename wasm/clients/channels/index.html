@@ -9,12 +9,12 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Sender</title>
+	<title>Channel Client</title>
 
 	<link rel="stylesheet" type="text/css" href="../assets/styles.css">
-	<link rel="shortcut icon" type="image/x-icon" href="sender.ico"/>
 
-	<script type="text/javascript" src="sendE2e.js"></script>
+
+	<script type="text/javascript" src="channels.js"></script>
 	<script type="text/javascript" src="../assets/utils.js"></script>
 	<script type="text/javascript" src="../assets/wasm_exec.js"></script>
 	<script>
@@ -27,41 +27,41 @@
             LogLevel(0);
 
             // Output log to file that can be downloaded using a button
-            const logFile = LogToFile(0, "sender.log", 5000000);
+            const logFile = LogToFile(0, "receiver.log", 5000000);
             document.getElementById('logFileDownload').addEventListener(
                 'click', () => download(logFile.Name(), logFile.GetFile()))
 
             // Get element to print log messages to
             const logOutput = document.getElementById("logOutput")
             const htmlConsole = newHtmlConsole(logOutput)
+            const messageOutput = document.getElementById("messageOutput")
+            const messageConsole = newHtmlConsole(messageOutput)
 
             // Get button that will stop the network follower
             const stopNetworkFollowerBtn = document.getElementById("stopNetworkFollowerBtn")
 
             // Client specific parameters
-            const recipientContactFile = '<xxc(2)koEeDIK9TadI5PmUbZxKA5SPwuH+6WdUNiy9q2z0hrADkAZiB9kZo+Dl3buUQeBSieIP645WSDWyzxqi5HgGawVEufOOU3sDCINTsNv7DS5IvwUly2IM2kZp2LufmAD/kvUQ5xILfwR6PR256OTMjEJNRyNxCXit/Mot5sCQMIUSZ3OUa6xDxMRAfVKNAK6Htv6/JUa/sGu2CFjl7GL7pr3agmpVE5w00bZoW1dKurlSubs6PVTFQv3VBwf7GxSIolbuF5+DlFVU6R2ficxTG8ejuijdEK2lmlCaEDm8kVURVywTH3sytyf2eJaIW1tU1pNPkdPvgyCobk/FVmzKPQdbpnEFShSsUDVRebVvuPooV62yCZlJ5sSKWJg1WmvLSAb7uwMXl4zPkltZbF442OsxiQqikmAsO9wNQ6SH22bfgO8+MGR3i3L3oH6P6Z5Zx+hnqkDGUj0KbLxVdlhpcYACf+Uf3XOiq8ZvymfES8SCE+RfxjuNRLxzzNpVqUFrC1tmYRTOAO+k2oKDU9nP5gxKSQI5cCEFtGRGjrdsqsIEh3mX/y7WDgU0bQAAAgA7cQUCKI3GajkCZv68aRVbOw==xxc>';
-            const myContactFileName = '';
-            const statePath = 'statePathSender';
+            const statePath = 'channelPath';
             const statePass = 'password';
 
             document.getElementById('ndfInput').addEventListener('change', e => {
                 let reader = new FileReader();
                 reader.onload = async function (e) {
                     try {
-                        await SendE2e(htmlConsole, stopNetworkFollowerBtn,
-                            e.target.result, recipientContactFile,
-                            myContactFileName, statePath, statePass);
+                        await Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn,
+                            e.target.result, statePath, statePass);
                     } catch (e) {
                         htmlConsole.error(e)
                     }
                 };
                 reader.readAsText(e.target.files[0]);
             }, false);
+
         });
 	</script>
 </head>
 <body>
-<h1 style="margin-top: 0">SendE2E: Sender</h1>
+<h1 style="margin-top: 0">Channel Client</h1>
 <div class="toolbar">
 	<input type="button" value="Clear localStorage" onclick="localStorage.clear();">
 	<input type="button" value="Download Log File" id="logFileDownload">
@@ -73,13 +73,57 @@
 		<label for="ndfInput">Select NDF file to use <code>ndf</code> variable in JS:</label><br/>
 		<input type="file" id="ndfInput" required/>
 	</div>
-	<div>
-		<label for="messageInput">Your Message</label><br/>
-		<input type="text" id="messageInput"/>
-		<input type="button" id="messageSend" value="send"/>
-	</div>
-
 </form>
+<form id="makeChannel">
+	<div>
+		<label for="username1">Username</label><br/>
+		<input type="text" id="username1" disabled/>
+	</div>
+	<div>
+		<label for="chanName">Channel Name</label><br/>
+		<input type="text" id="chanName" required disabled/>
+	</div>
+	<div>
+		<label for="chanDescription">Channel Description</label><br/>
+		<input type="text" id="chanDescription" required disabled/>
+	</div>
+	<input type="button" value="Make Channel" id="makeChannelSubmit" disabled />
+</form>
+<form id="joinChannel">
+	<div>
+		<label for="username2">Username</label><br/>
+		<input type="text" id="username2" disabled/>
+	</div>
+	<div>
+		<label for="prettyPrintInput">Channel to Join</label><br/>
+		<input type="text" id="prettyPrintInput" required disabled/>
+		<input type="button" value="Join Channel" id="joinChannelSubmit" disabled/>
+	</div>
+</form>
+<form id="channelInfo">
+<div>
+	<label for="chanNameOutput">Channel Name</label><br/>
+	<input type="text" id="chanNameOutput" disabled/>
+</div>
+<div>
+	<label for="chanDescriptionOutput">Channel Description</label><br/>
+	<input type="text" id="chanDescriptionOutput" disabled/>
+</div>
+<div>
+	<label for="chanIdOutput">Channel ID</label><br/>
+	<input type="text" id="chanIdOutput" disabled/>
+</div>
+<div>
+	<label for="prettyPrintOutput">Channel Share</label><br/>
+	<input type="text" id="prettyPrintOutput" disabled/>
+</div>
+</form>
+<div>
+	<label for="message">Message to Send</label><br/>
+	<input type="text" id="message" required disabled/>
+	<input type="button" value="Send" id="sendMessageSubmit" disabled/>
+</div>
+<div id="messageOutput" class="htmlOutput"></div>
 <div id="logOutput" class="htmlOutput"></div>
 </body>
 </html>

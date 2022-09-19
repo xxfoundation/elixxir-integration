@@ -5,7 +5,19 @@
 // LICENSE file.                                                              //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Function to download data to a file.
+// Encodes Uint8Array to a string.
+let enc = new TextEncoder();
+
+// Decodes a string to a Uint8Array.
+let dec = new TextDecoder();
+
+// goJsonToObj converts JSON returned by Go WebAssembly (of type Uint8Array) and
+// converts it to a Javascript object.
+function jsonToObj(goJson) {
+    return JSON.parse(dec.decode(goJson))
+}
+
+// Function to download data to a text file.
 function download(filename, data) {
     const file = new Blob([data], {type: 'text/plain'});
     let a = document.createElement("a"),
@@ -50,6 +62,9 @@ function newHtmlConsole(elem) {
         error: function (message) {
             console.error(message)
             elem.innerHTML += "<p class='error'>" + message + "</p>"
+        },
+        clear: function () {
+            elem.innerHTML = ""
         }
     };
 }
