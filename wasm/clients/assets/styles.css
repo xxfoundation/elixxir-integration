@@ -67,6 +67,14 @@ body {
     padding:25px;
 }
 
+strong, var, b {
+    font-weight:700;
+}
+
+em, i, q {
+    font-style:italic;
+}
+
 form {
     border: 1px solid #ababab;
     margin:1em 0;

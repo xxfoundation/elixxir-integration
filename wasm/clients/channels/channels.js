@@ -165,12 +165,13 @@ async function joinChannel(htmlConsole, messageConsole, e2eClient, username,
                            prettyPrintOutput) {
    document.getElementById("makeChannel").style.display = "none";
    document.getElementById("joinChannel").style.display = "none";
+   document.getElementById("messageLabel").innerHTML += " as " + username;
 
     let eventModel = {
         JoinChannel: function (channel){},
         LeaveChannel: function (channelID){},
         ReceiveMessage: function (channelID, messageID, senderUsername, text, timestamp, lease, roundId, status){
-            messageConsole.log(senderUsername + " said: " + text)
+            messageConsole.log("<em>" + senderUsername + " said: </em>" + text)
             htmlConsole.log(senderUsername + ": " + text)
         },
         ReceiveReply: function (channelID, messageID, reactionTo, senderUsername, text, timestamp, lease, roundId, status){},
