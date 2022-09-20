@@ -9,14 +9,16 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Channel Client</title>
+	<title>The Internet Speakeasy Client</title>
 
 	<link rel="stylesheet" type="text/css" href="../assets/styles.css">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
 
 
 	<script type="text/javascript" src="channels.js"></script>
 	<script type="text/javascript" src="../assets/utils.js"></script>
 	<script type="text/javascript" src="../assets/wasm_exec.js"></script>
+	<script type="text/javascript" src="../assets/ndf.js"></script>
 	<script>
         const go = new Go();
         const binPath = '../assets/xxdk.wasm'
@@ -44,34 +46,46 @@
             const statePath = 'channelPath';
             const statePass = 'password';
 
-            document.getElementById('ndfInput').addEventListener('change', e => {
-                let reader = new FileReader();
-                reader.onload = async function (e) {
-                    try {
-                        await Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn,
-                            e.target.result, statePath, statePass);
-                    } catch (e) {
-                        htmlConsole.error(e)
-                    }
-                };
-                reader.readAsText(e.target.files[0]);
+            // document.getElementById('ndfInput').addEventListener('change', e => {
+            //     let reader = new FileReader();
+            //     reader.onload = async function (e) {
+            //         try {
+            //             await Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn,
+            //                 e.target.result, statePath, statePass);
+            //         } catch (e) {
+            //             htmlConsole.error(e)
+            //         }
+            //     };
+            //     reader.readAsText(e.target.files[0]);
+            // }, false);
+
+            document.getElementById('startNetwork').addEventListener('click', async e => {
+                try {
+                    await Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn,
+                        ndf, statePath, statePass);
+                } catch (e) {
+                    htmlConsole.error(e)
+                }
             }, false);
 
         });
 	</script>
 </head>
 <body>
-<h1 style="margin-top: 0">Channel Client</h1>
+<h1 style="margin-top: 0">The Internet Speakeasy Client</h1>
 <div class="toolbar">
 	<input type="button" value="Clear localStorage" onclick="localStorage.clear();">
 	<input type="button" value="Download Log File" id="logFileDownload">
 	<input type="button" value="Stop Network Follower" id="stopNetworkFollowerBtn" style="display:none;" >
 </div>
-<p>Selecting an NDF will start the client.</p>
 <form id="startCmix">
-	<div>
+<!--	<div>
 		<label for="ndfInput">Select NDF file to use <code>ndf</code> variable in JS:</label><br/>
 		<input type="file" id="ndfInput" required/>
+	</div>-->
+	<div>
+		<p>Click on the button below to connect to the network and start the client.</p>
+		<input type="button" id="startNetwork" value="Connect to Network"/>
 	</div>
 </form>
 <form id="makeChannel">
@@ -80,14 +94,14 @@
 		<input type="text" id="username1" disabled/>
 	</div>
 	<div>
-		<label for="chanName">Channel Name</label><br/>
+		<label for="chanName">Speakeasy Name</label><br/>
 		<input type="text" id="chanName" required disabled/>
 	</div>
 	<div>
-		<label for="chanDescription">Channel Description</label><br/>
+		<label for="chanDescription">Speakeasy Description</label><br/>
 		<input type="text" id="chanDescription" required disabled/>
 	</div>
-	<input type="button" value="Make Channel" id="makeChannelSubmit" disabled />
+	<input type="button" value="Make Speakeasy" id="makeChannelSubmit" disabled />
 </form>
 <form id="joinChannel">
 	<div>
@@ -95,26 +109,26 @@
 		<input type="text" id="username2" disabled/>
 	</div>
 	<div>
-		<label for="prettyPrintInput">Channel to Join</label><br/>
+		<label for="prettyPrintInput">Speakeasy to Join</label><br/>
 		<input type="text" id="prettyPrintInput" required disabled/>
-		<input type="button" value="Join Channel" id="joinChannelSubmit" disabled/>
+		<input type="button" value="Join Speakeasy" id="joinChannelSubmit" disabled/>
 	</div>
 </form>
 <form id="channelInfo">
 <div>
-	<label for="chanNameOutput">Channel Name</label><br/>
+	<label for="chanNameOutput">Speakeasy Name</label><br/>
 	<input type="text" id="chanNameOutput" disabled/>
 </div>
 <div>
-	<label for="chanDescriptionOutput">Channel Description</label><br/>
+	<label for="chanDescriptionOutput">Speakeasy Description</label><br/>
 	<input type="text" id="chanDescriptionOutput" disabled/>
 </div>
 <div>
-	<label for="chanIdOutput">Channel ID</label><br/>
+	<label for="chanIdOutput">Speakeasy ID</label><br/>
 	<input type="text" id="chanIdOutput" disabled/>
 </div>
 <div>
-	<label for="prettyPrintOutput">Channel Share</label><br/>
+	<label for="prettyPrintOutput">Speakeasy Share</label><br/>
 	<input type="text" id="prettyPrintOutput" disabled/>
 </div>
 </form>

@@ -55,6 +55,10 @@ async function sleepUntil(f, timeoutMs) {
 // error messages to an element.
 function newHtmlConsole(elem) {
     return {
+        overwrite: function (message) {
+            console.log(message)
+            elem.innerHTML = message
+        },
         log: function (message) {
             console.log(message)
             elem.innerHTML += "<p>" + message + "</p>"

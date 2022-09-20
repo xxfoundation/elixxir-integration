@@ -47,39 +47,6 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
     htmlConsole.log("Loaded Cmix.")
     console.log("Loaded Cmix: " + JSON.stringify(net))
 
-    // Get reception identity (automatically created if one does not exist)
-    const identityStorageKey = "identityStorageKey";
-    let identity;
-    try {
-        htmlConsole.log("Getting reception identity.")
-        identity = LoadReceptionIdentity(identityStorageKey, net.GetID());
-    } catch (e) {
-        htmlConsole.log("No reception identity found. Generating a new one.")
-
-        // If no extant xxdk.ReceptionIdentity, generate and store a new one
-        identity = await net.MakeReceptionIdentity();
-
-        StoreReceptionIdentity(identityStorageKey, identity, net.GetID());
-    }
-
-    let authCallbacks = {
-        Confirm: function (contact, receptionId, ephemeralId, roundId) {
-            htmlConsole.log("Confirm: from " + Uint8ArrayToBase64(receptionId) + " on round " + roundId)
-        },
-        Request: async function (contact, receptionId, ephemeralId, roundId) {
-            htmlConsole.log("Request: from " + Uint8ArrayToBase64(receptionId) + " on round " + roundId)
-        },
-        Reset: function (contact, receptionId, ephemeralId, roundId) {
-            htmlConsole.log("Reset: from " + Uint8ArrayToBase64(receptionId) + " on round " + roundId)
-        }
-    }
-
-
-    // Create an E2E client
-    // Pass in auth object which controls auth callbacks for this client
-    htmlConsole.log("Logging in E2E")
-    let e2eClient = Login(net.GetID(), authCallbacks, identity, new Uint8Array(null));
-    htmlConsole.log("Logged in E2E")
 
     ////////////////////////////////////////////////////////////////////////////
     // Start network threads                                                  //
@@ -143,7 +110,7 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
 
         const username = usernameInput1.value
 
-        joinChannel(htmlConsole, messageConsole, e2eClient, username,
+        joinChannel(htmlConsole, messageConsole, net, username,
             chanGen.Channel, chanNameOutput, chanDescriptionOutput,
             chanIdOutput, prettyPrintOutput)
     })
@@ -152,7 +119,7 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
 
     joinChannelSubmit.addEventListener("click", () => {
         const username = usernameInput2.value
-        joinChannel(htmlConsole, messageConsole, e2eClient, username,
+        joinChannel(htmlConsole, messageConsole, net, username,
             prettyPrintInput.value, chanNameOutput, chanDescriptionOutput,
             chanIdOutput, prettyPrintOutput)
     })
@@ -160,28 +127,47 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
 
 }
 
-async function joinChannel(htmlConsole, messageConsole, e2eClient, username,
+async function joinChannel(htmlConsole, messageConsole, net, username,
                            prettyPrint, nameOutput, descriptionOutput, idOutput,
                            prettyPrintOutput) {
    document.getElementById("makeChannel").style.display = "none";
    document.getElementById("joinChannel").style.display = "none";
-   document.getElementById("messageLabel").innerHTML += " as " + username;
+   document.getElementById("messageLabel").innerHTML += " as <em>" + username + "</em>";
 
+   // The eventModel is used only without the database
     let eventModel = {
         JoinChannel: function (channel){},
         LeaveChannel: function (channelID){},
         ReceiveMessage: function (channelID, messageID, senderUsername, text, timestamp, lease, roundId, status){
-            messageConsole.log("<em>" + senderUsername + " said: </em>" + text)
-            htmlConsole.log(senderUsername + ": " + text)
+            messageConsole.overwrite(text)
+            // htmlConsole.log(senderUsername + ": " + text)
         },
         ReceiveReply: function (channelID, messageID, reactionTo, senderUsername, text, timestamp, lease, roundId, status){},
         ReceiveReaction: function (channelID, messageID, reactionTo, senderUsername, reaction, timestamp, lease, roundId, status){},
         UpdateSentStatus: function (messageID, status){},
     }
 
-    let chanManager = NewChannelsManagerDummyNameService(e2eClient.GetID(), username, eventModel)
+    // This is for use without the database
+    let chanManager = NewChannelsManagerDummyNameService(net.GetID(), username, eventModel)
 
-    let chanInfo = JSON.parse(dec.decode(chanManager.JoinChannel(prettyPrint)))
+    // Use this when using the database
+    // let chanManager = NewChannelsManagerWithIndexedDbDummyNameService(net.GetID(), username)
+
+    // let chanInfo = JSON.parse(dec.decode(chanManager.JoinChannel(prettyPrint)))
+    let chanInfo;
+
+    try {
+        chanInfo = JSON.parse(dec.decode(chanManager.JoinChannel(prettyPrint)))
+    } catch (e) {
+        console.log(e)
+        if (e.toString().includes("the channel cannot be added because it already exists")) {
+            chanManager.ReplayChannelFromPrettyPrint(prettyPrint)
+            chanInfo = JSON.parse(dec.decode(GetChannelInfo(prettyPrint)))
+        } else {
+            throw e
+        }
+    }
+
 
     nameOutput.value = chanInfo.Name
     descriptionOutput.value = chanInfo.Description
@@ -195,9 +181,23 @@ async function joinChannel(htmlConsole, messageConsole, e2eClient, username,
     messageInput.disabled = false
     sendMessageSubmit.addEventListener("click", async () => {
         let message = messageInput.value
-        messageInput.value = ""
-        let chanSendReportJson = await chanManager.SendMessage(
-            Base64ToUint8Array(chanInfo.ChannelID), message, 30000, new Uint8Array(null))
-        htmlConsole.log("chanSendReport: " + dec.decode(chanSendReportJson))
+        if (message !== "") {
+            messageInput.value = ""
+            let chanSendReportJson = await chanManager.SendMessage(
+                Base64ToUint8Array(chanInfo.ChannelID), message, 30000, new Uint8Array(null))
+            htmlConsole.log("chanSendReport: " + dec.decode(chanSendReportJson))
+        }
+    })
+
+    messageInput.addEventListener("keypress", async e => {
+        if (e.key === "Enter") {
+            let message = messageInput.value
+            if (message !== "") {
+                messageInput.value = ""
+                let chanSendReportJson = await chanManager.SendMessage(
+                    Base64ToUint8Array(chanInfo.ChannelID), message, 30000, new Uint8Array(null))
+                htmlConsole.log("chanSendReport: " + dec.decode(chanSendReportJson))
+            }
+        }
     })
 }
