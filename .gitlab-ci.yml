@@ -54,10 +54,11 @@ installbinaries:
     - git clean -ffdx
     - mkdir -p ~/.elixxir
     - ./download_cmix_binaries.sh l d
-    - mkdir -p /opt/xxnetwork/lib
+    - sudo mkdir -p /opt/xxnetwork/lib
+    - sudo chown -R npuser /opt/xxnetwork
     - cp bin/libpowmosm75.so /opt/xxnetwork/lib/
     - cp bin/libpow.fatbin /opt/xxnetwork/lib/
-    - "chmod +x *"
+    - "sudo chmod +x *"
     - bin/server version
     - bin/server-cuda version
     - bin/client version
@@ -85,7 +86,8 @@ basice2e:
     # - ./run.sh
     # - mv results results-cpu
     # - sleep 60
-    - mkdir -p /opt/xxnetwork/lib
+    - sudo mkdir -p /opt/xxnetwork/lib
+    - sudo chown -R npuser /opt/xxnetwork
     - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
     - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
     - sed -i 's/bin\/server/bin\/server-cuda/g' network.sh
