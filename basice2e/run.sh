@@ -456,12 +456,12 @@ echo "NIAMH ID: $NIAMHID"
 
 REKEYOPTS="--e2eMaxKeys 15 --e2eMinKeys 10 --e2eNumReKeys 5 --e2eRekeyThreshold 0.75"
 # Client 101 will now send auth request
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --send-auth-request --unsafe-channel-creation --sendCount 0 --receiveCount 0"
+CLIENTCMD="timeout 600s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client101.log -s blob101 --writeContact $CLIENTOUT/Niamh101-contact.bin --destfile $CLIENTOUT/Jake100-contact.bin --send-auth-request --unsafe-channel-creation --sendCount 0 --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client101.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 # Client 100 will now wait for client 101's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
+CLIENTCMD="timeout 600s ../bin/client $CLIENTOPTS $REKEYOPTS -l $CLIENTOUT/client100.log -s blob100 --destid b64:$NIAMHID --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
 eval $CLIENTCMD >> $CLIENTOUT/client100.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
