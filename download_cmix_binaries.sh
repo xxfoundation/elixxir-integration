@@ -82,6 +82,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         GW_URL=${GW_URL:="${REPOS_API}gateway/$BRANCH_URL/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
+        CLIENT_CTIDH_URL=${CLIENT_CTIDH_URL:="${REPOS_API}client/$BRANCH_URL/libhighctidh.so?job=build"}
         SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
         GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
         GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
@@ -92,7 +93,8 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         GW_URL=${GW_URL:="${REPOS_API}/$BRANCH/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}/$BRANCH/registration.stateless$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}/$BRANCH/client$BIN"}
-        CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
+        CLIENT_CTIDH_URL=${CLIENT_CTIDH_URL:="${REPOS_API}/$BRANCH/libhighctidh.so?job=build"}
+        CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH/registration$BIN"}
     fi
 
     set -x
@@ -117,12 +119,17 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/permissioning" ${PERMISSIONING_URL}
     fi
 
-    # Silently download the permissioning binary to the provisioning directory
+    # Silently download the client binary to the provisioning directory
     if [ ! -f $download_path/client ] && [[ "$CLIENT_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client" ${CLIENT_URL}
     fi
 
-        # Silently download the client registrar binary to the provisioning directory
+    if [ ! -f $download_path/libhighctidh.so ] && [[ "$CLIENT_CTIDH_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/libhighctidh.so" ${CLIENT_CTIDH_URL}
+    fi
+
+
+    # Silently download the client registrar binary to the provisioning directory
     if [ ! -f $download_path/client-registrar ] && [[ "$CLIENT_REG_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client-registrar" ${CLIENT_REG_URL}
     fi
@@ -157,6 +164,7 @@ fi
     unset GW_URL
     unset PERMISSIONING_URL
     unset CLIENT_URL
+    unset CLIENT_CTIDH_URL
     unset SERVER_GPU_URL
     unset GPULIB_URL
     unset GPULIB2_URL
