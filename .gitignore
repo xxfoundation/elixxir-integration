@@ -1,11 +1,14 @@
 # Ignore Jetbrains IDE folder
 .idea/*
+
+# Ignore test files
 bin/*
 *.log
 *results*
 */.udb-cMix-session
 blob*
 junk*
+*.wasm
 
 # Vim swap files
 *.swp
