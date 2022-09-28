@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
 async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf,
                         statePath, statePassString) {
 
@@ -116,7 +115,6 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
     })
 
 
-
     joinChannelSubmit.addEventListener("click", () => {
         const username = usernameInput2.value
         joinChannel(htmlConsole, messageConsole, net, username,
@@ -130,30 +128,51 @@ async function Channels(htmlConsole, messageConsole, stopNetworkFollowerBtn, ndf
 async function joinChannel(htmlConsole, messageConsole, net, username,
                            prettyPrint, nameOutput, descriptionOutput, idOutput,
                            prettyPrintOutput) {
-   document.getElementById("makeChannel").style.display = "none";
-   document.getElementById("joinChannel").style.display = "none";
-   document.getElementById("messageLabel").innerHTML += " as <em>" + username + "</em>";
+    document.getElementById("makeChannel").style.display = "none";
+    document.getElementById("joinChannel").style.display = "none";
+    document.getElementById("messageLabel").innerHTML += " as <em>" + username + "</em>";
 
-   // The eventModel is used only without the database
+    // Generate private channel identity
+    let privateIdentity = GenerateChannelIdentity(net.GetID())
+
+    /*
+     * Use this when NOT using the database
+     */
+
+    // The eventModel is used only without the database
     let eventModel = {
-        JoinChannel: function (channel){},
-        LeaveChannel: function (channelID){},
-        ReceiveMessage: function (channelID, messageID, senderUsername, text, timestamp, lease, roundId, status){
+        JoinChannel: function (channel) {
+        },
+        LeaveChannel: function (channelID) {
+        },
+        ReceiveMessage: function (channelID, messageID, senderUsername, text, timestamp, lease, roundId, status) {
             messageConsole.overwrite(text)
             // htmlConsole.log(senderUsername + ": " + text)
         },
-        ReceiveReply: function (channelID, messageID, reactionTo, senderUsername, text, timestamp, lease, roundId, status){},
-        ReceiveReaction: function (channelID, messageID, reactionTo, senderUsername, reaction, timestamp, lease, roundId, status){},
-        UpdateSentStatus: function (messageID, status){},
+        ReceiveReply: function (channelID, messageID, reactionTo, senderUsername, text, timestamp, lease, roundId, status) {
+        },
+        ReceiveReaction: function (channelID, messageID, reactionTo, senderUsername, reaction, timestamp, lease, roundId, status) {
+        },
+        UpdateSentStatus: function (messageID, status) {
+        },
     }
 
-    // This is for use without the database
-    let chanManager = NewChannelsManagerDummyNameService(net.GetID(), username, eventModel)
+    // Create a channel manager that uses the event model instead of a database
+    let chanManager = NewChannelsManager(net.GetID(), privateIdentity, eventModel)
 
-    // Use this when using the database
-    // let chanManager = NewChannelsManagerWithIndexedDbDummyNameService(net.GetID(), username)
+    /*
+     * Use this when using the database
+     */
 
-    // let chanInfo = JSON.parse(dec.decode(chanManager.JoinChannel(prettyPrint)))
+    // Define callback that will receive message updates
+    // let messageReceivedCallbackFunc = function (uuid, channelID) {
+    //     // This is where you query indexedDb and update the DOM
+    // }
+
+    // Create a channel manager that uses a database backend
+    // let chanManager = await NewChannelsManagerWithIndexedDb(
+    //     net.GetID(), privateIdentity, messageReceivedCallbackFunc)
+
     let chanInfo;
 
     try {
