@@ -139,21 +139,39 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
      * Use this when NOT using the database
      */
 
+    let uuidCount = 0
+
     // The eventModel is used only without the database
     let eventModel = {
         JoinChannel: function (channel) {
         },
         LeaveChannel: function (channelID) {
         },
-        ReceiveMessage: function (channelID, messageID, senderUsername, text, timestamp, lease, roundId, status) {
-            messageConsole.overwrite(text)
-            // htmlConsole.log(senderUsername + ": " + text)
+        ReceiveMessage: function (channelID, messageID, nickname, text,
+                                  identity, timestamp, lease, roundId, status) {
+
+            htmlConsole.log("Identity: " + dec.decode(identity))
+            identity = jsonToObj(identity)
+
+            let msg = "<strong>" + identity.Codename + "#" + nickname + "</strong><br />" + text + "<br /><br />"
+            messageConsole.log(msg)
+            uuidCount++
+            return uuidCount
+
         },
-        ReceiveReply: function (channelID, messageID, reactionTo, senderUsername, text, timestamp, lease, roundId, status) {
+        ReceiveReply: function (channelID, messageID, reactionTo,
+                                senderUsername, text, identity, timestamp,
+                                lease, roundId, status) {
+            uuidCount++
+            return uuidCount
         },
-        ReceiveReaction: function (channelID, messageID, reactionTo, senderUsername, reaction, timestamp, lease, roundId, status) {
+        ReceiveReaction: function (channelID, messageID, reactionTo,
+                                   senderUsername, reaction, identity,
+                                   timestamp, lease, roundId, status) {
+            uuidCount++
+            return uuidCount
         },
-        UpdateSentStatus: function (messageID, status) {
+        UpdateSentStatus: function (uuid, messageID, timestamp, roundID, status) {
         },
     }
 
@@ -167,26 +185,26 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
     /*
      * Use this when using the database
      */
-/*
-    // Define callback that will receive message updates
-    let messageReceivedCallbackFunc = function (uuid, channelID) {
-        // This is where you query indexedDb and update the DOM
-    }
+    /*
+        // Define callback that will receive message updates
+        let messageReceivedCallbackFunc = function (uuid, channelID) {
+            // This is where you query indexedDb and update the DOM
+        }
 
-    // Create a channel manager that uses a database backend
-    let chanManager = await NewChannelsManagerWithIndexedDb(
-        net.GetID(), privateIdentity, messageReceivedCallbackFunc)
+        // Create a channel manager that uses a database backend
+        let chanManager = await NewChannelsManagerWithIndexedDb(
+            net.GetID(), privateIdentity, messageReceivedCallbackFunc)
 
-    // Once the channel manager is created for the first time, make sure to
-    // store the storage tag so that next time the page is loaded, you can load
-    // the already created manager
-    let storageTag = chanManager.GetStorageTag()
+        // Once the channel manager is created for the first time, make sure to
+        // store the storage tag so that next time the page is loaded, you can load
+        // the already created manager
+        let storageTag = chanManager.GetStorageTag()
 
-    // Once a channel manager is created, on subsequent loads,
-    // LoadChannelsManagerWithIndexedDb must be used to create the channel
-    // manager
-    let chanManager = await LoadChannelsManagerWithIndexedDb(
-        net.GetID(), storageTag, messageReceivedCallbackFunc)*/
+        // Once a channel manager is created, on subsequent loads,
+        // LoadChannelsManagerWithIndexedDb must be used to create the channel
+        // manager
+        let chanManager = await LoadChannelsManagerWithIndexedDb(
+            net.GetID(), storageTag, messageReceivedCallbackFunc)*/
 
 
     let chanInfo;
@@ -201,7 +219,6 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
             throw e
         }
     }
-
 
 
     nameOutput.value = chanInfo.Name
