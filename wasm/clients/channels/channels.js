@@ -163,15 +163,26 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
     /*
      * Use this when using the database
      */
-
+/*
     // Define callback that will receive message updates
-    // let messageReceivedCallbackFunc = function (uuid, channelID) {
-    //     // This is where you query indexedDb and update the DOM
-    // }
+    let messageReceivedCallbackFunc = function (uuid, channelID) {
+        // This is where you query indexedDb and update the DOM
+    }
 
     // Create a channel manager that uses a database backend
-    // let chanManager = await NewChannelsManagerWithIndexedDb(
-    //     net.GetID(), privateIdentity, messageReceivedCallbackFunc)
+    let chanManager = await NewChannelsManagerWithIndexedDb(
+        net.GetID(), privateIdentity, messageReceivedCallbackFunc)
+
+    // Once the channel manager is created for the first time, make sure to
+    // store the storage tag so that next time the page is loaded, you can load
+    // the already created manager
+    let storageTag = chanManager.GetStorageTag()
+
+    // Once a channel manager is created, on subsequent loads,
+    // LoadChannelsManagerWithIndexedDb must be used to create the channel
+    // manager
+    let chanManager = await LoadChannelsManagerWithIndexedDb(
+        net.GetID(), storageTag, messageReceivedCallbackFunc)
 
     let chanInfo;
 
@@ -186,6 +197,7 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
             throw e
         }
     }
+*/
 
 
     nameOutput.value = chanInfo.Name
