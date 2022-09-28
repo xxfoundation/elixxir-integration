@@ -157,8 +157,12 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
         },
     }
 
+    let eventModelBuilder = function (path) {
+        return eventModel
+    }
+
     // Create a channel manager that uses the event model instead of a database
-    let chanManager = NewChannelsManager(net.GetID(), privateIdentity, eventModel)
+    let chanManager = NewChannelsManager(net.GetID(), privateIdentity, eventModelBuilder)
 
     /*
      * Use this when using the database
@@ -182,10 +186,10 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
     // LoadChannelsManagerWithIndexedDb must be used to create the channel
     // manager
     let chanManager = await LoadChannelsManagerWithIndexedDb(
-        net.GetID(), storageTag, messageReceivedCallbackFunc)
+        net.GetID(), storageTag, messageReceivedCallbackFunc)*/
+
 
     let chanInfo;
-
     try {
         chanInfo = JSON.parse(dec.decode(chanManager.JoinChannel(prettyPrint)))
     } catch (e) {
@@ -197,7 +201,7 @@ async function joinChannel(htmlConsole, messageConsole, net, username,
             throw e
         }
     }
-*/
+
 
 
     nameOutput.value = chanInfo.Name
