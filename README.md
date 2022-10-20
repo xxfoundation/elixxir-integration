@@ -103,8 +103,8 @@ using these utility scripts can speed up the process.
 ### Additional Set Up
 
 You will need to add a personal access token to your environment vars to download binaries via the
-`download_cmix_binaries.sh`.  You can generate one [here](https://gitlab.com/-/profile/personal_access_tokens),
-giving it the "api" scope.
+`download_cmix_binaries.sh`.  You can generate one [here](https://git.xx.network/-/profile/personal_access_tokens),
+giving it the "api" and "read_repository" scope.
 Please add the following to your `~/.zshrc` or `~/.bash_profile` depending on your shell
 (You could most likely find out what shell you're using by running `echo $0` in the terminal).
 

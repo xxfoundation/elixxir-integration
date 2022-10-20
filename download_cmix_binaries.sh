@@ -50,6 +50,12 @@ fi
 DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
+    BRANCH_URL=${BRANCH_URL:="jobs/artifacts/master/raw/release"}
+    curl -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o /dev/null "${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"
+    if [[ $? != 0 ]]; then
+        echo "Bad GITLAB_ACCESS_TOKEN. You need a https://git.xx.network/-/profile/personal_access_tokens with api and read_repository access."
+        exit -1
+    fi
 else
     REPOS_API=${REPOS_API:="https://elixxir-bins.s3-us-west-1.amazonaws.com"}
 fi
@@ -71,6 +77,7 @@ FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 
 echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
 echo "(Note: if you forced a branch, that is checked first!)"
+
 
 for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     echo "Attempting downloads from: $BRANCH"
