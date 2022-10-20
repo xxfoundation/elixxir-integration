@@ -57,7 +57,8 @@ keyPath: "../keys/cmix.rip.key"
 # Path to the registration server certificate file
 certPath: "../keys/cmix.rip.crt"
 
-ndfOutputPath: "results/permissions-ndfoutput.json"
+fullNdfOutputPath: "results/permissions-ndfoutput.json"
+signedPartialNDFOutputPath: "results/permissions-ndfoutput-partial.json"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the UDB certificate file
