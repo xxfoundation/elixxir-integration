@@ -51,11 +51,13 @@ DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
     BRANCH_URL=${BRANCH_URL:="jobs/artifacts/master/raw/release"}
-    curl -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o /dev/null "${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"
+    echo "Gitlab Access test:"
+    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"
     if [[ $? != 0 ]]; then
         echo "Bad GITLAB_ACCESS_TOKEN. You need a https://git.xx.network/-/profile/personal_access_tokens with api and read_repository access."
         exit -1
     fi
+    echo "Gitlab access test successful..."
 else
     REPOS_API=${REPOS_API:="https://elixxir-bins.s3-us-west-1.amazonaws.com"}
 fi
