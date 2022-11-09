@@ -50,9 +50,9 @@ fi
 DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
-    BRANCH_URL=${BRANCH_URL:="jobs/artifacts/master/raw/release"}
+    BRANCH_URL=${"jobs/artifacts/master/raw/release"}
     echo "Gitlab Access test:"
-    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"
+    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/jobs/artifacts/master/raw/release/udb$BIN"
     if [[ $? != 0 ]]; then
         echo "Bad GITLAB_ACCESS_TOKEN. You need a https://git.xx.network/-/profile/personal_access_tokens with api and read_repository access."
         exit -1
@@ -80,6 +80,10 @@ FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
 echo "(Note: if you forced a branch, that is checked first!)"
 
+# Note: The way forced branching works is the user sets, e.g.,
+# UDB_URL, then leaves everything else blank. When the first run of
+# the loop is called, UDB_URL will download because it does not have
+# "forcedbranch" in the URL like all of the others.
 
 for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     echo "Attempting downloads from: $BRANCH"
