@@ -1076,45 +1076,45 @@ echo "FILE TRANSFER FINISHED..."
 
 # echo "TESTING BROADCAST CHANNELS..."
 
-# # New broadcast channel...
-# CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --name broadcast-test --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
-# eval $CLIENTCMD >> $CLIENTOUT/client130.txt &
-# PIDVAL1=$!
-# echo "$CLIENTCMD -- $PIDVAL1"
-# wait $PIDVAL1
+# New broadcast channel...
+CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --name \"broadcast_test\" --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client130.txt &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+wait $PIDVAL1
 
-# # Start client to listen for messages on the channel
-# CLIENTCMD="timeout 480s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client131.log -s blob131 --chanPath results/integration-channel.json --receiveCount 4"
-# eval $CLIENTCMD >> $CLIENTOUT/client131.txt &
-# PIDVAL1=$!
-# echo "$CLIENTCMD -- $PIDVAL1"
+# Start client to listen for messages on the channel
+CLIENTCMD="timeout 480s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client131.log -s blob131 --chanPath results/integration-channel.json --receiveCount 4"
+eval $CLIENTCMD >> $CLIENTOUT/client131.txt &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
 
-# sleep 10
+sleep 10
 
-# # Send symmetric broadcast to channel
-# CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client132.log -s blob132 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --symmetric \"Hello to symmetric channel from channel client 122!\""
-# eval $CLIENTCMD >> $CLIENTOUT/client132.txt &
-# PIDVAL2=$!
-# echo "$CLIENTCMD -- $PIDVAL2"
+# Send symmetric broadcast to channel
+CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client132.log -s blob132 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --symmetric \"Hello to symmetric channel from channel client 122!\""
+eval $CLIENTCMD >> $CLIENTOUT/client132.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
 
-# # Send asymmetric broadcast to channel
-# CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client133.log -s blob133 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 123!\""
-# eval $CLIENTCMD >> $CLIENTOUT/client133.txt &
-# PIDVAL3=$!
-# echo "$CLIENTCMD -- $PIDVAL3"
+# Send asymmetric broadcast to channel
+CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client133.log -s blob133 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 123!\""
+eval $CLIENTCMD >> $CLIENTOUT/client133.txt &
+PIDVAL3=$!
+echo "$CLIENTCMD -- $PIDVAL3"
 
-# # Send symmetric & asymmetric broadcasts to channel
-# CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client134.log -s blob134 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 124!\" --symmetric \"Hello to symmetric channel from channel client 124!\""
-# eval $CLIENTCMD >> $CLIENTOUT/client134.txt &
-# PIDVAL4=$!
-# echo "$CLIENTCMD -- $PIDVAL4"
+# Send symmetric & asymmetric broadcasts to channel
+CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client134.log -s blob134 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 124!\" --symmetric \"Hello to symmetric channel from channel client 124!\""
+eval $CLIENTCMD >> $CLIENTOUT/client134.txt &
+PIDVAL4=$!
+echo "$CLIENTCMD -- $PIDVAL4"
 
-# wait $PIDVAL2
-# wait $PIDVAL3
-# wait $PIDVAL4
-# wait $PIDVAL1
+wait $PIDVAL2
+wait $PIDVAL3
+wait $PIDVAL4
+wait $PIDVAL1
 
-# echo "BROADCAST CHANNELS FINISHED..."
+echo "BROADCAST CHANNELS FINISHED..."
 
 ###############################################################################
 # Test ephemeral connections
