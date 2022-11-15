@@ -13,7 +13,6 @@
 set -e
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
-rm -fr blob* || true
 rm *-contact.json || true
 rm server-5.qdstrm || true
 rm server-5.qdrep || true
@@ -33,11 +32,16 @@ DEBUGLEVEL=${DEBUGLEVEL-1}
 
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
+UDBOUT=results/udb-console.txt
 CLIENTOUT=results/clients
 CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTALTUDOPTS="--alternateUd --altUdCert crustUd.crt --altUdContactFile crustUdContact.bin --altUdAddress 18.198.117.203:11420"
+
+CLIENTID=310
+ACCOUNTNAME=crustIntegrationTest$CLIENTID
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -47,6 +51,22 @@ mkdir -p $CLIENTCLEAN
 ################################################################################
 ## Network Set Up
 ################################################################################
+
+# removeUser will remove the user from the UD
+removeUser() {
+  CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS $CLIENTALTUDOPTS -l $CLIENTOUT/client$CLIENTID.log -s blob$CLIENTID --remove $ACCOUNTNAME"
+  eval $CLIENTCMD >> $CLIENTOUT/client$CLIENTID.txt &
+  PIDVAL=$!
+  echo "$CLIENTCMD -- $PIDVAL"
+  wait $PIDVAL
+
+}
+
+#removeUser
+
+# Ensure removeUser is called whenever this script closes, on success or failure
+#trap removeUser EXIT
+#trap removeUser INT
 
 
 if [ "$NETWORKENTRYPOINT" == "betanet" ]
@@ -114,22 +134,24 @@ fi
 echo "TESTING CRUST..."
 
 # Register username with UD
-CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client300.log -s blob300 --register josh300"
-eval $CLIENTCMD >> $CLIENTOUT/client300.txt &
+# fixme: must find way to make this replicable in integration testing, possibly have
+# fixme: a way to remove this account via CLI
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS $CLIENTALTUDOPTS -l $CLIENTOUT/client$CLIENTID.log -s blob$CLIENTID --register $ACCOUNTNAME"
+eval $CLIENTCMD >> $CLIENTOUT/client$CLIENTID.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Upload file to Crust
-CLIENTCMD="timeout 240s ../bin/client crust -l $CLIENTUDOPTS $CLIENTOUT/client300.log -s blob300 --upload --file LoremIpsum.txt"
-eval $CLIENTCMD >> $CLIENTOUT/client300.txt &
+CLIENTCMD="timeout 240s ../bin/client crust $CLIENTUDOPTS $CLIENTALTUDOPTS -l $CLIENTOUT/client$CLIENTID.log -s blob$CLIENTID --upload --file LoremIpsum.txt"
+eval $CLIENTCMD >> $CLIENTOUT/client$CLIENTID.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Recover file from Crust
-CLIENTCMD="timeout 240s ../bin/client crust -l $CLIENTUDOPTS $CLIENTOUT/client300.log -s blob300 --recover --file LoremIpsum.txt"
-eval $CLIENTCMD >> $CLIENTOUT/client300.txt &
+CLIENTCMD="timeout 240s ../bin/client crust $CLIENTUDOPTS $CLIENTALTUDOPTS -l $CLIENTOUT/client$CLIENTID.log -s blob$CLIENTID --recover --file LoremIpsum.txt"
+eval $CLIENTCMD >> $CLIENTOUT/client$CLIENTID.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
