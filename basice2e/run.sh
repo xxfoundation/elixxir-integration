@@ -1077,7 +1077,7 @@ echo "FILE TRANSFER FINISHED..."
 # echo "TESTING BROADCAST CHANNELS..."
 
 # New broadcast channel...
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --name \"broadcast_test\" --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
+CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --channelName \"broadcast_test\" --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
 eval $CLIENTCMD >> $CLIENTOUT/client130.txt &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
