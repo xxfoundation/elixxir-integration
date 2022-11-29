@@ -40,8 +40,22 @@ CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 1
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTALTUDOPTS="--alternateUd --altUdCert crustUd.crt --altUdContactFile crustUdContact.bin --altUdAddress 18.198.117.203:11420"
 
-CLIENTID=323
+# FIXME | As it stands, this needs to be incremented every run. This is so that
+# FIXME | the client is registered w/ UD used for testing with a unique username.
+# FIXME | Ideally there would be a mechanism to make this repeatable (ie reuse
+# FIXME | the username), and the (commented out) removeUser function attempted
+# FIXME | to do that by  removing the user from UD at the end of every run.
+# FIXME | This is accomplished by trap (Bash's equivalent of defer). However,
+# FIXME | the function never successfully removes the user. There should be a way
+# FIXME | to fix this, but incrementation is left until this is resolved.
+# FIXME | Alternative solutions include registering only if a blob file does not
+# FIXME | already exist for the client.
+CLIENTID=352
 ACCOUNTNAME=crustIntegrationTest$CLIENTID
+echo "CLIENTID - $CLIENTID"
+echo "ACCOUNTNAME - $ACCOUNTNAME"
+echo "Note that these values must be incremented each run (see the FIXME)"
+
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -62,7 +76,6 @@ removeUser() {
 
 }
 
-#removeUser
 
 # Ensure removeUser is called whenever this script closes, on success or failure
 #trap removeUser EXIT
@@ -134,8 +147,6 @@ fi
 echo "TESTING CRUST..."
 
 # Register username with UD
-# fixme: must find way to make this replicable in integration testing, possibly have
-# fixme: a way to remove this account via CLI
 CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS $CLIENTALTUDOPTS -l $CLIENTOUT/client$CLIENTID.log -s blob$CLIENTID --register $ACCOUNTNAME"
 eval $CLIENTCMD >> $CLIENTOUT/client$CLIENTID.txt &
 PIDVAL=$!
