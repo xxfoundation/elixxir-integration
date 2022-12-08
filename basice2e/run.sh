@@ -1206,40 +1206,40 @@ echo "RUNNING CLIENTS..."
 echo "TESTING CHANNELS..."
 
 # Initialize creator of channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --channelIdentityPath $CLIENTOUT/channel500 --newChannel --sendToChannel --message \"Hello, channel, this is 500\""
+CLIENTCMD="timeout 240s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --newChannel --sendToChannel --message \"Hello, channel, this is 500\""
 eval $CLIENTCMD > $CLIENTOUT/client500.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 
 # Initialize client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOPTS $CLIENTOUT/client501.log --channelIdentityPath $CLIENTOUT/channel501 --join --send -m \"Hello, channel, this is 501\""
+CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel501.id --joinChannel --sendToChannel --message \"Hello, channel, this is 501\""
 eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
 
 # Initialize another client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOPTS $CLIENTOUT/client502.log --channelIdentityPath $CLIENTOUT/channel502 --join --send -m \"Hello, channel, this is 502\""
+CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel502.id --joinChannel --sendToChannel --message \"Hello, channel, this is 502\""
 eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 wait $PIDVAL3
 
 # All clients will leave the channel
-CLIENTCMD="timeout 240s ../bin/client channels -s blob500 -l $CLIENTOPTS $CLIENTOUT/client500.log --channelIdentityPath $CLIENTOUT/channel500 --leave"
-eval $CLIENTCMD > $CLIENTOUT/client500.txt 2>&1 &
+CLIENTCMD="timeout 240s ../bin/client channels -s blob500 -l $CLIENTOUT/client500.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --leaveChannel"
+eval $CLIENTCMD >> $CLIENTOUT/client500.txt 2>&1 &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 
-CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOPTS $CLIENTOUT/client501.log --channelIdentityPath $CLIENTOUT/channel501 --leave"
-eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
+CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel501.id --leaveChannel"
+eval $CLIENTCMD >> $CLIENTOUT/client501.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 
 # Initialize another client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOPTS $CLIENTOUT/client502.log --channelIdentityPath $CLIENTOUT/channel502 --leave"
-eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
+CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel502.id --leaveChannel"
+eval $CLIENTCMD >> $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 
