@@ -255,14 +255,16 @@ while [[ $(grep "DMTOKEN:" $CLIENTOUT/client1.log) == "" ]]; do
     sleep 1
     echo -n "."
 done
+# Wait for a round or so for the self sent message to send
+sleep 2
 # Now send the DM (#2)
 DMTOKEN=$(grep -a DMTOKEN results/clients/client1.log | head -1 | awk '{print $5}')
 DMPUBKEY=$(grep -a DMPUBKEY results/clients/client1.log | head -1 | awk '{print $5}')
 echo "PubKey: $DMPUBKEY, Token: $DMTOKEN"
-CLIENTCMD2="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blob2 dm -m \"Hello from Ben Prime to Rick Prime\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
+CLIENTCMD2="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blob2 dm -m \"Hello from Ben Prime to Rick Prime via DM\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
 eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
+echo "$CLIENTCMD2 -- $PIDVAL2"
 wait $PIDVAL
 # When the first command exits, read the RECVDM fields and reply to
 # the last received message (the first 2 are the self send) (#3)
@@ -272,6 +274,8 @@ CLIENTCMD="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 ###############################################################################
 # Test  Sending E2E
