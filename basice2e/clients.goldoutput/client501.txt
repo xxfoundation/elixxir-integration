@@ -1,0 +1,5 @@
+Successfully joined channel ChannelName
+Received message (Hello, channel, this is 501) from ChannelName
+Received message (Hello, channel, this is 500) from ChannelName
+Sent message (Hello, channel, this is 501) to channel ChannelName
+Successfully left channel ChannelName

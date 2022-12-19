@@ -1242,7 +1242,7 @@ CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOUT/client50
 eval $CLIENTCMD >> $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
-
+sleep 15
 wait $PIDVAL3
 wait $PIDVAL2
 wait $PIDVAL1
