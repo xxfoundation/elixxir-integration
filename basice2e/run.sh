@@ -81,7 +81,8 @@ else
 fi
 
 echo "DOWNLOADING TLS Cert..."
-CMD="openssl s_client -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
+# -alpn h2 added to mimic grpc headers
+CMD="openssl s_client -alpn h2 -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
 echo $CMD
 eval $CMD < /dev/null 2>&1 > "results/startgwcert.bin"
 CMD="cat results/startgwcert.bin | openssl x509 -outform PEM"
