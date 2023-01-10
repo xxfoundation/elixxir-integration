@@ -82,7 +82,8 @@ else
 fi
 
 echo "DOWNLOADING TLS Cert..."
-CMD="openssl s_client -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
+# -alpn h2 added to mimic grpc headers
+CMD="openssl s_client -alpn h2 -showcerts -connect $(tr -d '[:space:]' < results/startgwserver.txt)"
 echo $CMD
 eval $CMD < /dev/null 2>&1 > "results/startgwcert.bin"
 CMD="cat results/startgwcert.bin | openssl x509 -outform PEM"
@@ -255,23 +256,27 @@ while [[ $(grep "DMTOKEN:" $CLIENTOUT/client1.log) == "" ]]; do
     sleep 1
     echo -n "."
 done
+# Wait for a round or so for the self sent message to send
+sleep 2
 # Now send the DM (#2)
 DMTOKEN=$(grep -a DMTOKEN results/clients/client1.log | head -1 | awk '{print $5}')
 DMPUBKEY=$(grep -a DMPUBKEY results/clients/client1.log | head -1 | awk '{print $5}')
 echo "PubKey: $DMPUBKEY, Token: $DMTOKEN"
-CLIENTCMD2="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blob2 dm -m \"Hello from Ben Prime to Rick Prime\" --dmPubkey \"$DMPUBKEY\" --dmToken \"$DMTOKEN\" --receiveCount 2"
+CLIENTCMD2="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blob2 dm -m \"Hello from Ben Prime to Rick Prime via DM\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
 eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
+echo "$CLIENTCMD2 -- $PIDVAL2"
 wait $PIDVAL
 # When the first command exits, read the RECVDM fields and reply to
 # the last received message (the first 2 are the self send) (#3)
 RTOKEN=$(grep -a RECVDMTOKEN results/clients/client1.log | tail -1 | awk '{print $5}')
 RPUBKEY=$(grep -a RECVDMPUBKEY results/clients/client1.log | tail -1 | awk '{print $5}')
-CLIENTCMD="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blob1 dm -m \"What up from Rick Prime to Ben Prime via DM\" --dmPubkey \"$RPUBKEY\" --dmToken \"$RTOKEN\" --receiveCount 1"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blob1 dm -m \"What up from Rick Prime to Ben Prime via DM\" --dmPubkey $RPUBKEY --dmToken $RTOKEN --receiveCount 1"
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
 
 ###############################################################################
 # Test  Sending E2E
