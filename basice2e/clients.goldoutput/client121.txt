@@ -1,7 +1,6 @@
 Adding 
 Backup update received.
 Backup update received.
-Backup update received.
 Message received: Hello from Client120, with E2E Encryption
 Message received: Hello from Client120, with E2E Encryption
 Message received: Hello from Client120, with E2E Encryption
