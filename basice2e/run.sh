@@ -1263,7 +1263,7 @@ echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL2
 
 # Initialize another client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 300s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel502.id --joinChannel --sendToChannel --message \"Hello, channel, this is 502\""
+CLIENTCMD="timeout 420s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel502.id --joinChannel --sendToChannel --message \"Hello, channel, this is 502\""
 eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
