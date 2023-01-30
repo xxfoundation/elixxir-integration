@@ -1,6 +1,7 @@
-Received message (Hello, channel, this is 500) from ChannelName
-Received message (Hello, channel, this is 501) from ChannelName
-Received message (Hello, channel, this is 502) from ChannelName
-Sent message (Hello, channel, this is 502) to channel ChannelName
 Successfully joined channel ChannelName
+Received from ChannelName this message: Hello, channel, this is 502
+Received from ChannelName this message: Hello, channel, this is 500
+Received from ChannelName this message: Hello, channel, this is 501
+Received 3/3 messages
 Successfully left channel ChannelName
+Received 0/0 messages
