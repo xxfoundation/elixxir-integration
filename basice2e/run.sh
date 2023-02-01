@@ -1249,12 +1249,18 @@ echo "Non-Ephemeral Test Complete."
 echo "TESTING CHANNELS..."
 
 # Initialize creator of channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 300s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --newChannel --sendToChannel --message \"Hello, channel, this is 500\""
+CLIENTCMD="timeout 300s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --receiveCount 0 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --newChannel"
 eval $CLIENTCMD > $CLIENTOUT/client500.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
 
-sleep 5
+wait $PIDVAL
+
+# Have client which created channel send message to channel
+CLIENTCMD="timeout 300s ../bin/client channels -s blob500 -l $CLIENTOUT/client500.log $CLIENTOPTS --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel500.id --sendToChannel --message \"Hello, channel, this is 500\""
+eval $CLIENTCMD >> $CLIENTOUT/client500.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
 
 # Initialize client which will join channel (will use default channel file path in CLI)
 CLIENTCMD="timeout 300s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel501.id --joinChannel --sendToChannel --message \"Hello, channel, this is 501\""
@@ -1268,7 +1274,7 @@ eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 
-wait $PIDVAL
+wait $PIDVAL1
 wait $PIDVAL2
 wait $PIDVAL3
 
