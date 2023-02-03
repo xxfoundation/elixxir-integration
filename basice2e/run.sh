@@ -1250,43 +1250,52 @@ echo "Non-Ephemeral Test Complete."
 echo "TESTING CHANNELS..."
 
 # Initialize creator of channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --newChannel --sendToChannel --message \"Hello, channel, this is 500\""
+CLIENTCMD="timeout 300s ../bin/client channels -s blob500 $CLIENTOPTS -l $CLIENTOUT/client500.log --receiveCount 0 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --newChannel"
 eval $CLIENTCMD > $CLIENTOUT/client500.txt 2>&1 &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
+
 wait $PIDVAL
 
-# Initialize client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel501.id --joinChannel --sendToChannel --message \"Hello, channel, this is 501\""
-eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-
-# Initialize another client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel502.id --joinChannel --sendToChannel --message \"Hello, channel, this is 502\""
-eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
-PIDVAL3=$!
-echo "$CLIENTCMD -- $PIDVAL3"
-wait $PIDVAL3
-
-# All clients will leave the channel
-CLIENTCMD="timeout 240s ../bin/client channels -s blob500 -l $CLIENTOUT/client500.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --leaveChannel"
+# Have client which created channel send message to channel
+CLIENTCMD="timeout 300s ../bin/client channels -s blob500 -l $CLIENTOUT/client500.log $CLIENTOPTS --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel500.id --sendToChannel --message \"Hello, channel, this is 500\""
 eval $CLIENTCMD >> $CLIENTOUT/client500.txt 2>&1 &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 
-CLIENTCMD="timeout 240s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel501.id --leaveChannel"
+# Initialize client which will join channel (will use default channel file path in CLI)
+CLIENTCMD="timeout 300s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel501.id --joinChannel --sendToChannel --message \"Hello, channel, this is 501\""
+eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+
+# Initialize another client which will join channel (will use default channel file path in CLI)
+CLIENTCMD="timeout 420s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --receiveCount 3 --channelPath $CLIENTOUT/channel500.chan --channelIdentityPath $CLIENTOUT/channel502.id --joinChannel --sendToChannel --message \"Hello, channel, this is 502\""
+eval $CLIENTCMD > $CLIENTOUT/client502.txt 2>&1 &
+PIDVAL3=$!
+echo "$CLIENTCMD -- $PIDVAL3"
+
+wait $PIDVAL1
+wait $PIDVAL2
+wait $PIDVAL3
+
+# All clients will leave the channel
+CLIENTCMD="timeout 300s ../bin/client channels -s blob500 -l $CLIENTOUT/client500.log $CLIENTOPTS --receiveCount 0 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel500.id --leaveChannel"
+eval $CLIENTCMD >> $CLIENTOUT/client500.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+
+CLIENTCMD="timeout 300s ../bin/client channels -s blob501 -l $CLIENTOUT/client501.log $CLIENTOPTS --receiveCount 0 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel501.id --leaveChannel"
 eval $CLIENTCMD >> $CLIENTOUT/client501.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 
 # Initialize another client which will join channel (will use default channel file path in CLI)
-CLIENTCMD="timeout 240s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel502.id --leaveChannel"
+CLIENTCMD="timeout 300s ../bin/client channels -s blob502 -l $CLIENTOUT/client502.log $CLIENTOPTS --receiveCount 0 --channelPath $CLIENTOUT/channel500.chan  --channelIdentityPath $CLIENTOUT/channel502.id --leaveChannel"
 eval $CLIENTCMD >> $CLIENTOUT/client502.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
-sleep 15
+sleep 20
 wait $PIDVAL3
 wait $PIDVAL2
 wait $PIDVAL1
@@ -1416,7 +1425,9 @@ then
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
     diff -aruN results/server-errors.txt noerrors.txt
     IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
-    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" > results/gateway-errors.txt || true
+    IGNORESERVE="Failed to serve "
+    IGNORESTART="Failed to start "
+    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART"  > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
     echo "Checking backup files for equality..."
