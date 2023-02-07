@@ -34,6 +34,7 @@ UDBOUT=results/udb-console.txt
 CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
+CLIENTEPHREGOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL --disableNodeRegistration --enableEphemeralRegistration"
 CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
@@ -1298,6 +1299,66 @@ sleep 20
 wait $PIDVAL3
 wait $PIDVAL2
 wait $PIDVAL1
+
+
+###############################################################################
+# Test Ephemeral Registration (e2e test without registering with nodes)
+###############################################################################
+
+echo "TESTING E2E WITH EPHEMERAL REGISTRATION"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client601.log -s blob601 --writeContact $CLIENTOUT/rick601-contact.bin --unsafe -m \"Hello from Rick601 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client601.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client602.log -s blob602 --writeContact $CLIENTOUT/ben602-contact.bin --destfile $CLIENTOUT/rick601-contact.bin --send-auth-request --unsafe-channel-creation --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client602.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+
+while [ ! -s $CLIENTOUT/ben602-contact.bin ]; do
+    sleep 1
+    echo -n "."
+done
+
+
+TMPID=$(cat $CLIENTOUT/client601.log | grep -a "User\:" | awk -F' ' '{print $5}')
+RICKID=${TMPID}
+echo "RICK ID: $RICKID"
+TMPID=$(cat $CLIENTOUT/client602.log | grep -a "User\:" | awk -F' ' '{print $5}')
+BENID=${TMPID}
+echo "BEN ID: $BENID"
+
+# Client 601 will now wait for client 602's E2E Auth channel request and confirm
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client601.log -s blob601 --destfile $CLIENTOUT/ben602-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
+eval $CLIENTCMD >> $CLIENTOUT/client601.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+# Test destid syntax too, note wait for 11 messages to catch the message from above ^^^
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client601.log -s blob601  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick601, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client601.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client602.log -s blob602  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben602, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client602.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client601.log -s blob601  --destid b64:$BENID --sendCount 5 --receiveCount 5 -m \"Hello from Rick601, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client601.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 360s ../bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client602.log -s blob602  --destid b64:$RICKID --sendCount 5 --receiveCount 5 -m \"Hello from Ben602, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client602.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 

@@ -42,4 +42,5 @@ cmixCertPath: "../keys/cmix.rip.crt"
 
 devMode: true
 
+minRegisteredNodes: 0
 # === END YAML
