@@ -1,0 +1,46 @@
+################################################################################
+## Copyright © 2018 Privategrity Corporation                                   #
+##                                                                             #
+## All rights reserved.                                                        #
+################################################################################
+
+##
+# Gateway Configuration File
+##
+
+# Used for debugging
+loglevel: 2
+
+# Output log file
+log: "gateway-1.log"
+
+# The listening port of this gateway
+Port: {GW_ADDR}
+
+# The local IP address of the Gateway used for internal listening.
+localAddress: "0.0.0.0"
+
+# The public IP address of the Node associated with this Gateway.
+nodeAddress: {NODE_ADDR}
+
+# Period in which the message cleanup function executes. Recommended period is on the order of a minute.
+messageTimeout: "60s"
+
+# Path to where the IDF is saved. This is used by the wrapper management script.
+idfPath: "results/gateways/gatewayIDF-0.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the private key file
+keyPath: "../keys/cmix.rip.key"
+# Path to the certificate file
+certPath: "../keys/cmix.rip.crt"
+# Path to the permissioning certificate
+schedulingCertPath: "../keys/cmix.rip.crt"
+# Path to the certificate file
+cmixCertPath: "../keys/cmix.rip.crt"
+
+
+
+# Needed to verify that NDF originated from permissioning
+# Path to the permissioning certificate file
+permissioningCertPath: "configurations/keys/permissioning.crt"
