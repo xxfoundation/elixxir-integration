@@ -4,84 +4,93 @@
 
 # Log message level
 loglevel: 2
+
 # Path to log file
-logPath: "registration.log"
-# Path to the node topology permissioning info
-ndfOutputPath: "ndf.json"
-# Minimum number of nodes to begin running rounds. this differs from the number of members
-# in a team because some scheduling algorithms may require multiple teams worth of nodes at minimum
-minimumNodes: 5
-
-# Path to the file containing the round ID
-roundIdPath: "roundId.txt"
-
-# Path to the file containing the update ID
-updateIdPath: "updateId.txt"
-
-# UDB ID
-udbID: 1
-
-# Public address, used in NDF it gives to client
-publicAdress: "0.0.0.0:11420"
+logPath: "results/permissioning.log"
 
 # The listening port of this  server
-port: 11420
-
-# The minimum version required of gateways to connect
-minGatewayVersion: "1.1.0"
-
-# The minimum version required of servers to connect
-minServerVersion:  "1.1.0"
+port: {permissioning_port}
 
 # Database connection information
-dbUsername: "cmix"
+dbUsername: ""
 dbPassword: ""
-dbName: "cmix_server"
-dbAddress: "0.0.0.0:5959"
+dbName: ""
+dbAddress: "0.0.0.0:6969"
 
-# Path to JSON file with list of Node registration codes (in order of network 
-# placement)
-RegCodesFilePath: "configurations/regCodes.json"
+minimumNodes: 5
 
-# List of client codes to be added to the database (for testing)
-clientRegCodes:
-  - "AAAA"
-  - "BBBB"
-  - "CCCC"
-    
+minGatewayVersion: "3.0.0"
+minServerVersion:  "3.0.0"
+minClientVersion: "4.0.0"
+nodeMetricInterval: 3
 
-# Time interval (in seconds) between committing Node statistics to storage
-nodeMetricInterval: 180
+# For testing, use the sequence as the country code. Do not use the geobinning database
+disableGeoBinning: true
+
+# For testing, do not exclude node or gateway IPs which are local to the machine
+allowLocalIPs: true
+
+# Disable pruning of NDF for offline nodes
+# if set to false, network will sleep for five minutes on start
+disableNDFPruning: true
+permissiveIPChecking: true
+
+# How long rounds will be tracked by gateways. Rounds (and messages as an extension)
+# prior to this period are not guaranteed to be delivered to clients.
+# Expects duration in"h". (Defaults to 1 weeks (168 hours)
+messageRetentionLimit: "168h"
+
+# Path to the file containing the round ID
+roundIdPath: "results/roundId.txt"
+
+# Path to the file containing the update ID
+updateIdPath: "results/updateId.txt"
+
+
+# Public address used in NDF to give to client
+registrationAddress: "0.0.0.0:{registration_port}"
+
+# Path to whitelisted IPs for client ratelimiting
+whitelistedIpAddressesPath: "whitelist.txt"
+
+# Path to the node topology permissioning info
+ndfOutputPath: "ndf.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the registration server private key file
+keyPath: "../keys/cmix.rip.key"
+# Path to the registration server certificate file
+certPath: "../keys/cmix.rip.crt"
+
+fullNdfOutputPath: "results/permissions-ndfoutput.json"
+signedPartialNDFOutputPath: "results/permissions-ndfoutput-partial.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the UDB certificate file
+udbCertPath: "../keys/cmix.rip.crt"
+# "Location of the user discovery contact file.
+udContactPath: "results/udbContact.bin"
+udbAddress: "127.0.0.1:{udb_port}"
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes
 BanTrackerInterval: "3"
 
-# === REQUIRED FOR ENABLING TLS ===
-# Path to the permissioning server private key file
-keyPath: "configurations/keys/permissioning.key"
-# Path to the permissioning server certificate file
-certPath: "configurations/keys/permissioning.crt"
-
-# E2E/CMIX Primes
 groups:
   cmix:
-    prime: "F6FAC7E480EE519354C058BF856AEBDC43AD60141BAD5573910476D030A869979A7E23F5FC006B6CE1B1D7CDA849BDE46A145F80EE97C21AA2154FA3A5CF25C75E225C6F3384D3C0C6BEF5061B87E8D583BEFDF790ECD351F6D2B645E26904DE3F8A9861CC3EAD0AA40BD7C09C1F5F655A9E7BA7986B92B73FD9A6A69F54EFC92AC7E21D15C9B85A76084D1EEFBC4781B91E231E9CE5F007BC75A8656CBD98E282671C08A5400C4E4D039DE5FD63AA89A618C5668256B12672C66082F0348B6204DD0ADE58532C967D055A5D2C34C43DF9998820B5DFC4C49C6820191CB3EC81062AA51E23CEEA9A37AB523B24C0E93B440FDC17A50B219AB0D373014C25EE8F"
-    generator: "B22FDF91EE6BA01BDE4969C1A986EA1F81C4A1795921403F3437D681D05E95167C2F6414CCB74AC8D6B3BA8C0E85C7E4DEB0E8B5256D37BC5C21C8BE068F5342858AFF2FC7FF2644EBED8B10271941C74C86CCD71AA6D2D98E4C8C70875044900F842998037A7DFB9BC63BAF1BC2800E73AF9615E4F5B869D4C6DE6E5F48FACE9CA594CC5D228CB7F763A0AD6BF6ED78B27F902D9ADA38A1FCD7D09E398CE377BB15A459044D3B8541DC6D8049B66AE1662682254E69FAD31CA0016251D0522EF8FE587A3F6E3AB1E5F9D8C2998874ABAB205217E95B234A7D3E69713B884918ADB57360B5DE97336C7DC2EB8A3FEFB0C4290E7A92FF5758529AC45273135427"
+    prime: "FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A92108011A723C12A787E6D788719A10BDBA5B2699C327186AF4E23C1A946834B6150BDA2583E9CA2AD44CE8DBBBC2DB04DE8EF92E8EFC141FBECAA6287C59474E6BC05D99B2964FA090C3A2233BA186515BE7ED1F612970CEE2D7AFB81BDD762170481CD0069127D5B05AA993B4EA988D8FDDC186FFB7DC90A6C08F4DF435C934063199FFFFFFFFFFFFFFFF"
+    generator: "2"
   e2e:
     prime: "E2EE983D031DC1DB6F1A7A67DF0E9A8E5561DB8E8D49413394C049B7A8ACCEDC298708F121951D9CF920EC5D146727AA4AE535B0922C688B55B3DD2AEDF6C01C94764DAB937935AA83BE36E67760713AB44A6337C20E7861575E745D31F8B9E9AD8412118C62A3E2E29DF46B0864D0C951C394A5CBBDC6ADC718DD2A3E041023DBB5AB23EBB4742DE9C1687B5B34FA48C3521632C4A530E8FFB1BC51DADDF453B0B2717C2BC6669ED76B4BDD5C9FF558E88F26E5785302BEDBCA23EAC5ACE92096EE8A60642FB61E8F3D24990B8CB12EE448EEF78E184C7242DD161C7738F32BF29A841698978825B4111B4BC3E1E198455095958333D776D8B2BEEED3A1A1A221A6E37E664A64B83981C46FFDDC1A45E3D5211AAF8BFBC072768C4F50D7D7803D2D4F278DE8014A47323631D7E064DE81C0C6BFA43EF0E6998860F1390B5D3FEACAF1696015CB79C3F9C2D93D961120CD0E5F12CBB687EAB045241F96789C38E89D796138E6319BE62E35D87B1048CA28BE389B575E994DCA755471584A09EC723742DC35873847AEF49F66E43873"
     generator: "2"
 
-# Selection of scheduling algorithem to use. Options are:
-#   simple - Schedules multiple teams to maximize performance, does not randomly re-arrange teams, if only a single
-#            only scheduling a single team, will use numerical ordering data for AlphaNet
-#   secure - Schedules new teams randomly, has apropreate buffers to ensure unpredictability, designed for BetaNet
-schedulingAlgorithm: "simple"
 
-# Path to file with config for scheduling algorithem within the user directory 
-schedulingConfigPath: "configurations/registration.json"
+# Path to file with config for scheduling algorithm within the user directory
+schedulingConfigPath: "registration.json"
 
-# Time that the registration server waits before timing out while killing the round scheduling thread
-schedulingKillTimeout: 10s
-# Time the registration waits for rounds to close out and stop (optional)
-closeTimeout: 60s
+# Path to JSON file with list of Node registration codes (in order of network
+# placement)
+RegCodesFilePath: "regCodes.json"
+
+# Set address space size for ephemeral IDs
+addressSpace: 32

@@ -7,7 +7,6 @@
 
 echo "STARTING SERVERS..."
 
-SERVERCONFIG=servers/
 SERVERLOGS=results/servers
 GATEWAYLOGS=results/gateways
 UDBOUT=results/udb-console.txt
@@ -31,7 +30,7 @@ echo "$CLIENT_REG_CMD -- $PIDVAL"
 for SERVERID in $(seq 5 -1 1)
 do
     IDX=$(($SERVERID - 1))
-    SERVERCMD="../bin/server --logLevel $DEBUGLEVEL --config $SERVERCONFIG/server-$SERVERID.yaml"
+    SERVERCMD="../bin/server --logLevel $DEBUGLEVEL --config server-$SERVERID.yaml"
     if [ $SERVERID -eq 5 ] && [ -n "$NSYSENABLED" ]
     then
         SERVERCMD="nsys profile --session-new=gputest --trace=cuda -o server-$SERVERID $SERVERCMD"
@@ -109,6 +108,3 @@ while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
     echo -n "."
 done
 
-echo "localhost:8440" > results/startgwserver.txt
-
-echo "DONE LETS DO STUFF"
