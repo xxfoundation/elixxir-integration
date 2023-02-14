@@ -241,16 +241,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"Number of occurrences of run.sh in all subdirectories: {network_count}")
         return
     elif args.command == "generate":
-        # todo: It may be that the serveral programmers are separating tests
-        # simultaneously. If they are doing this, it's likely their offsets will be
-        # the same and they will generate newtorks operating on the same port.
-        # In which case, there should be some way to input
-        # an argument to just run the count function and output the result.
-        # Instruct in the guide (some readme) that the user should post this offset
-        # Have an argument that  takes this offset and adds it to run_sh_count
-        # Request new package name from user
-        #newPackage = string(input("Name of new package: "))
-        #os.makedirs(os.path.dirname(newPackage), exist_ok=True)
         generate_server_side_config(network_count + args.offset, args.package)
     else:
         raise NotImplementedError(
