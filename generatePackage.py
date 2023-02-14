@@ -66,6 +66,11 @@ def generate_server_side_config(offset: int, newPackage: string):
     with open("gen/permissioning.yaml") as f:
         reg_template = f.read()
 
+    # Open client-registrar
+    client_reg_template = ""
+    with open("gen/client-registrar.yaml") as f:
+        client_reg_template = f.read()
+
     # Open server template
     server_template = ""
     with open("gen/server.yaml") as f:
@@ -160,14 +165,21 @@ def generate_server_side_config(offset: int, newPackage: string):
         network_config = network_config.replace("{entry_point}", str(gateway_ports[0]))
         f.write(network_config)
 
+    # Generate permissioning config
     with open("{}/permissioning.yaml".format(newPackage), "w") as f:
         reg_template = reg_template.replace("{permissioning_port}", str(perm_port))  \
             .replace("{udb_port}", str(udbPort))\
             .replace("{registration_port}", str(perm_port+1))
         f.write(reg_template)
+   
+   # Generate registration configs
     with open("{}/registration.json".format(newPackage), "w") as f:
         f.write(reg_json)
 
+    with open("{}/client-registrar.yaml".format(newPackage), "w") as f:
+        client_reg_template = client_reg_template.replace("{registration_port}", str(perm_port+1))
+        f.write(client_reg_template)
+    
     with open("{}/noerrors.txt".format(newPackage), "w") as f:
         f.write(no_errors)
 
@@ -198,18 +210,18 @@ def generate_server_side_config(offset: int, newPackage: string):
 
 # Count the number of packages previously created by counting
 # run.sh files creates
-def count_run_sh_files():
+def count_networks():
     current_dir = os.getcwd()
     count = 0
     for root, dirs, files in os.walk(current_dir):
         for file in files:
-            if file == "run.sh":
+            if file == "permissioning.yaml":
                 count += 1
     return count
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    run_sh_count = count_run_sh_files()
+    network_count = count_networks()
 
     parser = argparse.ArgumentParser(description='Generate or count packages')
     subparsers = parser.add_subparsers(title='subcommands', dest='command')
@@ -226,7 +238,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args()
 
     if args.command == "count":
-        print(f"Number of occurrences of run.sh in all subdirectories: {run_sh_count}")
+        print(f"Number of occurrences of run.sh in all subdirectories: {network_count}")
         return
     elif args.command == "generate":
         # todo: It may be that the serveral programmers are separating tests
@@ -239,7 +251,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Request new package name from user
         #newPackage = string(input("Name of new package: "))
         #os.makedirs(os.path.dirname(newPackage), exist_ok=True)
-        generate_server_side_config(run_sh_count + args.offset, args.package)
+        generate_server_side_config(network_count + args.offset, args.package)
     else:
         raise NotImplementedError(
             f"Command {args.command} does not exist.",

@@ -153,7 +153,6 @@ fi
 
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
-cat $CLIENTOUT/client42.log | grep -a "Could not confirm authentication channel" > results/deleteContact.txt || true
 
 if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
 then
@@ -171,9 +170,9 @@ then
     diff -aruN results/gateway-errors.txt noerrors.txt
     echo "Checking backup files for equality..."
     # diff -aruN $CLIENTOUT/client120A.backup.json $CLIENTOUT/client120B.backup.json > client120BackupDiff.txt
-    diff -aruN $CLIENTOUT/client121A.backup.json $CLIENTOUT/client121B.backup.json > client121BackupDiff.txt || true
+    #diff -aruN $CLIENTOUT/client121A.backup.json $CLIENTOUT/client121B.backup.json > client121BackupDiff.txt || true
     # diff -aruN  client120BackupDiff.txt noerrors.txt
-    echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
+    #echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
     #diff -aruN  client121BackupDiff.txt noerrors.txt
 fi
 
