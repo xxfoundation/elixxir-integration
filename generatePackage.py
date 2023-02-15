@@ -183,9 +183,10 @@ def generate_server_side_config(offset: int, newPackage: string):
     with open("{}/noerrors.txt".format(newPackage), "w") as f:
         f.write(no_errors)
 
-    with open("{}/run.sh".format(newPackage), "w") as f:
-        run_template = run_template.replace("{entry_point}", str(gateway_ports[0]))
-        f.write(run_template)
+    if not os.path.exists("{}/run.sh".format(newPackage)):
+        with open("{}/run.sh".format(newPackage), "w") as f:
+            run_template = run_template.replace("{entry_point}", str(gateway_ports[0]))
+            f.write(run_template)
 
     # Set the executable permissions on the bash script file
     os.chmod("{}/run.sh".format(newPackage), 0o755)
