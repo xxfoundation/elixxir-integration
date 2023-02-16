@@ -103,7 +103,7 @@ basice2e:
 channels:
   stage: tests
   tags:
-  # - gpu
+   - gpu
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
