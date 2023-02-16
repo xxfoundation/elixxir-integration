@@ -46,7 +46,7 @@ stages:
   - benchmark
 
 installbinaries:
-  stage: installbinariessmokeinfra
+  stage: installbinaries
   image: $DOCKER_IMAGE
   tags:
     - gpu
