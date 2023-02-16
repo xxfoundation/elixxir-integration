@@ -108,8 +108,8 @@ channels:
   script:
     - mkdir -p ~/.elixxir
     - echo $PWD
-    - cp network/network.sh channels/network.sh
     - cd channels
+    - cp ../network/network.sh network.sh
     - rm -fr results
     - rm -fr results-cpu
     - rm -fr results-gpu
