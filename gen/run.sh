@@ -1,6 +1,3 @@
-cp ../network/network.sh temp_network.sh
-
-
 # NOTE: This is verbose on purpose.
 ################################################################################
 ## Initial Set Up & Clean Up of Past Runs
@@ -175,5 +172,3 @@ then
     #echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
     #diff -aruN  client121BackupDiff.txt noerrors.txt
 fi
-
-rm temp_network.sh

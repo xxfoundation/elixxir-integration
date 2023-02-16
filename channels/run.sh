@@ -1,5 +1,3 @@
-cp ../network/network.sh temp_network.sh
-
 
 # NOTE: This is verbose on purpose.
 ################################################################################
@@ -71,7 +69,7 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 
 if [ "$NETWORKENTRYPOINT" == "localhost:1060" ]
 then
-    source temp_network.sh
+    source network.sh
 
 else
     echo "Connecting to network defined at $NETWORKENTRYPOINT"
@@ -231,4 +229,3 @@ then
     #diff -aruN  client121BackupDiff.txt noerrors.txt
 fi
 
-rm temp_network.sh
