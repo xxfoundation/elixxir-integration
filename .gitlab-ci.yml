@@ -108,7 +108,7 @@ channels:
   script:
     - mkdir -p ~/.elixxir
     - echo $PWD
-    - cd channels # modify
+    - cd channels
     - rm -fr results
     - rm -fr results-cpu
     - rm -fr results-gpu
@@ -128,7 +128,7 @@ channels:
     when: always
     expire_in: '1 day'
     paths:
-      - channels/ # modify
+      - channels/
       - bin/
 
 basice2e_protonet:
