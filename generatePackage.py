@@ -61,6 +61,31 @@ def generate_server_side_config(offset: int, newPackage: string):
     with open("gen/noerrors.txt") as f:
         no_errors = f.read()
 
+    # Open whitelist template
+    whitelist = ""
+    with open("gen/whitelist.txt") as f:
+        whitelist = f.read()
+
+    # Open release template
+    release_template = ""
+    with open("gen/release.txt") as f:
+        release_template = f.read()
+
+    # Open mainnet template
+    mainnet_template = ""
+    with open("gen/mainnet.txt") as f:
+        mainnet_template = f.read()
+
+    # Open devnet template
+    devnet_template = ""
+    with open("gen/devnet.txt") as f:
+        devnet_template = f.read()
+
+    #Open betanet template
+    betanet_template = ""
+    with open("gen/betanet.txt") as f:
+        betanet_template = f.read()
+
     # Open permissioning template
     reg_template = ""
     with open("gen/permissioning.yaml") as f:
@@ -192,6 +217,26 @@ def generate_server_side_config(offset: int, newPackage: string):
     os.chmod("{}/run.sh".format(newPackage), 0o755)
 
     
+    # Write whitelist to package
+    with open("{}/whitelist.txt".format(newPackage), "w") as f:
+        f.write(whitelist)
+
+    # Write release to package
+    with open("{}/release.txt".format(newPackage), "w") as f:
+        f.write(release_template)
+
+    # Write mainnet to package
+    with open("{}/mainnet.txt".format(newPackage), "w") as f:
+        f.write(mainnet_template)
+
+    # Write devnet to package
+    with open("{}/devnet.txt".format(newPackage), "w") as f:
+        f.write(devnet_template)
+
+   # Write betanet to package
+    with open("{}/betanet.txt".format(newPackage), "w") as f:
+        f.write(betanet_template)
+
 
     # Write udb config
     with open("{}/udb.yaml".format(newPackage), "w") as f:
