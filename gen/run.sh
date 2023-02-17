@@ -73,7 +73,7 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 
 if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
 then
-    source temp_network.sh
+    source network.sh
 
 else
     echo "Connecting to network defined at $NETWORKENTRYPOINT"
