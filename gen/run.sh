@@ -3,6 +3,11 @@
 ## Initial Set Up & Clean Up of Past Runs
 ################################################################################
 
+# Copy file into folder if it does not already exist
+if [ ! -f network.sh ]; then
+  cp ../network/network.sh .
+fi
+
 set -e
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
@@ -171,4 +176,9 @@ then
     # diff -aruN  client120BackupDiff.txt noerrors.txt
     #echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
     #diff -aruN  client121BackupDiff.txt noerrors.txt
+fi
+
+# Remove the file if it exists
+if [ -f network.sh ]; then
+  rm network.sh
 fi
