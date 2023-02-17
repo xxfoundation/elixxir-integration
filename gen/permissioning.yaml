@@ -1,0 +1,96 @@
+# ==================================
+# Permissioning Server Configuration
+# ==================================
+
+# Log message level
+loglevel: 2
+
+# Path to log file
+logPath: "results/permissioning.log"
+
+# The listening port of this  server
+port: {permissioning_port}
+
+# Database connection information
+dbUsername: ""
+dbPassword: ""
+dbName: ""
+dbAddress: "0.0.0.0:6969"
+
+minimumNodes: 5
+
+minGatewayVersion: "3.0.0"
+minServerVersion:  "3.0.0"
+minClientVersion: "4.0.0"
+nodeMetricInterval: 3
+
+# For testing, use the sequence as the country code. Do not use the geobinning database
+disableGeoBinning: true
+
+# For testing, do not exclude node or gateway IPs which are local to the machine
+allowLocalIPs: true
+
+# Disable pruning of NDF for offline nodes
+# if set to false, network will sleep for five minutes on start
+disableNDFPruning: true
+permissiveIPChecking: true
+
+# How long rounds will be tracked by gateways. Rounds (and messages as an extension)
+# prior to this period are not guaranteed to be delivered to clients.
+# Expects duration in"h". (Defaults to 1 weeks (168 hours)
+messageRetentionLimit: "168h"
+
+# Path to the file containing the round ID
+roundIdPath: "results/roundId.txt"
+
+# Path to the file containing the update ID
+updateIdPath: "results/updateId.txt"
+
+
+# Public address used in NDF to give to client
+registrationAddress: "0.0.0.0:{registration_port}"
+
+# Path to whitelisted IPs for client ratelimiting
+whitelistedIpAddressesPath: "whitelist.txt"
+
+# Path to the node topology permissioning info
+ndfOutputPath: "ndf.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the registration server private key file
+keyPath: "../keys/cmix.rip.key"
+# Path to the registration server certificate file
+certPath: "../keys/cmix.rip.crt"
+
+fullNdfOutputPath: "results/permissions-ndfoutput.json"
+signedPartialNDFOutputPath: "results/permissions-ndfoutput-partial.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the UDB certificate file
+udbCertPath: "../keys/cmix.rip.crt"
+# "Location of the user discovery contact file.
+udContactPath: "results/udbContact.bin"
+udbAddress: "127.0.0.1:{udb_port}"
+
+# Time interval (in minutes) in which the database is
+# checked for banned nodes
+BanTrackerInterval: "3"
+
+groups:
+  cmix:
+    prime: "FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A92108011A723C12A787E6D788719A10BDBA5B2699C327186AF4E23C1A946834B6150BDA2583E9CA2AD44CE8DBBBC2DB04DE8EF92E8EFC141FBECAA6287C59474E6BC05D99B2964FA090C3A2233BA186515BE7ED1F612970CEE2D7AFB81BDD762170481CD0069127D5B05AA993B4EA988D8FDDC186FFB7DC90A6C08F4DF435C934063199FFFFFFFFFFFFFFFF"
+    generator: "2"
+  e2e:
+    prime: "E2EE983D031DC1DB6F1A7A67DF0E9A8E5561DB8E8D49413394C049B7A8ACCEDC298708F121951D9CF920EC5D146727AA4AE535B0922C688B55B3DD2AEDF6C01C94764DAB937935AA83BE36E67760713AB44A6337C20E7861575E745D31F8B9E9AD8412118C62A3E2E29DF46B0864D0C951C394A5CBBDC6ADC718DD2A3E041023DBB5AB23EBB4742DE9C1687B5B34FA48C3521632C4A530E8FFB1BC51DADDF453B0B2717C2BC6669ED76B4BDD5C9FF558E88F26E5785302BEDBCA23EAC5ACE92096EE8A60642FB61E8F3D24990B8CB12EE448EEF78E184C7242DD161C7738F32BF29A841698978825B4111B4BC3E1E198455095958333D776D8B2BEEED3A1A1A221A6E37E664A64B83981C46FFDDC1A45E3D5211AAF8BFBC072768C4F50D7D7803D2D4F278DE8014A47323631D7E064DE81C0C6BFA43EF0E6998860F1390B5D3FEACAF1696015CB79C3F9C2D93D961120CD0E5F12CBB687EAB045241F96789C38E89D796138E6319BE62E35D87B1048CA28BE389B575E994DCA755471584A09EC723742DC35873847AEF49F66E43873"
+    generator: "2"
+
+
+# Path to file with config for scheduling algorithm within the user directory
+schedulingConfigPath: "registration.json"
+
+# Path to JSON file with list of Node registration codes (in order of network
+# placement)
+RegCodesFilePath: "regCodes.json"
+
+# Set address space size for ephemeral IDs
+addressSpace: 32

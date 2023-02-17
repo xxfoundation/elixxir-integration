@@ -8,6 +8,11 @@ pushd basice2e
 ./run.sh
 popd
 
+# New package
+pushd channels
+./run.sh
+popd
+
 # View result logs
 # Not using $EDITOR or $VISUAL because many editors that people set those to
 # don't have as easy support for viewing multiple files
