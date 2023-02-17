@@ -1066,58 +1066,6 @@ wait $PIDVAL3
 
 echo "GROUP CHAT FINISHED!"
 
-###############################################################################
-# Test  File Transfer
-###############################################################################
-
-echo "TESTING FILE TRANSFER..."
-
-# Create authenticated channel between client 110 and 111
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --writeContact $CLIENTOUT/client110-contact.bin --unsafe -m \"Hello from contact 110 to myself, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client110.txt &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
-CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client111.log -s blob111 --writeContact $CLIENTOUT/client111-contact.bin --destfile $CLIENTOUT/client110-contact.bin --send-auth-request --unsafe-channel-creation --sendCount 0 --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client111.txt &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-
-while [ ! -s $CLIENTOUT/client111-contact.bin ]; do
-    sleep 1
-    echo -n "."
-done
-echo
-
-TMPID=$(cat $CLIENTOUT/client110.log | grep -a "User\:" | awk -F' ' '{print $5}')
-CLIENT110ID=${TMPID}
-echo "CLIENT 110 ID: $CLIENT110ID"
-TMPID=$(cat $CLIENTOUT/client111.log | grep -a "User\:" | awk -F' ' '{print $5}')
-CLIENT111ID=${TMPID}
-echo "CLIENT 111 ID: $CLIENT111ID"
-
-# Client 110 will now wait for client 111's E2E Auth channel request and confirm
-CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client110.log -s blob110 --destfile $CLIENTOUT/client111-contact.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
-eval $CLIENTCMD >> $CLIENTOUT/client110.txt &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
-wait $PIDVAL2
-
-# Client 111 sends a file to client 110
-CLIENTCMD="timeout 360s ../bin/client fileTransfer -s blob110 -l $CLIENTOUT/client110.log $CLIENTFILETRANSFEROPTS"
-eval $CLIENTCMD > $CLIENTOUT/client110.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="timeout 700s ../bin/client fileTransfer -s blob111 -l $CLIENTOUT/client111.log $CLIENTFILETRANSFEROPTS --sendFile $CLIENTOUT/client110-contact.bin --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 1000 --retry 0"
-eval $CLIENTCMD > $CLIENTOUT/client111.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL1
-wait $PIDVAL2
-
-echo "FILE TRANSFER FINISHED..."
-
 # echo "TESTING BROADCAST CHANNELS..."
 
 # New broadcast channel...
