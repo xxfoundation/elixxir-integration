@@ -157,7 +157,7 @@ fileTransfer:
     - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
     - NSYSENABLED=TRUE ./run.sh
     - mv results results-gpu
-    - rm network.sh
+    - if [ -f network.sh ]; then   rm network.sh; fi
     - cd ..
   artifacts:
     when: always
