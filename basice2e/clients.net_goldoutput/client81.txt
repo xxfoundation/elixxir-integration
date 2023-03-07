@@ -1,0 +1,11 @@
+Got group with name "Group Name" and message "80 inviting 81 and 82 to new group"
+Joined group with name "Group Name" and message "80 inviting 81 and 82 to new group"
+Left group.
+Printed list of 1 groups.
+Received group message: "Hello from 80"
+Received group message: "Hello from 82"
+Sent message "Hello from 81" to group.
+Timed out waiting for 1 group message(s).
+Waiting for 1 group message(s) to be received.
+Waiting for 2 group message(s) to be received.
+Waiting for group request to be received.

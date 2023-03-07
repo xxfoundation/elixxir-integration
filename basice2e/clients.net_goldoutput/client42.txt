@@ -1,0 +1,75 @@
+
+
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Ben43, with E2E Encryption
+Message received: Hello from Rick42 to myself, without E2E Encryption
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Message received: Waiting on renegotiation
+Received 0
+Received 0
+Received 0
+Received 1
+Received 10
+Received 5
+Received 5
+Received 5
+Received 5
+Resetting 
+Sent: Hello from Rick42 to myself, without E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Hello from Rick42, with E2E Encryption
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+Sent: Waiting on renegotiation
+WARNING: unsafe channel creation enabled
