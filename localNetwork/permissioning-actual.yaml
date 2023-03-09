@@ -49,6 +49,20 @@ permissiveIPChecking: true
 # Expects duration in"h". (Defaults to 1 weeks (168 hours)
 messageRetentionLimit: "168h"
 
+# Parameters for configuring rate limiting clients Configures the
+# leaky buckets used in gateway In this method of rate limiting,
+# requests add to a bucket with a specified capacity.  The bucket
+# leaks at a rate of leakedTokens/leakDuration, and any requests that
+# would 'overflow the bucket' are not processed
+RateLimiting:
+  # Capacity determines the total capacity of a ratelimiting bucket
+  Capacity: 1000
+  # The amount of capacity used decreases over time, at a rate of LeakedTokens/LeakedDuration
+  LeakedTokens: 100
+  # Duration is in nanoseconds
+  LeakDuration: 2000000000
+
+
 # "Location of the user discovery contact file.
 udContactPath: "results/udbContact.bin"
 udbAddress: "127.0.0.1:18001"
@@ -63,7 +77,7 @@ roundIdPath: "results/roundId.txt"
 updateIdPath: "results/updateId.txt"
 
 # Path to whitelisted IPs for client ratelimiting
-whitelistedIpAddressesPath: "whitelist.txt"
+whitelistedIpAddressesPath: "whitelist.json"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the private key file
