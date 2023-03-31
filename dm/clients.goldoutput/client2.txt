@@ -1,0 +1,3 @@
+Message received (Partner, Text): Hello from Ben Prime to Rick Prime via DM
+Message received (Self, Text): Hello from Ben Prime to Rick Prime via DM
+Received 2/2 messages

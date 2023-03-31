@@ -125,6 +125,26 @@ channels:
       - channels/
       - bin/
 
+dm:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd dm #modify with your package name
+    - cp ../network/network.sh network.sh
+    - rm -fr results
+    - ./run.sh
+    - if [ -f network.sh ]; then   rm network.sh; fi
+    - cd ..
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - dm/ #modify with your package name
+      - bin/
+
+
 fileTransfer:
   stage: tests
   tags:
