@@ -206,7 +206,8 @@ then
     IGNOREMSG="GetRoundBufferInfo: Error received: rpc error: code = Unknown desc = round buffer is empty"
     IGNORESERVE="Failed to serve "
     IGNORESTART="Failed to start "
-    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART"  > results/gateway-errors.txt || true
+    IGNOREREG="WARNING: MINIMUM REGISTERED NODES HAS BEEN CHANGED"
+    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART" | grep -av "$IGNOREREG"  > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
     echo "Checking backup files for equality..."
