@@ -14,8 +14,8 @@ port: 18000
 # Database connection information
 dbUsername: ""
 dbPassword: ""
-dbName: ""
-dbAddress: "0.0.0.0:6969"
+dbName: "cmix"
+dbAddress: ""
 
 minimumNodes: 5
 
