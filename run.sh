@@ -19,9 +19,15 @@ pushd fileTransfer
 popd
 
 # New package
-pushd channels
+pushd connect
 ./run.sh
 popd
+
+# New package
+pushd broadcast
+./run.sh
+popd
+
 
 
 # New package
