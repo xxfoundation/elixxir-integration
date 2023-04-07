@@ -1,0 +1,5 @@
+Disconnected from partner
+Established 
+Loading non-ephemerally
+Sending connection request
+Sent message "Hello 206 from 207, using connections" to connection partner.
