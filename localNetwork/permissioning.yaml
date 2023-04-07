@@ -14,7 +14,7 @@ port: 11420
 dbUsername: ""
 dbPassword: ""
 dbName: ""
-dbAddress: "0.0.0.0:6969"
+dbAddress: ""
 
 # Minimum number of nodes to begin running rounds. this differs from the number of members
 # in a team because some scheduling algorithms may require multiple teams worth of nodes at minimum
