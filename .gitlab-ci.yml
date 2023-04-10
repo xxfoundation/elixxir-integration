@@ -170,6 +170,25 @@ connect:
       - connect/ #modify with your package name
       - bin/
 
+broadcast:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd broadcast #modify with your package name
+    - cp ../network/network.sh network.sh
+    - rm -fr results
+    - ./run.sh
+    - if [ -f network.sh ]; then   rm network.sh; fi
+    - cd ..
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - broadcast/ #modify with your package name
+      - bin/
+
 singleUse:
   stage: tests
   image: $DOCKER_IMAGE
