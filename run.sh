@@ -23,6 +23,10 @@ pushd ephemeralRegistration
 ./run.sh
 Popd
 
+# New package
+pushd ud
+./run.sh
+Popd
 
 
 # View result logs
