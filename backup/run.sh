@@ -114,6 +114,9 @@ fi
 ###############################################################################
 # Test  Back Up & Restore
 ###############################################################################
+CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
+CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 
 echo "START BACKUP AND RESTORE..."
 CLIENTCMD="timeout 360s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client120.log -s blob120 --force-legacy --writeContact $CLIENTOUT/client120-contact.bin --unsafe -m \"Hello from Client120 to myself, without E2E Encryption\""
