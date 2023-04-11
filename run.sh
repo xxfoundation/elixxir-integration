@@ -28,7 +28,10 @@ pushd broadcast
 ./run.sh
 popd
 
-
+# New package
+pushd backup
+./run.sh
+popd
 
 # New package
 pushd ephemeralRegistration
