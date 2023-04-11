@@ -121,7 +121,7 @@ echo "TESTING CHANNELS FILE TRANSFER..."
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 
 # Initialize creator of channel and file sender
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --file LoremIpsum.txt --ftFilePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --ftMaxThroughput 850 --ftRetry 6"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --file LoremIpsum.txt --ftFilePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --ftMaxThroughput 850 --ftRetry 6 --ftOutput $CLIENTOUT/channel0_download.txt"
 eval $CLIENTCMD > $CLIENTOUT/client0.txt 2>&1 &
 PIDVAL0=$!
 echo "$CLIENTCMD -- $PIDVAL0"
@@ -134,15 +134,15 @@ done
 echo
 
 # Initialize three clients to join the channel and receive the file
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob1 -l $CLIENTOUT/client1.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel1.id --joinChannel"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob1 -l $CLIENTOUT/client1.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel1.id --joinChannel --ftOutput $CLIENTOUT/channel1_download.txt"
 eval $CLIENTCMD > $CLIENTOUT/client1.txt 2>&1 &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob2 -l $CLIENTOUT/client2.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel2.id --joinChannel"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob2 -l $CLIENTOUT/client2.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel2.id --joinChannel --ftOutput $CLIENTOUT/channel2_download.txt"
 eval $CLIENTCMD > $CLIENTOUT/client2.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob3 -l $CLIENTOUT/client3.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel3.id --joinChannel"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob3 -l $CLIENTOUT/client3.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel3.id --joinChannel --ftOutput $CLIENTOUT/channel3_download.txt"
 eval $CLIENTCMD > $CLIENTOUT/client3.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
@@ -162,7 +162,7 @@ sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
 rm $CLIENTCLEAN/client*.txt.bak
 
-for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
+for C in $(ls -1 $CLIENTCLEAN | grep -v _download.txt); do
     sort -o tmp $CLIENTCLEAN/$C  || true
     cp tmp $CLIENTCLEAN/$C
 done
