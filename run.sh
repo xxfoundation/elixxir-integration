@@ -14,17 +14,17 @@ pushd channels
 popd
 
 # New package
+pushd channelsFileTransfer
+./run.sh
+Popd
+
+# New package
 pushd fileTransfer
 ./run.sh
 popd
 
 # New package
 pushd ephemeralRegistration
-./run.sh
-Popd
-
-# New package
-pushd channelsFileTransfer
 ./run.sh
 Popd
 
