@@ -1,0 +1,12 @@
+{
+    "TeamSize": 5,
+    "PrecomputationTimeout": 30000,
+    "RealtimeTimeout": 15000,
+    "DebugTrackRounds": true,
+    "BatchSize": 32,
+    "MinimumDelay": 1000,
+    "RealtimeDelay": 2000,
+    "Threshold":     0.3,
+    "NodeCleanUpInterval": 180000,
+    "ResourceQueueTimeout": 300000
+}

@@ -71,7 +71,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
 then
     source network.sh
 
@@ -80,7 +80,7 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-echo "localhost:{entry_point}" > results/startgwserver.txt
+echo "localhost:1090" > results/startgwserver.txt
 
 echo "DONE LETS DO STUFF"
 
@@ -111,8 +111,37 @@ then
     exit -1
 fi
 
-########################################################################
-# Insert client tests here
+CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
+
+###############################################################################
+# Test  Single Use
+###############################################################################
+
+# Single-use test: client53 sends message to client52; client52 responds with
+# the same message in the set number of message parts
+echo "TESTING SINGLE-USE"
+
+# Generate contact file for client52
+CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
+eval $CLIENTCMD >> /dev/null 2>&1 &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+# Start client53, which sends a message and then waits for a response
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
+eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+
+# Start client52, which waits for a message and then responds
+CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --reply --timeout 90s"
+eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+wait $PIDVAL1
+wait $PIDVAL2
+
 
 ########################################################################
 
@@ -133,7 +162,7 @@ for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
 done
 
 GOLDOUTPUT=clients.goldoutput
-if [ "$NETWORKENTRYPOINT" != "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" != "localhost:1090" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
@@ -156,7 +185,7 @@ fi
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
-if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true

@@ -1,0 +1,42 @@
+# START YAML ===
+registrationCode: "ynhd"
+useGPU: false
+devMode: true
+rawPermAddr: true
+logLevel: 2
+
+cmix:
+  paths:
+    # Path where the ID will be stored after the ID is created on first run
+    # used by the wrapper script
+    idf:  "nodeID-4.json"
+    # Path to the self signed TLS cert that the node uses for identification
+    cert: "../keys/cmix.rip.crt"
+    # Path to the private key for the self signed TLS cert
+    key:  "../keys/cmix.rip.key"
+    # Path to where the log will be stored
+    log:  "results/servers/server-5.log"
+    errOutput: "results/servers/server-5.err"
+    ipListOutput: "results/servers/iplist-1.txt"
+  port: "10094"
+  overridePublicIP: "127.0.0.1"
+database:
+  name: "cmix_server"
+  username: "cmix"
+  password: ""
+  addresses: ""
+gateway:
+  paths:
+    # Path to the self signed TLS cert used by the gateway
+    cert: "../keys/cmix.rip.crt"
+scheduling:
+  paths:
+    # Path to the self signed TLS cert used by the permissioning. Provided by xx network
+    cert: "../keys/cmix.rip.crt"
+  # IP Address of the permissioning server, provided by xx network
+  address: "0.0.0.0:20090"
+metrics:
+  # location of stored metrics data. Modification to set to permissioning
+  # server instead of saving will be made at a later date
+  log:  "metrics-server-5.log"
+# === END YAML

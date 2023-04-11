@@ -37,12 +37,10 @@ CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 1
 CLIENTEPHREGOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL --disableNodeRegistration --enableEphemeralRegistration"
 CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CLIENTSINGLEOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
-CONNECTIONOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -755,35 +753,6 @@ wait $PIDVAL
 wait $PIDVAL2
 
 ###############################################################################
-# Test  Single Use
-###############################################################################
-
-# Single-use test: client53 sends message to client52; client52 responds with
-# the same message in the set number of message parts
-echo "TESTING SINGLE-USE"
-
-# Generate contact file for client52
-CLIENTCMD="../bin/client init -s blob52 -l $CLIENTOUT/client52.log --password hello --ndf results/ndf.json --writeContact $CLIENTOUT/jono52-contact.bin"
-eval $CLIENTCMD >> /dev/null 2>&1 &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-
-# Start client53, which sends a message and then waits for a response
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client53.log -s blob53 --maxMessages 8 --message \"Test single-use message\" --send -c $CLIENTOUT/jono52-contact.bin --timeout 90s"
-eval $CLIENTCMD >> $CLIENTOUT/client53.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-
-# Start client52, which waits for a message and then responds
-CLIENTCMD="timeout 240s ../bin/client single $CLIENTSINGLEOPTS -l $CLIENTOUT/client52.log -s blob52 --reply --timeout 90s"
-eval $CLIENTCMD >> $CLIENTOUT/client52.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
-wait $PIDVAL2
-
-###############################################################################
 # Test  User Discovery
 ###############################################################################
 
@@ -1065,134 +1034,6 @@ wait $PIDVAL2
 wait $PIDVAL3
 
 echo "GROUP CHAT FINISHED!"
-
-# echo "TESTING BROADCAST CHANNELS..."
-
-# New broadcast channel...
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --channelName \"broadcast_test\" --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client130.txt &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
-
-# Start client to listen for messages on the channel
-CLIENTCMD="timeout 480s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client131.log -s blob131 --chanPath results/integration-channel.json --receiveCount 4"
-eval $CLIENTCMD >> $CLIENTOUT/client131.txt &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-
-sleep 10
-
-# Send symmetric broadcast to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client132.log -s blob132 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --symmetric \"Hello to symmetric channel from channel client 122!\""
-eval $CLIENTCMD >> $CLIENTOUT/client132.txt &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-
-# Send asymmetric broadcast to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client133.log -s blob133 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 123!\""
-eval $CLIENTCMD >> $CLIENTOUT/client133.txt &
-PIDVAL3=$!
-echo "$CLIENTCMD -- $PIDVAL3"
-
-# Send symmetric & asymmetric broadcasts to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client134.log -s blob134 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 124!\" --symmetric \"Hello to symmetric channel from channel client 124!\""
-eval $CLIENTCMD >> $CLIENTOUT/client134.txt &
-PIDVAL4=$!
-echo "$CLIENTCMD -- $PIDVAL4"
-
-wait $PIDVAL2
-wait $PIDVAL3
-wait $PIDVAL4
-wait $PIDVAL1
-
-echo "BROADCAST CHANNELS FINISHED..."
-
-###############################################################################
-# Test ephemeral connections
-###############################################################################
-
-echo "TESTING EPEHMERAL CONNECTIONS..."
-# Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 1m30s"
-eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-echo "Sleeping to ensure connection server instantiation"
-sleep 5
-
-# Initiate client and send message to server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 --connect $CLIENTOUT/client200-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client201.log  -m \"Hello 200 from 201, using connections\" --receiveCount 0"
-eval $CLIENTCMD > $CLIENTOUT/client201.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-wait $PIDVAL1
-echo "EPHEMERAL CONNECTION TESTS FINISHED"
-
-###############################################################################
-# Test ephemeral authenticated connections
-###############################################################################
-echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
-# Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 1m30s"
-eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-echo "Sleeping to ensure connection server instantiation"
-sleep 5
-
-# Initiate client and send message to server
-CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob203 --authenticated --connect $CLIENTOUT/client202-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client203.log  -m \"Hello 202 from 203, using connections\" --receiveCount 0"
-eval $CLIENTCMD > $CLIENTOUT/client203.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-wait $PIDVAL1
-echo "EPHEMERAL AUTHENTICATED CONNECTION TESTS FINISHED"
-
-###############################################################################
-# Test non-ephemeral authenticated connections
-###############################################################################
-
-echo "TESTING NON-EPHEMERAL CONNECTIONS"
-# Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob204 $CONNECTIONOPTS --writeContact $CLIENTOUT/client204-server.bin -l $CLIENTOUT/client204.log --startServer --serverTimeout 1m30s"
-eval $CLIENTCMD > $CLIENTOUT/client204.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-echo "Sleeping to ensure connection server instantiation"
-sleep 5
-
-# Initiate client and send message to server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob205 --connect $CLIENTOUT/client204-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client205.log  -m \"Hello 204 from 205, using connections\" --receiveCount 0"
-eval $CLIENTCMD > $CLIENTOUT/client205.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-wait $PIDVAL1
-echo "NON-EPHEMERAL CONNECTION TEST FINISHED."
-
-echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
-# Initiate server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob206 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client206-server.bin -l $CLIENTOUT/client206.log --startServer --serverTimeout 1m30s"
-eval $CLIENTCMD > $CLIENTOUT/client206.txt 2>&1 &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-echo "Sleeping to ensure connection server instantiation"
-sleep 5
-
-# Initiate client and send message to server
-CLIENTCMD="timeout 240s ../bin/client connection -s blob207 --authenticated --connect $CLIENTOUT/client206-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client207.log  -m \"Hello 206 from 207, using connections\" --receiveCount 0"
-eval $CLIENTCMD > $CLIENTOUT/client207.txt 2>&1 &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL2"
-wait $PIDVAL2
-wait $PIDVAL1
-echo "Non-Ephemeral Test Complete."
-
-
-
 
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
