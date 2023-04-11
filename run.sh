@@ -38,7 +38,10 @@ pushd ephemeralRegistration
 ./run.sh
 popd
 
-
+# New package
+pushd singleUse
+./run.sh
+popd
 
 # View result logs
 # Not using $EDITOR or $VISUAL because many editors that people set those to

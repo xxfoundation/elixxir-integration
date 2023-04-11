@@ -9,6 +9,7 @@ bin/*
 blob*
 junk*
 *.wasm
+tmp
 
 # Vim swap files
 *.swp
