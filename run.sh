@@ -31,7 +31,7 @@ popd
 # New package
 pushd ephemeralRegistration
 ./run.sh
-Popd
+popd
 
 # New package
 pushd singleUse
@@ -41,7 +41,7 @@ popd
 # New package
 pushd channelsFileTransfer
 ./run.sh
-Popd
+popd
 
 # View result logs
 # Not using $EDITOR or $VISUAL because many editors that people set those to
