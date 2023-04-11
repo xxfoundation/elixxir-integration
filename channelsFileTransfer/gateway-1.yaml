@@ -16,7 +16,7 @@ loglevel: 2
 log: "results/gateways/gateway-1.log"
 
 # The public IP address and port of the node associated with this gateway
-cmixAddress:  "0.0.0.0:10080"
+cmixAddress:  "0.0.0.0:10090"
 
 # The listening port of this gateway
 Port: 1080

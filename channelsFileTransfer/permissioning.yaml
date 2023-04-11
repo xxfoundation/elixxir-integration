@@ -9,7 +9,7 @@ loglevel: 2
 logPath: "results/permissioning.log"
 
 # The listening port of this  server
-port: 20080
+port: 20090
 
 # Database connection information
 dbUsername: ""
@@ -48,7 +48,7 @@ updateIdPath: "results/updateId.txt"
 
 
 # Public address used in NDF to give to client
-registrationAddress: "0.0.0.0:20081"
+registrationAddress: "0.0.0.0:20091"
 
 # Path to whitelisted IPs for client ratelimiting
 whitelistedIpAddressesPath: "whitelist.txt"
@@ -70,7 +70,7 @@ signedPartialNDFOutputPath: "results/permissions-ndfoutput-partial.json"
 udbCertPath: "../keys/cmix.rip.crt"
 # "Location of the user discovery contact file.
 udContactPath: "results/udbContact.bin"
-udbAddress: "127.0.0.1:30080"
+udbAddress: "127.0.0.1:30090"
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes

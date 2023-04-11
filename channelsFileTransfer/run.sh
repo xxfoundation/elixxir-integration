@@ -121,7 +121,7 @@ echo "TESTING CHANNELS FILE TRANSFER..."
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 
 # Initialize creator of channel and file sender
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --filePath LoremIpsum.txt --filePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --maxThroughput 1000 --retry 0"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --file LoremIpsum.txt --ftFilePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --ftMaxThroughput 850 --ftRetry 6"
 eval $CLIENTCMD > $CLIENTOUT/client0.txt 2>&1 &
 PIDVAL0=$!
 echo "$CLIENTCMD -- $PIDVAL0"
@@ -135,15 +135,15 @@ echo
 
 # Initialize three clients to join the channel and receive the file
 CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob1 -l $CLIENTOUT/client1.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel1.id --joinChannel"
-eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
+eval $CLIENTCMD > $CLIENTOUT/client1.txt 2>&1 &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
 CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob2 -l $CLIENTOUT/client2.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel2.id --joinChannel"
-eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
+eval $CLIENTCMD > $CLIENTOUT/client2.txt 2>&1 &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob3 -l $CLIENTOUT/client3.log $CLIENTOPTS --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel3.id --joinChannel"
-eval $CLIENTCMD > $CLIENTOUT/client501.txt 2>&1 &
+eval $CLIENTCMD > $CLIENTOUT/client3.txt 2>&1 &
 PIDVAL3=$!
 echo "$CLIENTCMD -- $PIDVAL3"
 
@@ -156,7 +156,7 @@ echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
-sed -i.bak "s/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
+sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
 sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
@@ -194,9 +194,6 @@ diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
 if [ "$NETWORKENTRYPOINT" == "localhost:1080" ]
 then
-
-    #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true
-    #diff -ruN results/client-errors.txt noerrors.txt
     cat $SERVERLOGS/server-*.log | grep -a "ERROR" | grep -a -v "context" | grep -av "metrics" | grep -av "database" | grep -av RequestClientKey > results/server-errors.txt || true
     cat $SERVERLOGS/server-*.log | grep -a "FATAL" | grep -a -v "context" | grep -av "transport is closing" | grep -av "database" >> results/server-errors.txt || true
     diff -aruN results/server-errors.txt noerrors.txt
@@ -206,12 +203,6 @@ then
     cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART"  > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
-    echo "Checking backup files for equality..."
-    # diff -aruN $CLIENTOUT/client120A.backup.json $CLIENTOUT/client120B.backup.json > client120BackupDiff.txt
-    #diff -aruN $CLIENTOUT/client121A.backup.json $CLIENTOUT/client121B.backup.json > client121BackupDiff.txt || true
-    # diff -aruN  client120BackupDiff.txt noerrors.txt
-    #echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
-    #diff -aruN  client121BackupDiff.txt noerrors.txt
 fi
 
 # Remove the file if it exists
