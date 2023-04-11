@@ -121,7 +121,7 @@ echo "TESTING CHANNELS FILE TRANSFER..."
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 
 # Initialize creator of channel and file sender
-CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --file LoremIpsum.txt --ftFilePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --ftMaxThroughput 850 --ftRetry 6 --ftOutput $CLIENTOUT/channel0_download.txt"
+CLIENTCMD="timeout 300s ../bin/client channelsFileTransfer -s blob0 $CLIENTOPTS -l $CLIENTOUT/client0.log --channelPath $CLIENTOUT/channel.chan --channelIdentityPath $CLIENTOUT/channel0.id --newChannel --channelName MyFileTransferChannel --sendToChannel --file LoremIpsum.txt --ftFilePreviewString \"Lorem ipsum dolor sit amet, consectetur adipiscing elit.\" --ftMaxThroughput 700 --ftRetry 0 --ftOutput $CLIENTOUT/channel0_download.txt"
 eval $CLIENTCMD > $CLIENTOUT/client0.txt 2>&1 &
 PIDVAL0=$!
 echo "$CLIENTCMD -- $PIDVAL0"
