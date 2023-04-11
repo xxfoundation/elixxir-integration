@@ -71,7 +71,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1080" ]
 then
     source network.sh
 
@@ -80,7 +80,7 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-echo "localhost:{entry_point}" > results/startgwserver.txt
+echo "localhost:1080" > results/startgwserver.txt
 
 echo "DONE LETS DO STUFF"
 
@@ -112,8 +112,90 @@ then
 fi
 
 ########################################################################
-# Insert client tests here
+# Test ephemeral connections
+###############################################################################
 
+CONNECTIONOPTS="--password hello --waitTimeout 360 --ndf results/ndf.json -v $DEBUGLEVEL"
+
+
+echo "TESTING EPEHMERAL CONNECTIONS..."
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob200 $CONNECTIONOPTS --writeContact $CLIENTOUT/client200-server.bin -l $CLIENTOUT/client200.log --startServer --serverTimeout 1m30s"
+eval $CLIENTCMD > $CLIENTOUT/client200.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob201 --connect $CLIENTOUT/client200-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client201.log  -m \"Hello 200 from 201, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client201.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "EPHEMERAL CONNECTION TESTS FINISHED"
+
+###############################################################################
+# Test ephemeral authenticated connections
+###############################################################################
+echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob202 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client202-server.bin -l $CLIENTOUT/client202.log --startServer --serverTimeout 1m30s"
+eval $CLIENTCMD > $CLIENTOUT/client202.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection --ephemeral -s blob203 --authenticated --connect $CLIENTOUT/client202-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client203.log  -m \"Hello 202 from 203, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client203.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "EPHEMERAL AUTHENTICATED CONNECTION TESTS FINISHED"
+
+###############################################################################
+# Test non-ephemeral authenticated connections
+###############################################################################
+
+echo "TESTING NON-EPHEMERAL CONNECTIONS"
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection -s blob204 $CONNECTIONOPTS --writeContact $CLIENTOUT/client204-server.bin -l $CLIENTOUT/client204.log --startServer --serverTimeout 1m30s"
+eval $CLIENTCMD > $CLIENTOUT/client204.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection -s blob205 --connect $CLIENTOUT/client204-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client205.log  -m \"Hello 204 from 205, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client205.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "NON-EPHEMERAL CONNECTION TEST FINISHED."
+
+echo "TESTING EPHEMERAL AUTHENTICATED CONNECTIONS..."
+# Initiate server
+CLIENTCMD="timeout 240s ../bin/client connection -s blob206 --authenticated $CONNECTIONOPTS --writeContact $CLIENTOUT/client206-server.bin -l $CLIENTOUT/client206.log --startServer --serverTimeout 1m30s"
+eval $CLIENTCMD > $CLIENTOUT/client206.txt 2>&1 &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+echo "Sleeping to ensure connection server instantiation"
+sleep 5
+
+# Initiate client and send message to server
+CLIENTCMD="timeout 240s ../bin/client connection -s blob207 --authenticated --connect $CLIENTOUT/client206-server.bin $CONNECTIONOPTS -l $CLIENTOUT/client207.log  -m \"Hello 206 from 207, using connections\" --receiveCount 0"
+eval $CLIENTCMD > $CLIENTOUT/client207.txt 2>&1 &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL2
+wait $PIDVAL1
+echo "Non-Ephemeral Test Complete."
 ########################################################################
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
@@ -133,7 +215,7 @@ for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
 done
 
 GOLDOUTPUT=clients.goldoutput
-if [ "$NETWORKENTRYPOINT" != "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" != "localhost:1080" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
@@ -156,7 +238,7 @@ fi
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
-if [ "$NETWORKENTRYPOINT" == "localhost:{entry_point}" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1080" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true
