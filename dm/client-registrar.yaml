@@ -8,9 +8,9 @@ logLevel: 0
 logPath: "results/client-registrar.log"
 
 # Public address, used in NDF it gives to client
-publicAddress: "0.0.0.0:20081"
+publicAddress: "0.0.0.0:20121"
 # The listening port of this server
-port: 20081
+port: 20121
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the registration server private key file
