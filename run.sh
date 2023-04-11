@@ -28,8 +28,6 @@ pushd broadcast
 ./run.sh
 popd
 
-
-
 # New package
 pushd ephemeralRegistration
 ./run.sh
@@ -39,6 +37,11 @@ Popd
 pushd singleUse
 ./run.sh
 popd
+
+# New package
+pushd channelsFileTransfer
+./run.sh
+Popd
 
 # View result logs
 # Not using $EDITOR or $VISUAL because many editors that people set those to
