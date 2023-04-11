@@ -23,6 +23,11 @@ pushd ephemeralRegistration
 ./run.sh
 Popd
 
+# New package
+pushd channelsFileTransfer
+./run.sh
+Popd
+
 
 
 # View result logs
