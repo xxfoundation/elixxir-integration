@@ -117,6 +117,7 @@ fi
 ###############################################################################
 
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
+CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 
 echo "TESTING GROUP CHAT..."
 # Create authenticated channel between client 80 and 81
