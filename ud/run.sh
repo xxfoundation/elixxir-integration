@@ -116,6 +116,7 @@ fi
 ###############################################################################
 
 CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 
 # UD Test
 echo "TESTING USER DISCOVERY..."
