@@ -16,10 +16,10 @@ loglevel: 2
 log: "results/gateways/gateway-4.log"
 
 # The public IP address and port of the node associated with this gateway
-cmixAddress:  "0.0.0.0:10093"
+cmixAddress:  "0.0.0.0:10113"
 
 # The listening port of this gateway
-Port: 1093
+Port: 1113
 
 # The public IPv4 address of the Gateway, as reported to the network, to use
 # instead of dynamically looking up Gateway's own IP address. If a port is not
