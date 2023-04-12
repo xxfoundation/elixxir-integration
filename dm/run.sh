@@ -115,6 +115,8 @@ fi
 # Test DMs
 ###############################################################################
 
+CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
+
 echo "SENDING DM MESSAGES TO NEW USERS"
 # The goal here is to try 3 things:
 # 1. Send a DM to myself
