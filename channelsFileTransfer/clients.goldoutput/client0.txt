@@ -1,0 +1,9 @@
+Completed receiving file. Saved to output path.
+Completed sending file.
+Download progress for wUhv4Nyb1MGL0KFAfpTZctCJku9Ak8Lo4ZUMbJnfNRc= {completed: true, received: 109, total: 109, err: <nil>}
+New channel generated
+Received file wUhv4Nyb1MGL0KFAfpTZctCJku9Ak8Lo4ZUMbJnfNRc= with status uploading
+Received new file link for file "LoremIpsum.txt" (ID wUhv4Nyb1MGL0KFAfpTZctCJku9Ak8Lo4ZUMbJnfNRc=) of size 100332 bytes with preview: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+Successfully joined channel "MyFileTransferChannel"
+Upload progress for "wUhv4Nyb1MGL0KFAfpTZctCJku9Ak8Lo4ZUMbJnfNRc=" {completed: false, sent: 0, received: 0, total: 109, err: <nil>}
+Upload progress for "wUhv4Nyb1MGL0KFAfpTZctCJku9Ak8Lo4ZUMbJnfNRc=" {completed: true, sent: 0, received: 109, total: 109, err: <nil>}
