@@ -28,12 +28,15 @@ pushd broadcast
 ./run.sh
 popd
 
-
-
 # New package
 pushd ephemeralRegistration
 ./run.sh
-Popd
+popd
+
+# New package
+pushd ud
+./run.sh
+popd
 
 # New package
 pushd singleUse
