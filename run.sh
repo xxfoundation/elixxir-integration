@@ -39,6 +39,11 @@ pushd ephemeralRegistration
 popd
 
 # New package
+pushd ud
+./run.sh
+popd
+
+# New package
 pushd singleUse
 ./run.sh
 popd

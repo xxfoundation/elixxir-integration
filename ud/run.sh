@@ -71,7 +71,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
 then
     source network.sh
 
@@ -80,7 +80,7 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-echo "localhost:1120" > results/startgwserver.txt
+echo "localhost:1090" > results/startgwserver.txt
 
 echo "DONE LETS DO STUFF"
 
@@ -112,51 +112,94 @@ then
 fi
 
 ###############################################################################
-# Test Broadcast
+# Test  User Discovery
 ###############################################################################
 
+CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
+CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 
-echo "TESTING BROADCAST CHANNELS..."
+# UD Test
+echo "TESTING USER DISCOVERY..."
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --register josh31 --addemail josh31@elixxir.io --addphone 6178675310US"
+eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 
-# New broadcast channel...
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client130.log -s blob130 --new --channelName \"broadcast_test\" --description \"Integration test channel\" --chanPath results/integration-channel.json --keyPath results/integration-chan-key.pem --receiveCount 0"
-eval $CLIENTCMD >> $CLIENTOUT/client130.txt &
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
+eval $CLIENTCMD > $CLIENTOUT/josh31.bin &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
+eval $CLIENTCMD > $CLIENTOUT/josh13.bin &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL1
+wait $PIDVAL2
 
-# Start client to listen for messages on the channel
-CLIENTCMD="timeout 480s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 1800 -l $CLIENTOUT/client131.log -s blob131 --chanPath results/integration-channel.json --receiveCount 4"
-eval $CLIENTCMD >> $CLIENTOUT/client131.txt &
+# Print IDs to console
+TMPID=$(cat $CLIENTOUT/client13.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
+UDID1=${TMPID}
+echo "UD ID 1: $UDID1"
+TMPID=$(cat $CLIENTOUT/client31.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
+UDID2=${TMPID}
+echo "UD ID 2: $UDID2"
+
+# Test lookup message
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --lookup b64:$UDID2"
+eval $CLIENTCMD > $CLIENTOUT/josh31.bin &
 PIDVAL1=$!
 echo "$CLIENTCMD -- $PIDVAL1"
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --lookup b64:$UDID1"
+eval $CLIENTCMD > $CLIENTOUT/josh13.bin &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL2"
+wait $PIDVAL1
+wait $PIDVAL2
 
-sleep 10
-
-# Send symmetric broadcast to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client132.log -s blob132 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --symmetric \"Hello to symmetric channel from channel client 122!\""
-eval $CLIENTCMD >> $CLIENTOUT/client132.txt &
+# Send auth chan request
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --send-auth-request  --unsafe-channel-creation --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL2"
 
-# Send asymmetric broadcast to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client133.log -s blob133 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 123!\""
-eval $CLIENTCMD >> $CLIENTOUT/client133.txt &
-PIDVAL3=$!
-echo "$CLIENTCMD -- $PIDVAL3"
-
-# Send symmetric & asymmetric broadcasts to channel
-CLIENTCMD="timeout 240s ../bin/client broadcast --password hello --ndf results/ndf.json --waitTimeout 360 -l $CLIENTOUT/client134.log -s blob134 --chanPath results/integration-channel.json --receiveCount 0 --sendDelay 5000 --keyPath results/integration-chan-key.pem --asymmetric \"Hello to asymmetric channel from channel client 124!\" --symmetric \"Hello to symmetric channel from channel client 124!\""
-eval $CLIENTCMD >> $CLIENTOUT/client134.txt &
-PIDVAL4=$!
-echo "$CLIENTCMD -- $PIDVAL4"
-
-wait $PIDVAL2
-wait $PIDVAL3
-wait $PIDVAL4
+# Approve request and confirm
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
+eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL2"
 wait $PIDVAL1
+wait $PIDVAL2
 
-echo "BROADCAST CHANNELS FINISHED..."
+# now test
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh31, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+wait $PIDVAL2
+
+# Test Remove User
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --remove josh13"
+eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13-2.log -s blob13-2 --register josh13"
+eval $CLIENTCMD >> $CLIENTOUT/client13-2.txt || true &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+echo "NOTE: The command above causes an EXPECTED failure of unable to register!"
+wait $PIDVAL
 
 ########################################################################
 
@@ -177,7 +220,7 @@ for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
 done
 
 GOLDOUTPUT=clients.goldoutput
-if [ "$NETWORKENTRYPOINT" != "localhost:1120" ]
+if [ "$NETWORKENTRYPOINT" != "localhost:1090" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
@@ -200,7 +243,7 @@ fi
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true

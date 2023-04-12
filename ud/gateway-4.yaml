@@ -13,13 +13,13 @@
 loglevel: 2
 
 # Output log file
-log: "results/gateways/gateway-1.log"
+log: "results/gateways/gateway-4.log"
 
 # The public IP address and port of the node associated with this gateway
-cmixAddress:  "0.0.0.0:10120"
+cmixAddress:  "0.0.0.0:10093"
 
 # The listening port of this gateway
-Port: 1120
+Port: 1093
 
 # The public IPv4 address of the Gateway, as reported to the network, to use
 # instead of dynamically looking up Gateway's own IP address. If a port is not
@@ -30,7 +30,7 @@ overridePublicIP: "0.0.0.0"
 messageTimeout: "1800s"
 
 # Path to where the IDF is saved. This is used by the wrapper management script.
-idfPath: "results/gateways/gatewayIDF-0.json"
+idfPath: "results/gateways/gatewayIDF-3.json"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the private key file
