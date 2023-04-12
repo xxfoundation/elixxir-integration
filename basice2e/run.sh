@@ -36,7 +36,6 @@ CLIENTCLEAN=results/clients-cleaned
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTEPHREGOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL --disableNodeRegistration --enableEphemeralRegistration"
 CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTGROUPOPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTFILETRANSFEROPTS="--password hello --waitTimeout 600 --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
@@ -710,96 +709,6 @@ PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
-
-###############################################################################
-# Test  User Discovery
-###############################################################################
-
-if [ "$NETWORKENTRYPOINT" == "localhost:8440" ]
-then
-    # UD Test
-    echo "TESTING USER DISCOVERY..."
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --register josh13 --addemail josh13@elixxir.io --addphone 6178675309US"
-    eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
-    PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --register josh31 --addemail josh31@elixxir.io --addphone 6178675310US"
-    eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
-    PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    wait $PIDVAL
-
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --searchusername josh31 --searchemail josh31@elixxir.io --searchphone 6178675310US"
-    eval $CLIENTCMD > $CLIENTOUT/josh31.bin &
-    PIDVAL1=$!
-    echo "$CLIENTCMD -- $PIDVAL1"
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --searchusername josh13 --searchemail josh13@elixxir.io --searchphone 6178675309US"
-    eval $CLIENTCMD > $CLIENTOUT/josh13.bin &
-    PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL2"
-    wait $PIDVAL1
-    wait $PIDVAL2
-
-    # Print IDs to console
-    TMPID=$(cat $CLIENTOUT/client13.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
-    UDID1=${TMPID}
-    echo "UD ID 1: $UDID1"
-    TMPID=$(cat $CLIENTOUT/client31.log | grep -a "User\:" | awk -F' ' '{print $5}' | head -1)
-    UDID2=${TMPID}
-    echo "UD ID 2: $UDID2"
-
-    # Test lookup message
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --lookup b64:$UDID2"
-    eval $CLIENTCMD > $CLIENTOUT/josh31.bin &
-    PIDVAL1=$!
-    echo "$CLIENTCMD -- $PIDVAL1"
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client31.log -s blob31 --lookup b64:$UDID1"
-    eval $CLIENTCMD > $CLIENTOUT/josh13.bin &
-    PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL2"
-    wait $PIDVAL1
-    wait $PIDVAL2
-
-    # Send auth chan request
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --send-auth-request  --unsafe-channel-creation --sendCount 0 --receiveCount 0"
-    eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
-    PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL2"
-
-    # Approve request and confirm
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 0 --receiveCount 0 --accept-channel --auth-timeout 360"
-    eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
-    PIDVAL1=$!
-    echo "$CLIENTCMD -- $PIDVAL2"
-    wait $PIDVAL1
-    wait $PIDVAL2
-
-    # now test
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client31.log -s blob31 --destfile $CLIENTOUT/josh13.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh31, with E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client31.txt &
-    PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    CLIENTCMD="timeout 240s ../bin/client $CLIENTOPTS -l $CLIENTOUT/client13.log -s blob13 --destfile $CLIENTOUT/josh31.bin --sendCount 5 --receiveCount 5 -m \"Hello from Josh13, with E2E Encryption\""
-    eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
-    PIDVAL2=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    wait $PIDVAL
-    wait $PIDVAL2
-
-    # Test Remove User
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13.log -s blob13 --remove josh13"
-    eval $CLIENTCMD >> $CLIENTOUT/client13.txt &
-    PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    wait $PIDVAL
-    CLIENTCMD="timeout 240s ../bin/client ud $CLIENTUDOPTS -l $CLIENTOUT/client13-2.log -s blob13-2 --register josh13"
-    eval $CLIENTCMD >> $CLIENTOUT/client13-2.txt || true &
-    PIDVAL=$!
-    echo "$CLIENTCMD -- $PIDVAL"
-    echo "NOTE: The command above causes an EXPECTED failure of unable to register!"
-    wait $PIDVAL
-fi
 
 ###############################################################################
 # Test  Group Chat
