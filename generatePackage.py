@@ -5,6 +5,7 @@ import os
 import string
 import random
 import argparse
+import re
 from collections.abc import Sequence
 # Generates a random string
 def random_string(stringLength=4):
@@ -34,7 +35,7 @@ def create_ports_list(offset, manualOffset=0):
         while regCode in node_regCodes:
             regCode = random_string()
         node_regCodes.append(regCode)
-    
+
     permissioningPort = 20000 + 10 * offset
 
     udbPort = 30000 + 10 * offset
@@ -120,13 +121,13 @@ def generate_server_side_config(offset: int, newPackage: string):
     reg_json = ""
     with open("gen/registration.json") as f:
         reg_json = f.read()
-    
+
     # Open udb proto file
     udb_proto = ""
     with open("gen/udbProto.json") as f:
         udb_proto = f.read()
 
-    # Create package 
+    # Create package
     if not os.path.exists(newPackage):
         os.makedirs(newPackage)
 
@@ -196,7 +197,7 @@ def generate_server_side_config(offset: int, newPackage: string):
             .replace("{udb_port}", str(udbPort))\
             .replace("{registration_port}", str(perm_port+1))
         f.write(reg_template)
-   
+
    # Generate registration configs
     with open("{}/registration.json".format(newPackage), "w") as f:
         f.write(reg_json)
@@ -204,7 +205,7 @@ def generate_server_side_config(offset: int, newPackage: string):
     with open("{}/client-registrar.yaml".format(newPackage), "w") as f:
         client_reg_template = client_reg_template.replace("{registration_port}", str(perm_port+1))
         f.write(client_reg_template)
-    
+
     with open("{}/noerrors.txt".format(newPackage), "w") as f:
         f.write(no_errors)
 
@@ -212,6 +213,14 @@ def generate_server_side_config(offset: int, newPackage: string):
         with open("{}/run.sh".format(newPackage), "w") as f:
             run_template = run_template.replace("{entry_point}", str(gateway_ports[0]))
             f.write(run_template)
+
+    else:
+        with open("{}/run.sh".format(newPackage), "r") as f:
+            filedata = f.read()
+        newdata = re.sub(r"(localhost:)(\d+)", f"localhost:{str(gateway_ports[0])}", filedata)
+        with open("{}/run.sh".format(newPackage), "w") as f:
+            f.write(newdata)
+
 
     # Set the executable permissions on the bash script file
     os.chmod("{}/run.sh".format(newPackage), 0o755)
