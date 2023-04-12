@@ -1,5 +1,5 @@
 # START YAML ===
-registrationCode: "pbae"
+registrationCode: "qgby"
 useGPU: false
 devMode: true
 rawPermAddr: true
@@ -18,7 +18,7 @@ cmix:
     log:  "results/servers/server-3.log"
     errOutput: "results/servers/server-3.err"
     ipListOutput: "results/servers/iplist-1.txt"
-  port: "10092"
+  port: "10122"
   overridePublicIP: "127.0.0.1"
 database:
   name: "cmix_server"
@@ -34,7 +34,7 @@ scheduling:
     # Path to the self signed TLS cert used by the permissioning. Provided by xx network
     cert: "../keys/cmix.rip.crt"
   # IP Address of the permissioning server, provided by xx network
-  address: "0.0.0.0:20090"
+  address: "0.0.0.0:20120"
 metrics:
   # location of stored metrics data. Modification to set to permissioning
   # server instead of saving will be made at a later date

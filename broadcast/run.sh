@@ -71,7 +71,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
 then
     source network.sh
 
@@ -80,7 +80,7 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-echo "localhost:1090" > results/startgwserver.txt
+echo "localhost:1120" > results/startgwserver.txt
 
 echo "DONE LETS DO STUFF"
 
@@ -177,7 +177,7 @@ for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
 done
 
 GOLDOUTPUT=clients.goldoutput
-if [ "$NETWORKENTRYPOINT" != "localhost:1090" ]
+if [ "$NETWORKENTRYPOINT" != "localhost:1120" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
@@ -200,7 +200,7 @@ fi
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1090" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true
