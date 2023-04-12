@@ -1,0 +1,10 @@
+# UDB Config for E2E Integration test
+log: "./results/udb.log"
+sessionPath: "./results/udbsession"
+sessionPass: "hello"
+certPath: "../keys/cmix.rip.crt"
+port: "30120"
+keyPath: "../keys/cmix.rip.key"
+permCertPath: "../keys/cmix.rip.crt"
+permAddress: "0.0.0.0:20120"
+devMode: true

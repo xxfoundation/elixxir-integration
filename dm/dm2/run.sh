@@ -71,7 +71,7 @@ fi
 
 echo "NETWORK: $NETWORKENTRYPOINT"
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1080" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
 then
     source network.sh
 
@@ -80,7 +80,7 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-echo "localhost:1080" > results/startgwserver.txt
+echo "localhost:1120" > results/startgwserver.txt
 
 echo "DONE LETS DO STUFF"
 
@@ -114,6 +114,7 @@ fi
 ###############################################################################
 # Test DMs
 ###############################################################################
+CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
 
 echo "SENDING DM MESSAGES TO NEW USERS"
 # The goal here is to try 3 things:
@@ -152,6 +153,7 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
+
 ########################################################################
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
@@ -171,7 +173,7 @@ for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
 done
 
 GOLDOUTPUT=clients.goldoutput
-if [ "$NETWORKENTRYPOINT" != "localhost:1080" ]
+if [ "$NETWORKENTRYPOINT" != "localhost:1120" ]
 then
     rm -fr clients.net_goldoutput || true
     GOLDOUTPUT=clients.net_goldoutput
@@ -194,7 +196,7 @@ fi
 set +x
 diff -aru $GOLDOUTPUT $CLIENTCLEAN
 
-if [ "$NETWORKENTRYPOINT" == "localhost:1080" ]
+if [ "$NETWORKENTRYPOINT" == "localhost:1120" ]
 then
 
     #cat $CLIENTOUT/* | strings | grep -ae "ERROR" -e "FATAL" > results/client-errors || true
@@ -206,7 +208,7 @@ then
     IGNORESERVE="Failed to serve "
     IGNORESTART="Failed to start "
     IGNOREREG="WARNING: MINIMUM REGISTERED NODES HAS BEEN CHANGED"
-    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART" | grep -av "$IGNOREREG"  > results/gateway-errors.txt || true
+    cat $GATEWAYLOGS/*.log | grep -a "ERROR" | grep -av "context" | grep -av "certificate" | grep -av "Failed to read key" | grep -av "$IGNOREMSG" | grep -av "$IGNORESERVE" | grep -av "$IGNORESTART" | grep -av "$IGNOREREG" > results/gateway-errors.txt || true
     cat $GATEWAYLOGS/*.log | grep -a "FATAL" | grep -av "context" | grep -av "transport is closing" >> results/gateway-errors.txt || true
     diff -aruN results/gateway-errors.txt noerrors.txt
     echo "Checking backup files for equality..."
