@@ -5,6 +5,7 @@ import os
 import string
 import random
 import argparse
+import re
 from collections.abc import Sequence
 # Generates a random string
 def random_string(stringLength=4):
@@ -209,6 +210,12 @@ def generate_server_side_config(offset: int, newPackage: string):
         f.write(no_errors)
 
     if not os.path.exists("{}/run.sh".format(newPackage)):
+        with open("{}/run.sh".format(newPackage), "r") as f:
+            filedata = f.read()
+        newdata = re.sub(r"(localhost:)(\d+)", f"localhost:{str(gateway_ports[0])}", filedata)
+        with open("{}/run.sh".format(newPackage), "w") as f:
+            f.write(newdata)
+    else:
         with open("{}/run.sh".format(newPackage), "w") as f:
             run_template = run_template.replace("{entry_point}", str(gateway_ports[0]))
             f.write(run_template)
