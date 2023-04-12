@@ -35,7 +35,6 @@ CLIENTCLEAN=results/clients-cleaned
 
 CLIENTOPTS="--password hello --ndf results/ndf.json --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTDMOPTS="--password hello --ndf results/ndf.json --waitTimeout 360 -v $DEBUGLEVEL"
-CLIENTUDOPTS="--password hello --ndf results/ndf.json -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf results/ndf.json --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 
 mkdir -p $SERVERLOGS
