@@ -29,6 +29,11 @@ pushd broadcast
 popd
 
 # New package
+pushd groupChat
+./run.sh
+popd
+
+# New package
 pushd ephemeralRegistration
 ./run.sh
 popd
