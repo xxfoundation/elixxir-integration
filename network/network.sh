@@ -140,3 +140,5 @@ while [ ! -s rid.txt ] && [ $cnt -lt 30 ]; do
     echo -n "."
 done
 
+echo "localhost:1060" > results/startgwserver.txt
+

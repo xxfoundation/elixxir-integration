@@ -61,8 +61,6 @@ else
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
 fi
 
-#echo "localhost:1060" > results/startgwserver.txt
-
 echo "DONE LETS DO STUFF"
 
 echo "DOWNLOADING TLS Cert..."
@@ -98,11 +96,11 @@ echo 1
 ################################################################################
 
 
-LOCALTESTS=("basice2e_local" "ud")
 
 if [ -z $run ]
 then
   TESTS=("basice2e" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "singleUse" "channelsFileTransfer")
+  LOCALTESTS=("basice2e_local" "ud")
 else
   TESTS=(${run//;/ })
 fi
