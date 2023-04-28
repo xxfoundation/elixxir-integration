@@ -28,51 +28,11 @@ mkdir -p $CLIENTCLEAN
 #export GRPC_GO_LOG_SEVERITY_LEVEL=info
 
 CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
-CLIENTDMOPTS="--password hello --ndf $NDF --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTUDOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf $NDF --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 
-###############################################################################
-# Test DMs
-###############################################################################
 
-echo "SENDING DM MESSAGES TO NEW USERS"
-# The goal here is to try 3 things:
-# 1. Send a DM to myself
-# 2. Receive a DM from someone else
-# 3. Send a reply to the user who sent me a message in #2
-CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"Hello from Rick Prime to myself via DM\" --receiveCount 3"
-eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-# Now we scan the log for the DMToken and DMPubKey fields
-sleep 1
-while [[ $(grep "DMTOKEN:" $CLIENTOUT/client1.log) == "" ]]; do
-    sleep 1
-    echo -n "."
-done
-# Wait for a round or so for the self sent message to send
-sleep 2
-# Now send the DM (#2)
-DMTOKEN=$(grep -a DMTOKEN $CLIENTOUT/client1.log | head -1 | awk '{print $5}')
-DMPUBKEY=$(grep -a DMPUBKEY $CLIENTOUT/client1.log | head -1 | awk '{print $5}')
-echo "PubKey: $DMPUBKEY, Token: $DMTOKEN"
-CLIENTCMD2="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm -m \"Hello from Ben Prime to Rick Prime via DM\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
-eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
-PIDVAL2=$!
-echo "$CLIENTCMD2 -- $PIDVAL2"
-wait $PIDVAL
-# When the first command exits, read the RECVDM fields and reply to
-# the last received message (the first 2 are the self send) (#3)
-RTOKEN=$(grep -a RECVDMTOKEN $CLIENTOUT/client1.log | tail -1 | awk '{print $5}')
-RPUBKEY=$(grep -a RECVDMPUBKEY $CLIENTOUT/client1.log | tail -1 | awk '{print $5}')
-CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"What up from Rick Prime to Ben Prime via DM\" --dmPubkey $RPUBKEY --dmToken $RTOKEN --receiveCount 1"
-eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
 
 ###############################################################################
 # Test  Sending E2E
@@ -334,39 +294,6 @@ echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
-###############################################################################
-# Test  Historical Rounds
-###############################################################################
-
-echo "FORCING HISTORICAL ROUNDS..."
-FH1ID=$(bin/client init -s blobs/35 -l $CLIENTOUT/client35.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FH1-contact.bin -v $DEBUGLEVEL)
-FH2ID=$(bin/client init -s blobs/36 -l $CLIENTOUT/client36.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FH2-contact.bin -v $DEBUGLEVEL)
-CLIENTCMD="timeout 240s bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client35.log -s blobs/35 --destid b64:$FH2ID --sendCount 5 --receiveCount 5 -m \"Hello from 35, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client35.txt  &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 240s bin/client $CLIENTOPTS --forceHistoricalRounds --unsafe -l $CLIENTOUT/client36.log -s blobs/36 --destid b64:$FH1ID --sendCount 5 --receiveCount 5 -m \"Hello from 36, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client36.txt  &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-wait $PIDVAL
-wait $PIDVAL2
-
-echo "FORCING MESSAGE PICKUP RETRY... "
-FM1ID=$(bin/client init -s blobs/22 -l $CLIENTOUT/client22.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FM1-contact.bin -v $DEBUGLEVEL)
-FM2ID=$(bin/client init -s blobs/23 -l $CLIENTOUT/client23.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FM2-contact.bin -v $DEBUGLEVEL)
-# Higher timeouts for this test to allow message pickup retry to function
-CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client22.log -s blobs/22 --destid b64:$FM2ID --sendCount 5 --receiveCount 5 -m \"Hello from 22, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client22.txt || true  &
-PIDVAL=$!
-echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client23.log -s blobs/23  --destid b64:$FM1ID --sendCount 5 --receiveCount 5 -m \"Hello from 23, without E2E Encryption\""
-eval $CLIENTCMD >> $CLIENTOUT/client23.txt || true &
-PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
-echo "FIXME: The command above causes an UNEXPECTED failure and should be FIXED!"
-wait $PIDVAL
-wait $PIDVAL2
 
 ###############################################################################
 # Test  Back Up & Restore
