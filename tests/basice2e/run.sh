@@ -33,7 +33,6 @@ CLIENTUDOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf $NDF --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 
-
 ###############################################################################
 # Test DMs
 ###############################################################################

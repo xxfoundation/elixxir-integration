@@ -58,9 +58,8 @@ then
     source network/cleanup.sh results
 
     donefunc() {
-      rv=$?
       finish
-      exit $rv
+      exit $rc
     }
     trap donefunc EXIT
     trap donefunc INT
@@ -109,7 +108,7 @@ then
   TESTS=("basice2e" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "singleUse" "channelsFileTransfer")
   LOCALTESTS=("basice2e_local" "ud")
 else
-  TESTS=(${run//;/ })
+  TESTS=(${run//,/ })
 fi
 
 set +e
@@ -117,13 +116,25 @@ set +e
 if [ "$NETWORKENTRYPOINT" == "localhost:1060" ]
 then
     for i in ${LOCALTESTS[@]} ; do
-      /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json || true
+      /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json
     done
 fi
 
-for i in ${TESTS[@]} ; do
-  /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json || true
-done
+if [ ${#TESTS[@]} -eq 1 ]
+then
+  /bin/bash tests/${TESTS[0]}/run.sh results/${TESTS[0]} tests/${TESTS[0]}/clients.goldoutput results/ndf.json
+  rc=$?
+else
+  errs=0
+  for i in ${TESTS[@]} ; do
+    /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json
+    errs=$(($errs+$?))
+  done
+  if [ $errs -gt 1 ]
+  then
+    rc=1
+  fi
+fi
 
 
 # View result logs
