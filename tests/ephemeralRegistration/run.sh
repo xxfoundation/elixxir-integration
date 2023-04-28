@@ -30,7 +30,7 @@ mkdir -p $CLIENTCLEAN
 ###############################################################################
 # Test Ephemeral Registration (e2e test without registering with nodes)
 ###############################################################################
-CLIENTEPHREGOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL --disableNodeRegistration --enableEphemeralRegistration"
+CLIENTEPHREGOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL --disableNodeRegistration --enableImmediateSending"
 
 echo "TESTING E2E WITH EPHEMERAL REGISTRATION"
 CLIENTCMD="timeout 360s bin/client $CLIENTEPHREGOPTS -l $CLIENTOUT/client601.log -s blobs/601 --writeContact $CLIENTOUT/rick601-contact.bin --unsafe -m \"Hello from Rick601 to myself, without E2E Encryption\""

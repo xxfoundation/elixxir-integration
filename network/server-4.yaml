@@ -9,15 +9,15 @@ cmix:
   paths:
     # Path where the ID will be stored after the ID is created on first run
     # used by the wrapper script
-    idf:  "results/servers/nodeID-4.json"
+    idf:  "results/network/servers/nodeID-4.json"
     # Path to the self signed TLS cert that the node uses for identification
     cert: "keys/cmix.rip.crt"
     # Path to the private key for the self signed TLS cert
     key:  "keys/cmix.rip.key"
     # Path to where the log will be stored
-    log:  "results/servers/server-4.log"
-    errOutput: "results/servers/server-4.err"
-    ipListOutput: "results/servers/iplist-1.txt"
+    log:  "results/network/servers/server-4.log"
+    errOutput: "results/network/servers/server-4.err"
+    ipListOutput: "results/network/servers/iplist-1.txt"
   port: "10063"
   overridePublicIP: "127.0.0.1"
 database:
@@ -38,5 +38,5 @@ scheduling:
 metrics:
   # location of stored metrics data. Modification to set to permissioning
   # server instead of saving will be made at a later date
-  log:  "results/servers/metrics-server-4.log"
+  log:  "results/network/servers/metrics-server-4.log"
 # === END YAML

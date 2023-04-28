@@ -55,7 +55,14 @@ echo "NETWORK: $NETWORKENTRYPOINT"
 if [ "$NETWORKENTRYPOINT" == "localhost:1060" ]
 then
     source network/network.sh results bin
+    source network/cleanup.sh results
 
+    donefunc() {
+      finish
+      exit
+    }
+    trap donefunc EXIT
+    trap donefunc INT
 else
     echo "Connecting to network defined at $NETWORKENTRYPOINT"
     echo $NETWORKENTRYPOINT > results/startgwserver.txt
@@ -90,7 +97,6 @@ then
     exit -1
 fi
 
-echo 1
 ################################################################################
 ## Run tests
 ################################################################################

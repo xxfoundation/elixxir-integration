@@ -44,8 +44,7 @@ runclients() {
             nid=$(((($cid + 1) % 4) + 4))
             eval NICK=\${NICK${cid}}
             # Send a regular message
-            mkdir -p blobs/blob$cid/blob$cid
-            CLIENTCMD="timeout 240s bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blobs/blob$cid/blob$cid --unsafe --sendid $cid --destid $nid --sendCount 20 --receiveCount 20 -m \"Hello, $nid\""
+            CLIENTCMD="timeout 240s bin/client $CLIENTOPTS -l $CLIENTOUT/client$cid$nid.log -s blobs/$cid --unsafe --sendid $cid --destid $nid --sendCount 20 --receiveCount 20 -m \"Hello, $nid\""
             eval $CLIENTCMD >> $CLIENTOUT/client$cid$nid.txt 2>&1 &
             PIDVAL=$!
             eval CLIENTS${CTR}=$PIDVAL
@@ -73,9 +72,6 @@ echo "RUNNING BASIC CLIENTS (2nd time)..."
 runclients
 
 # Send E2E messages between a single user
-mkdir -p blobs/9
-mkdir -p blobs/18
-mkdir -p blobs/91
 echo "TEST E2E WITH PRECANNED USERS..."
 CLIENTCMD="timeout 240s bin/client  $CLIENTOPTS -l $CLIENTOUT/client9.log --sendCount 2 --receiveCount 2 -s blobs/9 --sendid 9 --destid 9 -m \"Hi 9->9, with E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client9.txt 2>&1 &

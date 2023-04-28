@@ -5,7 +5,7 @@
 # Log message level (0 = info, 1 = debug, >1 = trace)
 logLevel: 0
 # Path to log file
-logPath: "results/client-registrar.log"
+logPath: "results/network/client-registrar.log"
 
 # Public address, used in NDF it gives to client
 publicAddress: "0.0.0.0:20061"

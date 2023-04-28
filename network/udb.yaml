@@ -1,6 +1,6 @@
 # UDB Config for E2E Integration test
-log: "results/udb.log"
-sessionPath: "results/udbsession"
+log: "results/network/udb.log"
+sessionPath: "results/network/udbsession"
 sessionPass: "hello"
 certPath: "keys/cmix.rip.crt"
 port: "30060"

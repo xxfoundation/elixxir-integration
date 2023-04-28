@@ -6,7 +6,7 @@
 loglevel: 2
 
 # Path to log file
-logPath: "results/permissioning.log"
+logPath: "results/network/permissioning.log"
 
 # The listening port of this  server
 port: 20060
@@ -41,10 +41,10 @@ permissiveIPChecking: true
 messageRetentionLimit: "168h"
 
 # Path to the file containing the round ID
-roundIdPath: "results/roundId.txt"
+roundIdPath: "results/network/roundId.txt"
 
 # Path to the file containing the update ID
-updateIdPath: "results/updateId.txt"
+updateIdPath: "results/network/updateId.txt"
 
 
 # Public address used in NDF to give to client
@@ -62,8 +62,8 @@ keyPath: "keys/cmix.rip.key"
 # Path to the registration server certificate file
 certPath: "keys/cmix.rip.crt"
 
-fullNdfOutputPath: "results/permissions-ndfoutput.json"
-signedPartialNDFOutputPath: "results/permissions-ndfoutput-partial.json"
+fullNdfOutputPath: "results/network/permissions-ndfoutput.json"
+signedPartialNDFOutputPath: "results/network/permissions-ndfoutput-partial.json"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the UDB certificate file
