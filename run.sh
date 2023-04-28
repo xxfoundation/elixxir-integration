@@ -58,8 +58,9 @@ then
     source network/cleanup.sh results
 
     donefunc() {
+      rv=$?
       finish
-      exit
+      exit $rv
     }
     trap donefunc EXIT
     trap donefunc INT
