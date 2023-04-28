@@ -43,5 +43,4 @@ finish() {
     # diff -aruN  client120BackupDiff.txt noerrors.txt
     #echo "NOTE: BACKUP CHECK DISABLED, this should be uncommented when turned back on!"
     #diff -aruN  client121BackupDiff.txt noerrors.txt
-    exit
 }
