@@ -4,6 +4,17 @@ mkdir -p .elixxir
 mkdir -p blobs
 mkdir -p results
 
+if [[ $1 == "help" ]]; then
+  echo "usage: ./start.sh [testname]"
+  echo "Advanced runner for localenvironment and single integration tests,"
+  echo "this starts a network only if one is not running and has not output the"
+  echo "expected files.  Accepts an optional test to run against the network."
+  echo "multiple distinct tests can in theory run in parallel, but this is not"
+  echo "well tested."
+  exit
+fi
+
+
 DEBUGLEVEL=${DEBUGLEVEL-1}
 
 if [ -f results/network/serverpids ]

@@ -2,7 +2,6 @@
 
 set -e
 
-
 while [ $# -gt 1 ]; do
     if [[ $1 == "--"* ]]; then
         v="${1/--/}"
@@ -11,6 +10,15 @@ while [ $# -gt 1 ]; do
     fi
     shift
 done
+
+if [[ $1 == "help" ]]; then
+  echo "usage: ./run.sh [--run testname,testname,...] [environment]"
+  echo "Basic runner for integration tests, this script will run the test suite,"
+  echo "pointed at the specified environment.  Environment can be blank to use a "
+  echo "local network, or one of [devnet|betanet|mainnet]."
+  echo "  --run        run one or more specified tests, input is a comma-separated list"
+  exit
+fi
 
 if [ $# -gt 1 ]
 then
