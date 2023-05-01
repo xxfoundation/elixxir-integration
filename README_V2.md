@@ -46,3 +46,32 @@ for other local testing if needed.  To shut down the network, use the `stop.sh`
 script.  The help commands on each script contain more detailed information on 
 usage.
 
+## Adding new tests
+
+The generatePackage.py script has been deprecated by this update.  While it may
+be updated in the future, adding new tests is not nearly so complicated anymore.
+A template for run.sh can be found in `gen/`.  To create a new test, add a directory
+to `tests/` with the desired test name.  Copy the `run.sh` file from `gen/`, and
+add a `clients.goldoutput/` directory to your new test package.  You can now 
+add test code to `tests/{yournewtest}/run.sh`, and run it using the `--run` argument
+with `run.sh` in the root directory.  New tests must be separately added to the 
+list in `run.sh` to be run as part of the full suite.  Additionally, a new step
+must be added to the `.gitlab_ci` file for it to run as part of continuous integration.
+An example for this can be found below:
+```yaml
+{ your_test_name_here }:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run { your_test_name_here }
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+```

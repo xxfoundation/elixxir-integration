@@ -109,7 +109,9 @@ fi
 ## Run tests
 ################################################################################
 
-
+testreport=results/testreport.txt
+timestamp=$(date +%s)
+echo "Test report $timestamp" >> $testreport
 
 if [ -z $run ]
 then
@@ -120,11 +122,21 @@ else
 fi
 
 set +e
+set -o pipefail
+
 
 if [ "$NETWORKENTRYPOINT" == "localhost:1060" ]
 then
     for i in ${LOCALTESTS[@]} ; do
-      /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json
+      testresults=results/$i
+      mkdir -p $testresults && touch $testresults/testout.txt
+      /bin/bash tests/$i/run.sh $testresults tests/$i/clients.goldoutput results/ndf.json 2>&1 | tee $testresults/testout.txt
+      if [ $? -eq 0 ]
+      then
+        echo "$i - SUCCESS" >> $testreport
+      else
+        echo "$i - FAILED" >> $testreport
+      fi
     done
 fi
 
@@ -135,14 +147,25 @@ then
 else
   errs=0
   for i in ${TESTS[@]} ; do
-    /bin/bash tests/$i/run.sh results/$i tests/$i/clients.goldoutput results/ndf.json
-    errs=$(($errs+$?))
+    testresults=results/$i
+    mkdir -p $testresults && touch $testresults/testout.txt
+    /bin/bash tests/$i/run.sh $testresults tests/$i/clients.goldoutput results/ndf.json 2>&1 | tee $testresults/testout.txt
+    rc=$?
+    if [ $rc -eq 0 ]
+    then
+      echo "$i - SUCCESS" >> $testreport
+    else
+      echo "$i - FAILED" >> $testreport
+    fi
+    errs=$(($errs+$rc))
   done
   if [ $errs -gt 1 ]
   then
     rc=1
   fi
 fi
+
+cat $testreport
 
 
 # View result logs
