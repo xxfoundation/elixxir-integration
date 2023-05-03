@@ -1,2 +1,0 @@
-REGISTER EMAIL jake@elixxir.io
-SEARCH EMAIL jake@elixxir.io
