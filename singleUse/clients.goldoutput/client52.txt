@@ -1,3 +1,0 @@
-Sending single-use response message: Test single-use message
-Single-use transmission received: Test single-use message
-Waiting for single-use message.

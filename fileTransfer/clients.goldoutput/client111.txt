@@ -1,3 +1,0 @@
-Sent progress callback for "LoremIpsum.txt" {completed: false, arrived: 0, total: 109, err: <nil>}
-Sent progress callback for "LoremIpsum.txt" {completed: true, arrived: 109, total: 109, err: <nil>}
-Completed sending file.
