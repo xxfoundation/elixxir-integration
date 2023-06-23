@@ -37,7 +37,7 @@ echo "SENDING DM MESSAGES TO NEW USERS"
 # 1. Send a DM to myself
 # 2. Receive a DM from someone else
 # 3. Send a reply to the user who sent me a message in #2
-CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"Hello from Rick Prime to myself via DM\" --receiveCount 3"
+CLIENTCMD="timeout 300s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"Hello from Rick Prime to myself via DM\" --receiveCount 2"
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
