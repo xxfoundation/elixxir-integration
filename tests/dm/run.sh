@@ -63,12 +63,12 @@ RTOKEN=$(grep -a RECVDMTOKEN $CLIENTOUT/client1.log | tail -1 | awk '{print $5}'
 RPUBKEY=$(grep -a RECVDMPUBKEY $CLIENTOUT/client1.log | tail -1 | awk '{print $5}')
 CLIENTCMD="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"What up from Rick Prime to Ben Prime via DM\" --dmPubkey $RPUBKEY --dmToken $RTOKEN --receiveCount 1"
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
+echo "$CLIENTCMD -- $PIDVAL"
 PIDVAL=$!
 CLIENTCMD2="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 1"
 eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
 echo "$CLIENTCMD2 -- $PIDVAL2"
 PIDVAL2=$!
-echo "$CLIENTCMD -- $PIDVAL"
 wait $PIDVAL
 wait $PIDVAL2
 
