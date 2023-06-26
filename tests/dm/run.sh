@@ -53,7 +53,7 @@ sleep 2
 DMTOKEN=$(grep -a DMTOKEN $CLIENTOUT/client1.log | head -1 | awk '{print $5}')
 DMPUBKEY=$(grep -a DMPUBKEY $CLIENTOUT/client1.log | head -1 | awk '{print $5}')
 echo "PubKey: $DMPUBKEY, Token: $DMTOKEN"
-CLIENTCMD2="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm -m \"Hello from Ben Prime to Rick Prime via DM\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
+CLIENTCMD2="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm -m \"Hello from Ben Prime to Rick Prime via DM\" --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 1"
 eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD2 -- $PIDVAL2"
