@@ -65,7 +65,7 @@ CLIENTCMD="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s bl
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 echo "$CLIENTCMD -- $PIDVAL"
 PIDVAL=$!
-CLIENTCMD2="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 1"
+CLIENTCMD2="timeout 240s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client2.log -s blobs/2 dm --dmPubkey $DMPUBKEY --dmToken $DMTOKEN --receiveCount 2"
 eval $CLIENTCMD2 >> $CLIENTOUT/client2.txt &
 echo "$CLIENTCMD2 -- $PIDVAL2"
 PIDVAL2=$!
