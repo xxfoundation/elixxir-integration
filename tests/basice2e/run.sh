@@ -30,6 +30,22 @@ mkdir -p $CLIENTCLEAN
 CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf $NDF --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 
+###############################################################################
+# Test  Sending E2E
+###############################################################################
+
+# Non-precanned E2E user messaging
+echo "SENDING E2E MESSAGES TO NEW USERS..."
+CLIENTCMD="timeout 360s bin/client $CLIENTOPTS -l $CLIENTOUT/client42.log -s blobs/42 --writeContact $CLIENTOUT/rick42-contact.bin --unsafe -m \"Hello from Rick42 to myself, without E2E Encryption\""
+eval $CLIENTCMD >> $CLIENTOUT/client42.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+CLIENTCMD="timeout 360s bin/client $CLIENTOPTS -l $CLIENTOUT/client43.log -s blobs/43 --writeContact $CLIENTOUT/ben43-contact.bin --destfile $CLIENTOUT/rick42-contact.bin --send-auth-request --unsafe-channel-creation --sendCount 0 --receiveCount 0"
+eval $CLIENTCMD >> $CLIENTOUT/client43.txt &
+PIDVAL2=$!
+echo "$CLIENTCMD -- $PIDVAL"
+
 while [ ! -s $CLIENTOUT/ben43-contact.bin ]; do
     sleep 1
     echo -n "."
