@@ -25,6 +25,7 @@ mkdir -p $CLIENTCLEAN
 
 CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
 CLIENTBACKUPOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
+CLIENTUDOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 
 ###############################################################################
 # Test  Back Up & Restore

@@ -28,7 +28,6 @@ mkdir -p $CLIENTCLEAN
 #export GRPC_GO_LOG_SEVERITY_LEVEL=info
 
 CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
-CLIENTUDOPTS="--password hello --ndf $NDF -v $DEBUGLEVEL"
 CLIENTREKEYOPTS="--password hello --ndf $NDF --verify-sends --waitTimeout 600 -v $DEBUGLEVEL"
 
 while [ ! -s $CLIENTOUT/ben43-contact.bin ]; do
