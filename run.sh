@@ -33,7 +33,6 @@ DEBUGLEVEL=${DEBUGLEVEL-1}
 rm -fr blobs || true
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
-mkdir -p .elixxir
 mkdir -p blobs
 mkdir -p results
 
