@@ -114,7 +114,7 @@ echo "Test report $timestamp" >> $testreport
 
 if [ -z $run ]
 then
-  TESTS=("basice2e" "dm" "historical" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "singleUse" "channelsFileTransfer")
+  TESTS=("basice2e" "backup" "dm" "historical" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "rekey" "singleUse" "channelsFileTransfer")
   LOCALTESTS=("basice2e_local" "ud")
 else
   TESTS=(${run//,/ })

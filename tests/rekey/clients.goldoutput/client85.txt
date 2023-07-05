@@ -1,0 +1,14 @@
+Adding 
+Message received: Hello Jono from Sydney, with E2E Encryption
+Message received: Hello Jono from Sydney, with E2E Encryption
+Message received: Hello Jono from Sydney, with E2E Encryption
+Message received: Hello Jono from Sydney, with E2E Encryption
+Message received: Hello Jono from Sydney, with E2E Encryption
+Received 0
+Received 5
+Sent: Hello Sydney from Jono, with E2E Encryption
+Sent: Hello Sydney from Jono, with E2E Encryption
+Sent: Hello Sydney from Jono, with E2E Encryption
+Sent: Hello Sydney from Jono, with E2E Encryption
+Sent: Hello Sydney from Jono, with E2E Encryption
+WARNING: unsafe channel creation enabled
