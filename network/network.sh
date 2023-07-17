@@ -27,6 +27,7 @@ echo "STARTING SERVERS..."
 SERVERLOGS=$NETRESULTS/servers
 GATEWAYLOGS=$NETRESULTS/gateways
 UDBOUT=$NETRESULTS/udb-console.txt
+RSSOUT=$NETRESULTS/remoteSyncServer-console.txt
 
 mkdir -p $SERVERLOGS
 mkdir -p $GATEWAYLOGS
@@ -99,3 +100,10 @@ done
 
 echo "localhost:1060" > $RESULTS/startgwserver.txt
 
+# Start remote sync server
+echo "STARTING REMOTE SYNC SERVER..."
+RSSCMD="$NETBIN/remoteSyncServer --logLevel $DEBUGLEVEL --config network/remoteSyncServer.yaml"
+$RSSCMD >> $RSSOUT 2>&1 &
+PIDVAL=$!
+echo $PIDVAL >> $NETRESULTS/serverpids
+echo "$RSSCMD -- $PIDVAL"

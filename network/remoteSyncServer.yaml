@@ -1,0 +1,19 @@
+##
+# Remote Sync Server Configuration File
+##
+
+# Path where log file will be saved.
+logPath: "results/network/remoteSyncServer.log"
+# Port for Sync Server to listen on. It must be the only listener on this port.
+port: 22841
+
+# Path to CA-signed certificate files in PEM format.
+signedCertPath: "keys/syncServer.crt"
+signedKeyPath: "keys/syncServer.key"
+
+# Duration that logged-in sessions are valid.
+tokenTTL: 24h
+# Path to CSV containing list of authorized users in "<username>,<password>" format.
+credentialsCsvPath: "network/credentials.csv"
+# Base directory for synced files.
+storageDir: "results/network/servers/syncServer"
