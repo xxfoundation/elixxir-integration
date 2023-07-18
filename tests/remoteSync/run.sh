@@ -11,14 +11,14 @@ then
     exit
 fi
 
-RESULTS=$1
+REMOTESYNCRESULTS=$1
 GOLDOUTPUT=$2
 NDF=$3
 
 DEBUGLEVEL=${DEBUGLEVEL-1}
 
-CLIENTOUT=$LOCALRESULTS/clients
-CLIENTCLEAN=$LOCALRESULTS/clients-cleaned
+CLIENTOUT=$REMOTESYNCRESULTS/clients
+CLIENTCLEAN=$REMOTESYNCRESULTS/clients-cleaned
 
 mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
@@ -31,6 +31,15 @@ CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTim
 ###############################################################################
 # New Test Goes Here
 ###############################################################################
+
+echo "TESTING REMOTE SYNCHRONISATION..."
+
+
+CLIENTCMD="timeout 240s bin/client remoteSync $CLIENTOPTS -l $CLIENTOUT/client700.log -s blobs/700 --remoteUsername waldo --remotePassword hunter2 --remoteSyncServerAddress 0.0.0.0:22841 --remoteCertPath keys/remoteSyncServer.crt"
+eval $CLIENTCMD >> $CLIENTOUT/client700.txt &
+PIDVAL1=$!
+echo "$CLIENTCMD -- $PIDVAL1"
+wait $PIDVAL1
 
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."

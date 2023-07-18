@@ -16,4 +16,4 @@ tokenTTL: 24h
 # Path to CSV containing list of authorized users in "<username>,<password>" format.
 credentialsCsvPath: "network/remoteSyncServerCredentials.csv"
 # Base directory for synced files.
-storageDir: "results/network/servers/remoteSyncServer"
+storageDir: "results/network/remoteSyncServer"
