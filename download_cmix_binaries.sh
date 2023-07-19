@@ -54,7 +54,7 @@ fi
 DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
-    BRANCH_URL=$"jobs/artifacts/master/raw/release"
+    BRANCH_URL=${"jobs/artifacts/master/raw/release"}
     echo "Gitlab Access test:"
     curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/jobs/artifacts/master/raw/release/udb$BIN"
     if [[ $? != 0 ]]; then
@@ -70,7 +70,7 @@ fi
 download_path="$(pwd)/bin"
 mkdir -p "$download_path"
 # Delete old binaries
-rm "$download_path"/*
+rm $download_path/*
 
 # If we are on a feature branch, add it to the eval list
 FBRANCH=$(git rev-parse --abbrev-ref HEAD)
