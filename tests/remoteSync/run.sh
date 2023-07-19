@@ -24,6 +24,7 @@ mkdir -p $CLIENTOUT
 mkdir -p $CLIENTCLEAN
 
 CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTimeout 360 -v $DEBUGLEVEL"
+SERVEROPTS="--remoteSyncServerAddress 0.0.0.0:22841 --remoteCertPath keys/remoteSyncServer.crt"
 
 #export GRPC_GO_LOG_VERBOSITY_LEVEL=99
 #export GRPC_GO_LOG_SEVERITY_LEVEL=info
@@ -35,11 +36,17 @@ CLIENTOPTS="--password hello --ndf $NDF --verify-sends --sendDelay 100 --waitTim
 echo "TESTING REMOTE SYNCHRONISATION..."
 
 
-CLIENTCMD="timeout 240s bin/client remoteSync $CLIENTOPTS -l $CLIENTOUT/client700.log -s blobs/700 --remoteUsername waldo --remotePassword hunter2 --remoteSyncServerAddress 0.0.0.0:22841 --remoteCertPath keys/remoteSyncServer.crt"
-eval $CLIENTCMD >> $CLIENTOUT/client700.txt &
-PIDVAL1=$!
-echo "$CLIENTCMD -- $PIDVAL1"
-wait $PIDVAL1
+CLIENTCMD="timeout 240s bin/client remoteSync $CLIENTOPTS -l $CLIENTOUT/client700a.log -s blobs/700a --remoteUsername waldo --remotePassword hunter2 $SERVEROPTS --remoteKey synchronized/someKey --remoteValue someValueHere"
+eval $CLIENTCMD >> $CLIENTOUT/client700a.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
+
+CLIENTCMD="timeout 240s bin/client remoteSync $CLIENTOPTS -l $CLIENTOUT/client700b.log -s blobs/700b --remoteUsername waldo --remotePassword hunter2 $SERVEROPTS --remoteKey synchronized/someKey"
+eval $CLIENTCMD >> $CLIENTOUT/client700b.txt &
+PIDVAL=$!
+echo "$CLIENTCMD -- $PIDVAL"
+wait $PIDVAL
 
 
 echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
