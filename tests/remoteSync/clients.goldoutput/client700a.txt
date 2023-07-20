@@ -1,0 +1,3 @@
+End Value for "someKey": {Version:0 Data:"someValueHere"}
+Prefix Set: synchronized\
+Set object to key "someKey": {Version:0 Data:"someValueHere"}
