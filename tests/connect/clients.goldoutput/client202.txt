@@ -1,0 +1,4 @@
+AuthServer heard message "Hello 202 from 203, using connections"
+Established 
+Established connection server, begin listening...
+Shutting down connection server

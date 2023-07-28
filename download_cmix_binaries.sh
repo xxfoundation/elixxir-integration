@@ -26,8 +26,10 @@ fi
 if [[ $PLATFORM == "l" ]] ||[[ $PLATFORM == "linux" ]] || [[ -z $PLATFORM ]]; then
     if [[ $USEREPO == "d" ]]; then
         BIN=".linux64?job=build"
+        REGBIN=".linux64?job=build"
     else
         BIN=".linux64"
+        REGBIN=".linux64"
     fi
     echo "Platform set to Linux"
 
@@ -36,8 +38,10 @@ elif [[ $PLATFORM == "m" ]] || [[ $PLATFORM == "mac" ]]; then
 
     if [[ $USEREPO == "d" ]]; then
         BIN=".darwin64?job=build"
+        REGBIN=".darwin64?job=build-macos"
     else
         BIN=".darwin64"
+        REGBIN=".darwin64"
     fi
     echo "Platform set to Mac"
 
@@ -50,6 +54,14 @@ fi
 DEFAULTBRANCH=${DEFAULTBRANCH:="release"}
 if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
+    BRANCH_URL=${"jobs/artifacts/master/raw/release"}
+    echo "Gitlab Access test:"
+    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/jobs/artifacts/master/raw/release/udb$BIN"
+    if [[ $? != 0 ]]; then
+        echo "Bad GITLAB_ACCESS_TOKEN. You need a https://git.xx.network/-/profile/personal_access_tokens with api and read_repository access."
+        exit -1
+    fi
+    echo "Gitlab access test successful..."
 else
     REPOS_API=${REPOS_API:="https://elixxir-bins.s3-us-west-1.amazonaws.com"}
 fi
@@ -72,6 +84,11 @@ FBRANCH2=$(echo $FBRANCH | sed 's/feature\///g')
 echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
 echo "(Note: if you forced a branch, that is checked first!)"
 
+# Note: The way forced branching works is the user sets, e.g.,
+# UDB_URL, then leaves everything else blank. When the first run of
+# the loop is called, UDB_URL will download because it does not have
+# "forcedbranch" in the URL like all of the others.
+
 for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     echo "Attempting downloads from: $BRANCH"
     if [[ $USEREPO == "d" ]]; then
@@ -80,19 +97,20 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         UDB_URL=${UDB_URL:="${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}server/$BRANCH_URL/server$BIN"}
         GW_URL=${GW_URL:="${REPOS_API}gateway/$BRANCH_URL/gateway$BIN"}
-        PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$BIN"}
+        PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$REGBIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}client/$BRANCH_URL/client$BIN"}
         SERVER_GPU_URL=${SERVER_GPU_URL:="${REPOS_API}server/$BRANCH_URL/server-cuda.linux64?job=build"}
         GPULIB_URL=${GPULIB_URL:="${REPOS_API}server/$BRANCH_URL/libpowmosm75.so?job=build"}
         GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
         CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
+        XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}xxdk-wasm/$BRANCH_URL/xxdk.wasm?job=build"}
     else
         UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
         GW_URL=${GW_URL:="${REPOS_API}/$BRANCH/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}/$BRANCH/registration.stateless$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}/$BRANCH/client$BIN"}
-        CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
+        XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}/$BRANCH/xxdk.wasm?job=build"}
     fi
 
     set -x
@@ -122,9 +140,14 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client" ${CLIENT_URL}
     fi
 
-        # Silently download the client registrar binary to the provisioning directory
+    # Silently download the client registrar binary to the provisioning directory
     if [ ! -f $download_path/client-registrar ] && [[ "$CLIENT_REG_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client-registrar" ${CLIENT_REG_URL}
+    fi
+
+    # Silently download the client registrar binary to the provisioning directory
+    if [ ! -f $download_path/xxdk.wasm ] && [[ "$XXDK_WASM_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/xxdk.wasm" ${XXDK_WASM_URL}
     fi
 
 if [[ $2 == "d" ]]; then
@@ -161,6 +184,7 @@ fi
     unset GPULIB_URL
     unset GPULIB2_URL
     unset CLIENT_REG_URL
+    unset XXDK_WASM_URL
 done
 
 # Make binaries executable

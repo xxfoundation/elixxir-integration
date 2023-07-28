@@ -17,7 +17,6 @@ cache:
 variables:
   REPO_DIR: gitlab.com/elixxir
   REPO_NAME: server
-  DOCKER_IMAGE: elixxirlabs/cuda-go:go1.16-cuda11.1
   # See https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-from-specific-tag-or-branch
   REPOS_API: https://$GITLAB_SERVER/api/v4/projects/elixxir%2F
   SERVER_URL: ""
@@ -68,17 +67,16 @@ installbinaries:
     when: always
     expire_in: '1 day'
     paths:
-     - bin/
+      - bin/
 
-basice2e:
+basice2e_local:
   stage: tests
   tags:
-    - gpu
+  # - gpu
   image: $DOCKER_IMAGE
   script:
     - mkdir -p ~/.elixxir
     - echo $PWD
-    - cd basice2e
     - rm -fr results
     - rm -fr results-cpu
     - rm -fr results-gpu
@@ -87,19 +85,279 @@ basice2e:
     # - mv results results-cpu
     # - sleep 60
     - mkdir -p /opt/xxnetwork/lib
-    - cp ../bin/libpowmosm75.so /opt/xxnetwork/lib/
-    - cp ../bin/libpow.fatbin /opt/xxnetwork/lib/
-    - sed -i 's/bin\/server/bin\/server-cuda/g' run.sh
-    - sed -i 's/useGPU\:\ false/useGPU\:\ true/g' server-[12345].yaml
-    - NSYSENABLED=TRUE ./run.sh
+    - ./run.sh --run basice2e_local
     - mv results results-gpu
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+basice2e:
+  stage: tests
+  tags:
+  # - gpu
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - rm -fr results-cpu
+    - rm -fr results-gpu
+    # - ls -lha
+    # - ./run.sh
+    # - mv results results-cpu
+    # - sleep 60
+    - mkdir -p /opt/xxnetwork/lib
+    - ./run.sh --run basice2e
+    - mv results results-gpu
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+backup:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run backup
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+dm:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run dm
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+historical:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run historical
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+channels:
+  stage: tests
+  tags:
+    #- gpu
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - rm -fr results-cpu
+    - rm -fr results-gpu
+    # - ls -lha
+    # - ./run.sh
+    # - mv results results-cpu
+    # - sleep 60
+    - mkdir -p /opt/xxnetwork/lib
+    - ./run.sh --run channels
+    - mv results results-gpu
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+channelsFileTransfer:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run channelsFileTransfer
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+fileTransfer:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run fileTransfer
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+connect:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run connect
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+broadcast:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run broadcast
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+singleUse:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run singleUse
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+ephemeralRegistration:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run ephemeralRegistration
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+
+ud: #modify with your package name
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run ud
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+
+groupChat: #modify with your package name
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run groupChat
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
+
+
+
+basice2e_protonet:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - cd basice2e
+    - rm -fr results
+    - ./run.sh protonet
     - cd ..
   artifacts:
     when: always
     expire_in: '1 day'
     paths:
-     - basice2e/
-     - bin/
+      - basice2e/
+      - bin/
+  only:
+    #  When merging in projects that need to be deployed, this field will have to
+    #  be TEMPORARILY changed to master until deployment is completed. BE SURE TO REVERT
+    #  ONCE DEPLOYMENT IS COMPLETE.
+    - master
+
+
+# basice2e_betanet:
+#   stage: tests
+#   image: $DOCKER_IMAGE
+#   script:
+#     - mkdir -p ~/.elixxir
+#     - echo $PWD
+#     - cd basice2e
+#     - rm -fr results
+#     - ./run.sh betanet
+#     - cd ..
+#   artifacts:
+#     when: always
+#     expire_in: '1 day'
+#     paths:
+#      - basice2e/
+#      - bin/
 
 smokeinfra:
   stage: tests
@@ -114,8 +372,8 @@ smokeinfra:
     when: always
     expire_in: '1 day'
     paths:
-     - smokeinfra/results/
-     - bin/
+      - smokeinfra/results/
+      - bin/
 
 
 smokeinfraBatch4:
@@ -133,8 +391,23 @@ smokeinfraBatch4:
     when: always
     expire_in: '1 day'
     paths:
-     - smokeinfra/results/
-     - bin/
+      - smokeinfra/results/
+      - bin/
+
+rekey:
+  stage: tests
+  image: $DOCKER_IMAGE
+  script:
+    - mkdir -p ~/.elixxir
+    - echo $PWD
+    - rm -fr results
+    - ./run.sh --run rekey
+  artifacts:
+    when: always
+    expire_in: '1 day'
+    paths:
+      - results/
+      - bin/
 
 # smokeinfraBatch1:
 #   stage: tests

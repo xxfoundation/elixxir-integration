@@ -1,0 +1,5 @@
+Disconnected from partner
+Established 
+Loading ephemerally
+Sending connection request
+Sent message "Hello 202 from 203, using connections" to connection partner.

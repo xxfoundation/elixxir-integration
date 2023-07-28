@@ -1,0 +1,4 @@
+ConnectionServer heard message "Hello 204 from 205, using connections"
+Established connection server, begin listening...
+Established connection with client
+Shutting down connection server

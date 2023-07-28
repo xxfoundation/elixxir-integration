@@ -8,8 +8,6 @@ logLevel: 1
 # Path to log file
 logPath: "results/permissioning.log"
 
-ndfOutputPath: "results/ndf.json"
-
 # The listening port of this server
 port: 18000
 
@@ -17,7 +15,7 @@ port: 18000
 dbUsername: ""
 dbPassword: ""
 dbName: ""
-dbAddress: "0.0.0.0:6969"
+dbAddress: ""
 
 minimumNodes: 3
 
@@ -25,7 +23,6 @@ minGatewayVersion: "3.0.0"
 minServerVersion:  "3.0.0"
 minClientVersion: "2.0.0"
 nodeMetricInterval: 3
-
 
 # For testing, use the sequence as the country code. Do not use the geobinning database
 disableGeoBinning: true
@@ -38,37 +35,34 @@ allowLocalIPs: true
 disableNDFPruning: true
 permissiveIPChecking: true
 
-clientRegCodes:
-  - "FFFF"
-  - "GGGG"
+# How long rounds will be tracked by gateways. Rounds (and messages as an extension)
+# prior to this period are not guaranteed to be delivered to clients.
+# Expects duration in"h". (Defaults to 1 weeks (168 hours)
+messageRetentionLimit: "168h"
 
 # Path to the file containing the round ID
 roundIdPath: "results/roundId.txt"
 
-# Path to UDB public key PEM file
-udbPubKeyPemPath: "../keys/cmix.rip.crt"
-
 # Path to the file containing the update ID
 updateIdPath: "results/updateId.txt"
 
-# Path to the UDB certificate file
-udbCertPath: "../keys/cmix.rip.crt"
-
-ndfOutputPath: "results/permissions-ndfoutput.json"
+# Path to whitelisted IPs for client ratelimiting
+whitelistedIpAddressesPath: "whitelist.txt"
 
 # === REQUIRED FOR ENABLING TLS ===
 # Path to the private key file
 keyPath: "../keys/cmix.rip.key"
 # Path to the certificate file
 certPath: "../keys/cmix.rip.crt"
-# Path to the certificate file
-serverCertPath: "../keys/cmix.rip.crt"
 
+ndfOutputPath: "results/ndf.json"
+
+# === REQUIRED FOR ENABLING TLS ===
+# Path to the UDB certificate file
 udContactPath: "udContact.bin"
+# Path of the user discovery contact file.
+udbCertPath: "../keys/cmix.rip.crt"
 udbAddress: "127.0.0.1:18001"
-# Path to UDB public key PEM file
-udbPubKeyPemPath: "../keys/cmix.rip.crt"
-
 
 # Time interval (in minutes) in which the database is
 # checked for banned nodes
@@ -84,16 +78,13 @@ groups:
     smallprime: "71774C1E818EE0EDB78D3D33EF874D472AB0EDC746A4A099CA6024DBD456676E14C3847890CA8ECE7C90762E8A3393D525729AD849163445AAD9EE9576FB600E4A3B26D5C9BC9AD541DF1B733BB0389D5A25319BE1073C30ABAF3A2E98FC5CF4D6C20908C63151F1714EFA3584326864A8E1CA52E5DEE356E38C6E951F020811EDDAD591F5DA3A16F4E0B43DAD9A7D2461A90B19625298747FD8DE28ED6EFA29D85938BE15E3334F6BB5A5EEAE4FFAAC74479372BC29815F6DE511F562D674904B7745303217DB0F479E924C85C658977224777BC70C2639216E8B0E3B9C7995F94D420B4C4BC412DA088DA5E1F0F0CC22A84ACAC199EBBB6C595F7769D0D0D110D371BF3325325C1CC0E237FEEE0D22F1EA908D57C5FDE0393B4627A86BEBC01E96A793C6F400A523991B18EBF0326F40E0635FD21F78734CC430789C85AE9FF56578B4B00AE5BCE1FCE16C9ECB089066872F8965DB43F55822920FCB3C4E1C744EBCB09C7318CDF3171AEC3D882465145F1C4DABAF4CA6E53AAA38AC2504F6391BA16E1AC39C23D77A4FB3721C39"
     generator: "2"
 
-# Selection of scheduling algorithem to use. Options are:
-#   simple - Schedules multiple teams to maximize performance, does not randomly re-arrange teams, if only a single
-#            only scheduling a single team, will use numerical ordering data for AlphaNet
-#   secure - Schedules new teams randomly, has apropreate buffers to ensure unpredictability, designed for BetaNet
-schedulingAlgorithm: "simple"
-
 # Path to file with config for scheduling algorithem within the user directory
 schedulingConfigPath: "registration.json"
 
 # Path to JSON file with list of Node registration codes (in order of network
 # placement)
 RegCodesFilePath: "regCodes.json"
+
+# Set address space size for ephemeral IDs
+addressSpace: 32
 
