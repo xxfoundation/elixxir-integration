@@ -37,7 +37,7 @@ echo "SENDING DM MESSAGES TO NEW USERS"
 # 1. Send a DM to myself
 # 2. Receive a DM from someone else
 # 3. Send a reply to the user who sent me a message in #2
-CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"Hello from Rick Prime to myself via DM\" --receiveCount 3"
+CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"Hello from Rick Prime to myself via DM\" --receiveCount 2"
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
@@ -60,8 +60,8 @@ echo "$CLIENTCMD2 -- $PIDVAL2"
 wait $PIDVAL
 # When the first command exits, read the RECVDM fields and reply to
 # the last received message (the first 2 are the self send) (#3)
-RTOKEN=$(grep -a RECVDMTOKEN $CLIENTOUT/client1.log | tail -1 | awk '{print $5}')
-RPUBKEY=$(grep -a RECVDMPUBKEY $CLIENTOUT/client1.log | tail -1 | awk '{print $5}')
+RTOKEN=$(grep -a DMTOKEN $CLIENTOUT/client2.log | head -1 | awk '{print $5}')
+RPUBKEY=$(grep -a DMPUBKEY $CLIENTOUT/client2.log | head -1 | awk '{print $5}')
 CLIENTCMD="timeout 360s bin/client $CLIENTDMOPTS -l $CLIENTOUT/client1.log -s blobs/1 dm -m \"What up from Rick Prime to Ben Prime via DM\" --dmPubkey $RPUBKEY --dmToken $RTOKEN --receiveCount 1"
 eval $CLIENTCMD >> $CLIENTOUT/client1.txt &
 PIDVAL=$!
@@ -77,13 +77,7 @@ echo "TESTS EXITED SUCCESSFULLY, CHECKING OUTPUT..."
 
 cp $CLIENTOUT/*.txt $CLIENTCLEAN/
 
-sed -i.bak 's/Sending\ to\ .*\:/Sent:/g' $CLIENTCLEAN/client*.txt
-sed -i.bak 's/Message\ from\ .*, .* Received:/Received:/g' $CLIENTCLEAN/client*.txt
-sed -i.bak 's/ERROR.*Signature/Signature/g' $CLIENTCLEAN/client*.txt
-sed -i.bak 's/[Aa]uthenticat.*$//g' $CLIENTCLEAN/client*.txt
-rm $CLIENTCLEAN/client*.txt.bak
-
-for C in $(ls -1 $CLIENTCLEAN | grep -v client11[01]); do
+for C in $(ls -1 $CLIENTCLEAN); do
     sort -o tmp $CLIENTCLEAN/$C  || true
     cp tmp $CLIENTCLEAN/$C
     # uniq tmp $CLIENTCLEAN/$C || true
