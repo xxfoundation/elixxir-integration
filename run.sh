@@ -33,7 +33,6 @@ DEBUGLEVEL=${DEBUGLEVEL-1}
 rm -fr blobs || true
 rm -fr results.bak || true
 mv results results.bak || rm -fr results || true
-mkdir -p .elixxir
 mkdir -p blobs
 mkdir -p results
 
@@ -115,7 +114,7 @@ echo "Test report $timestamp" >> $testreport
 
 if [ -z $run ]
 then
-  TESTS=("basice2e" "dm" "historical" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "singleUse" "channelsFileTransfer")
+  TESTS=("basice2e" "backup" "dm" "historical" "channels" "fileTransfer" "connect" "broadcast" "groupChat" "ephemeralRegistration" "rekey" "singleUse" "channelsFileTransfer" "remoteSync")
   LOCALTESTS=("basice2e_local" "ud")
 else
   TESTS=(${run//,/ })

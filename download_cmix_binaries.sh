@@ -104,6 +104,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
         CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
         XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}xxdk-wasm/$BRANCH_URL/xxdk.wasm?job=build"}
+        REMOTE_SYNC_SERVER_URL=${REMOTE_SYNC_SERVER_URL:="${REPOS_API}remoteSyncServer/$BRANCH_URL/remoteSyncServer$BIN"}
     else
         UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
@@ -111,6 +112,7 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}/$BRANCH/registration.stateless$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}/$BRANCH/client$BIN"}
         XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}/$BRANCH/xxdk.wasm?job=build"}
+        REMOTE_SYNC_SERVER_URL=${REMOTE_SYNC_SERVER_URL:="${REPOS_API}/$BRANCH/remoteSyncServer$BIN"}
     fi
 
     set -x
@@ -145,9 +147,14 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/client-registrar" ${CLIENT_REG_URL}
     fi
 
-    # Silently download the client registrar binary to the provisioning directory
+    # Silently download the xxdk WASM binary to the provisioning directory
     if [ ! -f $download_path/xxdk.wasm ] && [[ "$XXDK_WASM_URL" != *"forcedbranch"* ]]; then
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/xxdk.wasm" ${XXDK_WASM_URL}
+    fi
+
+    # Silently download the Haven remote sync server binary to the provisioning directory
+    if [ ! -f $download_path/remoteSyncServer ] && [[ "$REMOTE_SYNC_SERVER_URL" != *"forcedbranch"* ]]; then
+        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/remoteSyncServer" ${REMOTE_SYNC_SERVER_URL}
     fi
 
 if [[ $2 == "d" ]]; then
@@ -185,6 +192,7 @@ fi
     unset GPULIB2_URL
     unset CLIENT_REG_URL
     unset XXDK_WASM_URL
+    unset REMOTE_SYNC_SERVER_URL
 done
 
 # Make binaries executable

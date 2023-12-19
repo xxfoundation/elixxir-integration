@@ -50,11 +50,11 @@ echo "FORCING MESSAGE PICKUP RETRY... "
 FM1ID=$(bin/client init -s blobs/22 -l $CLIENTOUT/client22.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FM1-contact.bin -v $DEBUGLEVEL)
 FM2ID=$(bin/client init -s blobs/23 -l $CLIENTOUT/client23.log --password hello --ndf $NDF --writeContact $CLIENTOUT/FM2-contact.bin -v $DEBUGLEVEL)
 # Higher timeouts for this test to allow message pickup retry to function
-CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client22.log -s blobs/22 --destid b64:$FM2ID --sendCount 5 --receiveCount 5 -m \"Hello from 22, without E2E Encryption\""
+CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client22.log -s blobs/22 --destid b64:$FM2ID --sendCount 5 --receiveCount 5 --unsafe -m \"Hello from 22, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client22.txt  &
 PIDVAL=$!
 echo "$CLIENTCMD -- $PIDVAL"
-CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client23.log -s blobs/23  --destid b64:$FM1ID --sendCount 5 --receiveCount 5 -m \"Hello from 23, without E2E Encryption\""
+CLIENTCMD="timeout 360s bin/client $CLIENTOPTS --forceMessagePickupRetry -l $CLIENTOUT/client23.log -s blobs/23  --destid b64:$FM1ID --sendCount 5 --receiveCount 5 --unsafe -m \"Hello from 23, without E2E Encryption\""
 eval $CLIENTCMD >> $CLIENTOUT/client23.txt &
 PIDVAL2=$!
 echo "$CLIENTCMD -- $PIDVAL"

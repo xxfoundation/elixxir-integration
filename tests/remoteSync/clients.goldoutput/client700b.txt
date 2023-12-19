@@ -1,0 +1,3 @@
+End Value for "someKey": {Version:0 Data:"someValueHere"}
+Prefix Set: synchronized\
+Update received for "someKey" (Created): nil -> {Version:0 Data:"someValueHere"}
