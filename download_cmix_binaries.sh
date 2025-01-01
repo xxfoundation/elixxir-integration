@@ -201,3 +201,19 @@ chmod +x "$download_path"/[^l]*
 file "$download_path"/*
 
 echo "If you see HTML or anything but linux/mac binaries above, something is messed up!"
+
+
+# Check if the binaries we expect exist
+EXPECTED_BINARIES=(udb server gateway permissioning client client-registrar xxdk.wasm remoteSyncServer)
+MISSING_BINARY=false
+for BINARY in "${EXPECTED_BINARIES[@]}"; do
+    if [ ! -f "$download_path/$BINARY" ]; then
+        echo "ERROR: $BINARY not found in $download_path"
+        MISSING_BINARY=true
+    fi
+done
+
+if $MISSING_BINARY; then
+    echo "ERROR: Missing binaries"
+    exit -1
+fi
