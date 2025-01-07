@@ -56,7 +56,7 @@ if [[ $USEREPO == "d" ]]; then
     REPOS_API=${REPOS_API:="https://git.xx.network/api/v4/projects/elixxir%2F"}
     BRANCH_URL=${"jobs/artifacts/master/raw/release"}
     echo "Gitlab Access test:"
-    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}user-discovery-bot/jobs/artifacts/master/raw/release/udb$BIN"
+    curl -f -L -I -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" "${REPOS_API}client/jobs/artifacts/master/raw/release/client$BIN"
     if [[ $? != 0 ]]; then
         echo "Bad GITLAB_ACCESS_TOKEN. You need a https://git.xx.network/-/profile/personal_access_tokens with api and read_repository access."
         exit -1
@@ -85,8 +85,8 @@ echo "Checking for binaries at $FBRANCH $FBRANCH2 $DEFAULTBRANCH..."
 echo "(Note: if you forced a branch, that is checked first!)"
 
 # Note: The way forced branching works is the user sets, e.g.,
-# UDB_URL, then leaves everything else blank. When the first run of
-# the loop is called, UDB_URL will download because it does not have
+# CLIENT_URL, then leaves everything else blank. When the first run of
+# the loop is called, CLIENT_URL will download because it does not have
 # "forcedbranch" in the URL like all of the others.
 
 for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
@@ -94,7 +94,6 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
     if [[ $USEREPO == "d" ]]; then
         BRANCH_URL=${BRANCH_URL:="jobs/artifacts/$BRANCH/raw/release"}
         # Get URLs for artifacts from all relevant repos
-        UDB_URL=${UDB_URL:="${REPOS_API}user-discovery-bot/$BRANCH_URL/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}server/$BRANCH_URL/server$BIN"}
         GW_URL=${GW_URL:="${REPOS_API}gateway/$BRANCH_URL/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}registration/$BRANCH_URL/registration$REGBIN"}
@@ -104,23 +103,15 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         GPULIB2_URL=${GPULIB2_URL:="${REPOS_API}server/$BRANCH_URL/libpow.fatbin?job=build"}
         CLIENT_REG_URL=${CLIENT_REG_URL:="${REPOS_API}client-registrar/$BRANCH_URL/registration$BIN"}
         XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}xxdk-wasm/$BRANCH_URL/xxdk.wasm?job=build"}
-        REMOTE_SYNC_SERVER_URL=${REMOTE_SYNC_SERVER_URL:="${REPOS_API}remoteSyncServer/$BRANCH_URL/remoteSyncServer$BIN"}
     else
-        UDB_URL=${UDB_URL:="${REPOS_API}/$BRANCH/udb$BIN"}
         SERVER_URL=${SERVER_URL:="${REPOS_API}/$BRANCH/server$BIN"}
         GW_URL=${GW_URL:="${REPOS_API}/$BRANCH/gateway$BIN"}
         PERMISSIONING_URL=${PERMISSIONING_URL:="${REPOS_API}/$BRANCH/registration.stateless$BIN"}
         CLIENT_URL=${CLIENT_URL:="${REPOS_API}/$BRANCH/client$BIN"}
         XXDK_WASM_URL=${XXDK_WASM_URL:="${REPOS_API}/$BRANCH/xxdk.wasm?job=build"}
-        REMOTE_SYNC_SERVER_URL=${REMOTE_SYNC_SERVER_URL:="${REPOS_API}/$BRANCH/remoteSyncServer$BIN"}
     fi
 
     set -x
-
-    # Silently download the UDB binary to the provisioning directory
-    if [ ! -f $download_path/udb ] && [[ "$UDB_URL" != *"forcedbranch"* ]]; then
-        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/udb" ${UDB_URL}
-    fi
 
     # Silently download the Server binary to the provisioning directory
     if [ ! -f $download_path/server ] && [[ "$SERVER_URL" != *"forcedbranch"* ]]; then
@@ -152,11 +143,6 @@ for BRANCH in $(echo "forcedbranch" $FBRANCH $FBRANCH2 $DEFAULTBRANCH); do
         curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/xxdk.wasm" ${XXDK_WASM_URL}
     fi
 
-    # Silently download the Haven remote sync server binary to the provisioning directory
-    if [ ! -f $download_path/remoteSyncServer ] && [[ "$REMOTE_SYNC_SERVER_URL" != *"forcedbranch"* ]]; then
-        curl -s -f -L -H "PRIVATE-TOKEN: $GITLAB_ACCESS_TOKEN" -o "$download_path/remoteSyncServer" ${REMOTE_SYNC_SERVER_URL}
-    fi
-
 if [[ $2 == "d" ]]; then
     # Silently download the Server binary to the provisioning directory
     if [ ! -f $download_path/server-cuda ] && [[ "$SERVER_GPU_URL" != *"forcedbranch"* ]]; then
@@ -182,7 +168,6 @@ fi
 
 
     unset BRANCH_URL
-    unset UDB_URL
     unset SERVER_URL
     unset GW_URL
     unset PERMISSIONING_URL
@@ -192,7 +177,6 @@ fi
     unset GPULIB2_URL
     unset CLIENT_REG_URL
     unset XXDK_WASM_URL
-    unset REMOTE_SYNC_SERVER_URL
 done
 
 # Make binaries executable
@@ -204,7 +188,7 @@ echo "If you see HTML or anything but linux/mac binaries above, something is mes
 
 
 # Check if the binaries we expect exist
-EXPECTED_BINARIES=(udb server gateway permissioning client client-registrar xxdk.wasm remoteSyncServer)
+EXPECTED_BINARIES=(server gateway permissioning client client-registrar xxdk.wasm)
 MISSING_BINARY=false
 for BINARY in "${EXPECTED_BINARIES[@]}"; do
     if [ ! -f "$download_path/$BINARY" ]; then
